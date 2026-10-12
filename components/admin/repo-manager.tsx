@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { addRepoAction, deleteRepoAction, updateRepoAction, type ActionResult } from "@/app/admin/actions";
+import { moveFromDependenciesAction } from "@/app/admin/evaluate-actions";
 import { BulkImportDialog } from "@/components/admin/bulk-import";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { ConfirmDialog } from "@/components/confirm-dialog";
@@ -52,6 +53,7 @@ export function RepoManager({ initial }: { initial: RepoView[] }) {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [sort, setSort] = useState<SortKey>("name");
   const [toDelete, setToDelete] = useState<RepoView | null>(null);
+  const [toEvaluate, setToEvaluate] = useState<RepoView | null>(null);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -239,7 +241,7 @@ export function RepoManager({ initial }: { initial: RepoView[] }) {
             </thead>
             <tbody>
               {visible.map((r) => (
-                <RepoRow key={r.id} r={r} onPatch={patch} onDelete={() => setToDelete(r)} />
+                <RepoRow key={r.id} r={r} onPatch={patch} onDelete={() => setToDelete(r)} onEvaluate={() => setToEvaluate(r)} />
               ))}
             </tbody>
           </table>
@@ -255,12 +257,31 @@ export function RepoManager({ initial }: { initial: RepoView[] }) {
         onCancel={() => setToDelete(null)}
         pending={pending}
       />
+      <ConfirmDialog
+        open={toEvaluate !== null}
+        title={`Move ${toEvaluate?.fullName ?? ""} to evaluation?`}
+        body={<p>It stops appearing in the Monday digest and joins the Adoption Check watchlist, where its health can be assessed. You can move it back from Adoption Check.</p>}
+        confirmLabel="Move to evaluation"
+        pending={pending}
+        onCancel={() => setToEvaluate(null)}
+        onConfirm={() => {
+          const target = toEvaluate!;
+          startTransition(async () => {
+            const res = await moveFromDependenciesAction(target.id, target.fullName);
+            if (res.ok) {
+              setRepos((rs) => rs.filter((x) => x.id !== target.id));
+              toast.push("success", res.message);
+            } else toast.push("error", res.error);
+            setToEvaluate(null);
+          });
+        }}
+      />
       <BulkImportDialog open={bulkOpen} onClose={() => setBulkOpen(false)} categories={categories} />
     </div>
   );
 }
 
-function RepoRow({ r, onPatch, onDelete }: { r: RepoView; onPatch: (id: number, c: Partial<RepoView>) => void; onDelete: () => void }) {
+function RepoRow({ r, onPatch, onDelete, onEvaluate }: { r: RepoView; onPatch: (id: number, c: Partial<RepoView>) => void; onDelete: () => void; onEvaluate: () => void }) {
   const [category, setCategory] = useState(r.category);
   const [notes, setNotes] = useState(r.notes);
   const [editingNotes, setEditingNotes] = useState(false);
@@ -373,7 +394,10 @@ function RepoRow({ r, onPatch, onDelete }: { r: RepoView; onPatch: (id: number, 
           {r.lastError && r.lastStatus !== "ok" && <p className="mt-1 max-w-[16rem] text-xs text-ink-3 break-words">{r.lastError}</p>}
         </div>
       </td>
-      <td className="text-right">
+      <td className="text-right whitespace-nowrap">
+        <button type="button" className="btn btn-ghost btn-sm" onClick={onEvaluate} aria-label={`Move ${r.fullName} to evaluation`}>
+          Evaluate
+        </button>
         <button type="button" className="btn btn-ghost btn-sm text-act" onClick={onDelete} aria-label={`Remove ${r.fullName}`}>
           Remove
         </button>

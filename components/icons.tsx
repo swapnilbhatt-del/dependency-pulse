@@ -127,3 +127,32 @@ export function PulseLine({ className }: { className?: string }) {
     </svg>
   );
 }
+export function IconQuestion({ className, size = 14 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" strokeDasharray="3 3" />
+      <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01" />
+    </svg>
+  );
+}
+export function IconUp({ className, size = 12 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 5 4 17h16z" />
+    </svg>
+  );
+}
+export function IconDown({ className, size = 12 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 19 4 7h16z" />
+    </svg>
+  );
+}
+export function IconDot({ className, size = 12 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <circle cx="12" cy="12" r="5" />
+    </svg>
+  );
+}
