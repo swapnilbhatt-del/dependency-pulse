@@ -55,7 +55,7 @@ export function renderEmailText(d: DigestModel, watchlist?: WatchlistEmailItem[]
   if (d.quiet.length) out.push("", `Quiet this week (checked, no releases): ${d.quiet.join(", ")}`);
   if (d.alreadyReported.length) out.push(`Already covered in an earlier digest: ${d.alreadyReported.map((a) => `${a.repo} ${a.tag}`).join(", ")}`);
   if (watchlist && watchlist.length) {
-    out.push("", "== EVALUATION WATCHLIST ==");
+    out.push("", "== EVALUATION WATCHLIST ==", "Candidates marked Risky or Watch. Healthy candidates are on the web watchlist.");
     for (const w of watchlist) out.push(`* ${w.name}: ${w.verdict}${w.score !== null ? ` (${w.score})` : ""}`, ...(w.reason ? [`  ${w.reason}`] : []), `  ${w.url}`);
   }
   out.push("", "--", `${d.counts.reposChecked} repos checked, ${d.counts.releasesFound} releases found, ${d.counts.aiFallbacks} AI fallbacks, run ${fmtDateTime(d.generatedAt, tz)} (${tz}).`);
