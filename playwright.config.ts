@@ -18,7 +18,7 @@ export default defineConfig({
     ? undefined
     : {
         command: `pnpm start --port ${PORT}`,
-        url: `${baseURL}/api/health`,
+        url: `${baseURL}/robots.txt`,
         reuseExistingServer: true,
         timeout: 120_000,
       },

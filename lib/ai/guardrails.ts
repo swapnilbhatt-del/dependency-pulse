@@ -189,3 +189,13 @@ export function applyGuardrails(analysis: ReleaseAnalysis, aiStatus: AiStatus, c
     aiStatus: status,
   };
 }
+
+/**
+ * The weekly synthesis may only restate facts from its input: every version,
+ * advisory id and number it mentions must appear in the serialized input.
+ */
+export function isSynthesisGrounded(text: string, inputJson: string): boolean {
+  if (!isGrounded(text, inputJson)) return false;
+  const numbers = text.replace(ID_TOKEN_RE, " ").match(/\b\d+\b/g) ?? [];
+  return numbers.every((n) => new RegExp(`\\b${n}\\b`).test(inputJson));
+}
