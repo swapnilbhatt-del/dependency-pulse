@@ -16,9 +16,9 @@
     "db:seed": "tsx db/seed.ts",
     "db:studio": "drizzle-kit studio",
     "secrets:scan": "bash scripts/scan-secrets.sh",
-    "preview:digest": "tsx scripts/preview-digest.ts",
-    "verify:github": "tsx scripts/verify-github.ts",
-    "verify:gemini": "tsx scripts/verify-gemini.ts"
+    "preview:digest": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/preview-digest.ts",
+    "verify:github": "tsx --tsconfig tsconfig.json scripts/verify-github.ts",
+    "verify:gemini": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/verify-gemini.ts"
   },
   "dependencies": {
     "@google/genai": "^2.28.0",
