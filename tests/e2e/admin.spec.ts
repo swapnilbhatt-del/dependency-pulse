@@ -15,7 +15,7 @@ test.describe("admin", () => {
     await page.goto("/admin/login");
     await page.getByLabel("Admin password").fill("definitely-not-the-password");
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page.getByRole("alert")).toContainText(/not correct|Too many attempts/);
+    await expect(page.locator("#password-error")).toContainText(/not correct|Too many attempts/);
   });
 
   test("login, add a repo, toggle it, remove it", async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe("admin", () => {
   test("bulk import shows per-line validation before commit", async ({ page }) => {
     await login(page);
     await page.getByRole("button", { name: "Bulk import" }).click();
-    await page.getByLabel("Repositories").fill("stripe/stripe-node\nnot valid\n# comment");
+    await page.getByRole("textbox", { name: "Repositories", exact: true }).fill("stripe/stripe-node\nnot valid\n# comment");
     await expect(page.getByTestId("bulk-preview")).toContainText("Invalid");
     await expect(page.locator("#bulk-live")).toContainText("1 of 2 lines look valid");
     await page.getByRole("dialog").getByRole("button", { name: "Cancel" }).click();

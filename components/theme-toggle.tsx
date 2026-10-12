@@ -9,6 +9,9 @@ const LABEL: Record<Theme, string> = { system: "System theme", light: "Light the
 
 function apply(theme: Theme) {
   const root = document.documentElement;
+  // Switch instantly: suspend colour transitions for the frame in which the theme flips.
+  root.classList.add("theme-switching");
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-switching")));
   if (theme === "system") delete root.dataset.theme;
   else root.dataset.theme = theme;
   try {

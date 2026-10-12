@@ -350,13 +350,12 @@ details[open] > .disclosure-summary::before {
 details[open] > .disclosure-body {
   animation: reveal 180ms ease-out;
 }
+/* Slide only, no fade: text is never rendered at partial contrast. */
 @keyframes reveal {
   from {
-    opacity: 0;
     transform: translateY(-4px);
   }
   to {
-    opacity: 1;
     transform: none;
   }
 }
@@ -486,6 +485,11 @@ dialog::backdrop {
     color: var(--ink-3);
     flex-shrink: 0;
   }
+}
+
+.theme-switching,
+.theme-switching * {
+  transition: none !important;
 }
 
 /* ─── Motion ─────────────────────────────────────────────────────────────── */
