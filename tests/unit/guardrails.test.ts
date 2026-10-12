@@ -16,7 +16,7 @@ describe("guardrails: security flag", () => {
     const r = release({ body: "Fixes an authentication bypass in token checks." });
     const c = classify(r, analysis({ is_security_fix: true, security_evidence: "authentication bypass", affected_area: "authentication" }));
     expect(c.isSecurityFix).toBe(true);
-    expect(c.securityEvidence[0]).toEqual({ kind: "quote", text: "Fixes an authentication bypass in token checks." });
+    expect(c.securityEvidence[0]).toEqual({ kind: "quote", text: "Fixes an authentication bypass in token checks.", phrase: "authentication bypass" });
     expect(c.changeType).toBe("security");
   });
 

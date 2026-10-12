@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 [ -f .env ] || { echo "No .env file"; exit 1; }
-KEYS=(DATABASE_URL GITHUB_TOKEN GEMINI_API_KEY GEMINI_MODEL RESEND_API_KEY EMAIL_FROM ADMIN_PASSWORD SESSION_SECRET CRON_SECRET DIGEST_RECIPIENTS APP_BASE_URL TIMEZONE_LABEL)
+KEYS=(DATABASE_URL GITHUB_TOKEN GEMINI_API_KEY RESEND_API_KEY ADMIN_PASSWORD SESSION_SECRET CRON_SECRET DIGEST_RECIPIENTS)
 for key in "${KEYS[@]}"; do
   val=$(grep -E "^${key}=" .env | head -1 | cut -d= -f2- || true)
   if [ -z "$val" ]; then echo "skip  $key (empty in .env)"; continue; fi

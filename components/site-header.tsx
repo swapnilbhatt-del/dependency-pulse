@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { HeaderThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
   return (
@@ -20,7 +20,7 @@ export function SiteHeader() {
             </Link>
           </nav>
           <div className="site-actions">
-            <ThemeToggle />
+            <HeaderThemeToggle />
           </div>
         </div>
       </div>

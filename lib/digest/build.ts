@@ -129,7 +129,9 @@ function deterministicSynthesis(model: Pick<DigestModel, "act" | "review" | "adv
     `${plural(model.counts.releasesFound, "release")} across ${plural(model.counts.reposChecked, "repository", "repositories")} checked: ${model.counts.act} need action, ${model.counts.review} need review, ${model.counts.fyi} FYI.`,
   );
   if (!top && model.counts.releasesFound === 0) sentences.unshift("All quiet: no new releases this week.");
+  const seen = new Set<string>();
   const actions = [...model.act, ...model.review]
+    .filter((i) => !seen.has(i.repo) && Boolean(seen.add(i.repo)))
     .slice(0, 5)
     .map((i) => i.nextStep)
     .filter((s): s is string => Boolean(s));

@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Theme = "system" | "light" | "dark";
@@ -67,4 +68,11 @@ function ThemeIcon({ theme }: { theme: Theme }) {
       <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" />
     </svg>
   );
+}
+
+/** Digest pages have their own sticky toolbar with a toggle; avoid showing two. */
+export function HeaderThemeToggle() {
+  const path = usePathname();
+  if (path.startsWith("/digest/")) return null;
+  return <ThemeToggle />;
 }

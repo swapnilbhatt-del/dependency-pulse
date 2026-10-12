@@ -3,7 +3,7 @@ import type { RepoPriority } from "@/lib/types";
 import { clampText } from "@/lib/util";
 
 /** The evidence block shows the full line; the sentence keeps a short excerpt. */
-const q = (t: string) => clampText(t, 90);
+const q = (e: { text: string; phrase?: string }) => clampText(e.phrase ?? e.text, 70);
 
 function area(c: FinalClassification): string | null {
   const a = c.affectedArea.trim();
@@ -18,13 +18,13 @@ export function whyFlagged(c: FinalClassification, priority: RepoPriority): stri
   const where = area(c);
 
   if (c.isSecurityFix) {
-    if (adv && secQuote) return `Flagged because GitHub advisory ${adv.text} matches this release and the notes say “${q(secQuote.text)}”.`;
+    if (adv && secQuote) return `Flagged because GitHub advisory ${adv.text} matches this release and the notes say “${q(secQuote)}”.`;
     if (adv) return `Flagged because GitHub advisory ${adv.text} matches this release.`;
-    if (secQuote) return `Flagged because the notes say “${q(secQuote.text)}”${where ? ` (affects ${where})` : ""}.`;
+    if (secQuote) return `Flagged because the notes say “${q(secQuote)}”${where ? ` (affects ${where})` : ""}.`;
   }
   if (c.isBreakingChange) {
     const crit = priority === "critical" ? " in a repository marked critical" : "";
-    if (brkQuote) return `Flagged because the notes say “${q(brkQuote.text)}”${crit}.`;
+    if (brkQuote) return `Flagged because the notes say “${q(brkQuote)}”${crit}.`;
     if (c.majorBump) return `Flagged because the version moves from v${c.majorBump.from} to v${c.majorBump.to}${crit}.`;
   }
   if (c.majorBump) return `Flagged because the version moves from v${c.majorBump.from} to v${c.majorBump.to}, a major version bump.`;

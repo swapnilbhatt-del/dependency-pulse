@@ -1,6 +1,6 @@
 import { fallbackAnalysis, NO_NOTES_SUMMARY } from "@/lib/ai/fallback";
 import type { ReleaseAnalysis } from "@/lib/ai/schema";
-import { evidenceInContext, verifyEvidence } from "@/lib/signals/evidence";
+import { displayEvidence, evidenceInContext, verifyEvidence } from "@/lib/signals/evidence";
 import type { Prescreen } from "@/lib/signals/keywords";
 import type { MajorBump } from "@/lib/signals/semver";
 import type { AdvisoryMatch } from "@/lib/types";
@@ -9,7 +9,10 @@ export type AiStatus = "ok" | "fallback" | "skipped";
 
 export interface Evidence {
   kind: "quote" | "advisory" | "semver";
+  /** What the evidence block shows: the full source line for quotes. */
   text: string;
+  /** The short matched phrase, used in the one-line "why flagged" sentence. */
+  phrase?: string;
   url?: string;
 }
 
@@ -101,7 +104,7 @@ export function applyGuardrails(analysis: ReleaseAnalysis, aiStatus: AiStatus, c
       notes.push("Model claimed a security fix but the notes contain no security signal; flag rejected.");
     } else if (verifyEvidence(a.security_evidence, ctx.title, ctx.body)) {
       isSecurityFix = true;
-      securityEvidence.unshift({ kind: "quote", text: evidenceInContext(a.security_evidence!, ctx.title, ctx.body) });
+      securityEvidence.unshift({ kind: "quote", text: evidenceInContext(a.security_evidence!, ctx.title, ctx.body), phrase: displayEvidence(a.security_evidence!, 70) });
     } else if (!isSecurityFix) {
       notes.push("Model's security evidence was not found in the notes; downgraded to review.");
       unverifiedClaim = "security";
@@ -122,7 +125,7 @@ export function applyGuardrails(analysis: ReleaseAnalysis, aiStatus: AiStatus, c
   }
   if (isSecurityFix && !securityEvidence.some((e) => e.kind === "quote")) {
     const m = strongSec ?? ctx.prescreen.security[0];
-    if (m) securityEvidence.push({ kind: "quote", text: evidenceInContext(m.phrase, ctx.title, ctx.body) });
+    if (m) securityEvidence.push({ kind: "quote", text: evidenceInContext(m.phrase, ctx.title, ctx.body), phrase: m.phrase });
   }
 
   // ── Breaking changes ──────────────────────────────────────────────────────
@@ -136,7 +139,7 @@ export function applyGuardrails(analysis: ReleaseAnalysis, aiStatus: AiStatus, c
       notes.push("Model claimed a breaking change but the notes contain no breaking signal; flag rejected.");
     } else if (verifyEvidence(a.breaking_evidence, ctx.title, ctx.body)) {
       isBreakingChange = true;
-      breakingEvidence.push({ kind: "quote", text: evidenceInContext(a.breaking_evidence!, ctx.title, ctx.body) });
+      breakingEvidence.push({ kind: "quote", text: evidenceInContext(a.breaking_evidence!, ctx.title, ctx.body), phrase: displayEvidence(a.breaking_evidence!, 70) });
     } else if (ctx.majorBump) {
       isBreakingChange = true;
       notes.push("Breaking change confirmed by the model and a major version bump.");
@@ -153,7 +156,7 @@ export function applyGuardrails(analysis: ReleaseAnalysis, aiStatus: AiStatus, c
   }
   if (isBreakingChange && breakingEvidence.length === 0) {
     const m = strongBrk ?? ctx.prescreen.breaking[0];
-    if (m) breakingEvidence.push({ kind: "quote", text: evidenceInContext(m.phrase, ctx.title, ctx.body) });
+    if (m) breakingEvidence.push({ kind: "quote", text: evidenceInContext(m.phrase, ctx.title, ctx.body), phrase: m.phrase });
   }
   if (ctx.majorBump) {
     breakingEvidence.push({ kind: "semver", text: `major version bump (v${ctx.majorBump.from} → v${ctx.majorBump.to})` });

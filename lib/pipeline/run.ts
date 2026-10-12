@@ -202,7 +202,10 @@ export async function runWeeklyDigest(deps: PipelineDeps, opts: RunOptions): Pro
     let tokensOut = stats.tokensOut;
     const flagged = [...model.act, ...model.review, ...model.updated];
     if (deps.model && !stats.aiUnavailable && model.counts.releasesFound > 0) {
-      const synthItems = [...flagged, ...model.fyi.flatMap((g) => g.items)].slice(0, 20).map((i) => ({
+      // One entry per repository (its most important item), so the summary does not repeat itself.
+      const seenRepos = new Set<string>();
+      const perRepo = [...flagged, ...model.fyi.flatMap((g) => g.items)].filter((i) => !seenRepos.has(i.repo) && Boolean(seenRepos.add(i.repo)));
+      const synthItems = perRepo.slice(0, 20).map((i) => ({
         repo: i.repo,
         tag: i.tag,
         tier: TIER_LABEL[i.tier],
