@@ -1,6 +1,6 @@
 # Adoption Check: health method
 
-This document lets you **recompute any verdict by hand** from the metrics stored with a snapshot. All values below come from [`lib/health/config.ts`](../lib/health/config.ts), method version **`2026-10-12.1`**. Every snapshot records the `config_version` that produced it, so if the version on a report differs from this one, use that version of the file from git history.
+This document lets you **recompute any verdict by hand** from the metrics stored with a snapshot. All values below come from [`lib/health/config.ts`](../lib/health/config.ts), method version **`2026-10-12.2`** (`.2` only changed how GitHub's old GNU license IDs are read; no weight, band or threshold changed, so the worked example below, captured under `.1`, is unaffected). Every snapshot records the `config_version` that produced it, so if the version on a report differs from this one, use that version of the file from git history.
 
 Scoring is plain code, with no model involved. Gemini Flash only writes the "Decision in one minute" text, from the finished verdict and reasons (see [Narrative](#8-narrative-gemini-flash-text-only)).
 
@@ -64,7 +64,7 @@ Every metric is stored as `{ value, source, fetchedAt, reason?, note? }`. If a v
 | **Known vulnerabilities** | Any vulnerability affecting the latest version → 10; else 100 − 10 × (published in 365 days), floor 60 | No npm/PyPI package, or OSV unreachable |
 | **Adoption** | 0.8 × downloads band + 0.2 × stars band (stars alone → stars band, *partial*) | No downloads and no stars |
 
-OSI status uses [`lib/health/osi-licenses.ts`](../lib/health/osi-licenses.ts): SPDX License List **3.29.0** (16 Sep 2026), `isOsiApproved`, 141 identifiers. `NOASSERTION`/`OTHER` → unknown; missing → none.
+OSI status uses [`lib/health/osi-licenses.ts`](../lib/health/osi-licenses.ts): SPDX License List **3.29.0** (16 Sep 2026), `isOsiApproved`, 141 identifiers. `NOASSERTION`/`OTHER` → unknown; missing → none. GitHub still reports the GNU family with deprecated IDs (`GPL-3.0`, `LGPL-2.1`, `AGPL-3.0`, `GPL-2.0+`), so these are first mapped to their `-only` / `-or-later` forms (`normalizeSpdx`). Added in config version `2026-10-12.2`.
 
 ## 3. Weighted overall score and coverage
 

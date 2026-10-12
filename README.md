@@ -245,7 +245,7 @@ The migration was then applied to production *before* the preview deploy. That i
 - **Responsiveness is a sample:** the most recent 50 issues and 50 PRs from the last 90 days. The report always states the sample size, and fewer than 5 items counts as no data.
 - **Stars** are a weak, easily gamed signal. They make up 2.5% of the total weight.
 - **Bus factor** counts commit authors on the default branch and excludes bots. A human-named service account (for example, a generated SDK's release bot) looks like one maintainer. The Square SDK example shows this.
-- **Scorecard** is missing for many smaller repos; when it is, the security score is based on advisories alone.
+- **Scorecard** is missing for many repos (better-auth, for example). When it is, the security dimension is "not available" and is left out of the score, which lowers the weight coverage. Advisories still count through the vulnerabilities dimension and appear as reasons.
 - **OSV** matches by package name and ecosystem. A repo without a published package has no vulnerability or download data.
 - **Backing** (company, foundation or individuals) is entered by hand, because no reliable public source exists.
 - The verdict is a starting point for a review, not a replacement for one. Each report ends with "Verify before adopting".

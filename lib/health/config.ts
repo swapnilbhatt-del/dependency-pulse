@@ -5,7 +5,7 @@
  * on every health snapshot, so a verdict can always be recomputed by hand with
  * the exact numbers that produced it (see docs/HEALTH_METHOD.md).
  */
-export const HEALTH_CONFIG_VERSION = "2026-10-12.1";
+export const HEALTH_CONFIG_VERSION = "2026-10-12.2"; // .2: GitHub's deprecated GNU license IDs are mapped before the OSI check.
 
 /** Dimension weights (sum = 100). Justified in README → Adoption Check. */
 export const WEIGHTS = {
