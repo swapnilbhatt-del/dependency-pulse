@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <main id="main" className="mx-auto max-w-5xl px-4 sm:px-6 pt-10" aria-busy="true" aria-live="polite">
+    <main id="main" className="mx-auto max-w-5xl px-4 sm:px-6 pt-10 min-h-[100dvh]" aria-busy="true" aria-live="polite">
       <span className="sr-only">Loading the watchlist…</span>
       <div className="skeleton h-3 w-32" />
       <div className="skeleton mt-3 h-12 w-80 max-w-full" />

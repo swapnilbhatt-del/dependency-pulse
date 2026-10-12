@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <main id="main" className="mx-auto max-w-4xl px-4 sm:px-6 pt-8" aria-busy="true" aria-live="polite">
+    <main id="main" className="mx-auto max-w-4xl px-4 sm:px-6 pt-8 min-h-[100dvh]" aria-busy="true" aria-live="polite">
       <span className="sr-only">Loading the report…</span>
       <div className="skeleton h-4 w-48" />
       <div className="card mt-4 flex justify-between gap-6 p-6">
