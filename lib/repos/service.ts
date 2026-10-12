@@ -111,12 +111,12 @@ export async function softDeleteRepo(id: number): Promise<{ ok: boolean; error?:
 
 export async function recordRepoStatuses(results: { id: number; status: RepoStatus; error: string | null }[], at: Date): Promise<void> {
   if (!results.length) return;
-  const db = getDb();
-  const [first, ...rest] = results.map((r) =>
-    db
-      .update(schema.repos)
-      .set({ lastCheckedAt: at, lastStatus: r.status, lastError: r.error ? r.error.slice(0, 500) : null })
-      .where(eq(schema.repos.id, r.id)),
-  );
-  await db.batch([first, ...rest]);
+  await getDb().transaction(async (tx) => {
+    for (const r of results) {
+      await tx
+        .update(schema.repos)
+        .set({ lastCheckedAt: at, lastStatus: r.status, lastError: r.error ? r.error.slice(0, 500) : null })
+        .where(eq(schema.repos.id, r.id));
+    }
+  });
 }

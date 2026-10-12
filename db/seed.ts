@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
 import { SEED_REPOS } from "./seed-repos";
 
@@ -14,7 +14,8 @@ async function main() {
   const token = process.env.GITHUB_TOKEN;
   if (!url) throw new Error("DATABASE_URL is not set.");
   if (!token) throw new Error("GITHUB_TOKEN is not set (needed to verify each repo exists).");
-  const db = drizzle(neon(url), { schema });
+  const client = postgres(url, { prepare: false, max: 1 });
+  const db = drizzle(client, { schema });
 
   let added = 0;
   let skipped = 0;
@@ -52,6 +53,7 @@ async function main() {
   console.log(`Seed complete: ${added} added, ${skipped} already present, ${failed.length} failed verification.`);
   if (defaults.length) console.log(`Recipients ensured from DIGEST_RECIPIENTS: ${defaults.length}.`);
   if (failed.length) console.log(`Not seeded: ${failed.join(", ")}`);
+  await client.end();
 }
 
 main().catch((err) => {

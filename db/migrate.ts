@@ -1,13 +1,14 @@
 import "dotenv/config";
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
-import { migrate } from "drizzle-orm/neon-http/migrator";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import postgres from "postgres";
 
 async function main() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL is not set.");
-  const db = drizzle(neon(url));
-  await migrate(db, { migrationsFolder: "db/migrations" });
+  const client = postgres(url, { prepare: false, max: 1 });
+  await migrate(drizzle(client), { migrationsFolder: "db/migrations" });
+  await client.end();
   console.log("Migrations applied.");
 }
 

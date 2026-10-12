@@ -12,7 +12,7 @@ export async function GET() {
   if (hasDatabase()) {
     try {
       const rows = await getDb().execute(sql`select count(*)::int as n from repos where deleted_at is null`);
-      db = { ok: true, repos: Number((rows.rows[0] as { n: number } | undefined)?.n ?? 0) };
+      db = { ok: true, repos: Number((rows[0] as { n: number } | undefined)?.n ?? 0) };
     } catch (err) {
       db = { ok: false, error: errorMessage(err).replace(/postgres(ql)?:\/\/\S+/gi, "[redacted]").slice(0, 200) };
     }
