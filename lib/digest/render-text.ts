@@ -11,6 +11,7 @@ function item(i: DigestItem, tz: string): string {
   for (const k of i.keyChanges) lines.push(`    - ${k}`);
   if (i.nextStep) lines.push(`  Next step: ${i.nextStep}`);
   if (i.alsoIn.length) lines.push(`  Also in: ${i.alsoIn.join(", ")}`);
+  for (const r of i.related ?? []) lines.push(`  Also flagged: ${r.tag}: ${r.summary} (${r.url})`);
   lines.push(`  ${i.url}`);
   return lines.join("\n");
 }

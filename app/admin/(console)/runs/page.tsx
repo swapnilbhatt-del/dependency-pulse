@@ -31,7 +31,7 @@ function dur(ms: number | null): string {
   return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${s % 60} s`;
 }
 
-const TRIGGER_LABEL: Record<string, string> = { cron: "Weekly schedule", preview: "Preview", send: "Send now", resend: "Resend", continue: "Continuation" };
+const TRIGGER_LABEL: Record<string, string> = { cron: "Weekly schedule", preview: "Preview", send: "Send now", resend: "Resend", continue: "Continuation", rebuild: "Rebuild (no email)" };
 
 export default async function RunsPage() {
   const tz = timezoneLabel();
@@ -58,7 +58,7 @@ export default async function RunsPage() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Runs</h1>
+        <h1 className="font-display text-[2.5rem] leading-tight">Runs</h1>
         <p className="mt-1 text-sm text-ink-2">Every pipeline run, newest first, with per-repository results and AI usage.</p>
       </div>
 

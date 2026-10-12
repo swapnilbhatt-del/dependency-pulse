@@ -213,6 +213,20 @@ export async function sendNowAction(force: boolean): Promise<ActionResult<{ isoW
   }
 }
 
+/** Regenerates this week's published digest with current rules, without emailing anyone. */
+export async function rebuildWeekAction(): Promise<ActionResult> {
+  const denied = await guard();
+  if (denied) return denied;
+  await audit("run.rebuild", "pipeline", {});
+  const r = await runWeeklyDigest(productionDeps(), { trigger: "rebuild" });
+  revalidatePath("/admin/runs");
+  refreshPublic();
+  if (r.status === "rebuilt") return { ok: true, message: `Digest page for ${r.isoWeek} rebuilt. No email was sent.` };
+  if (r.status === "skipped") return { ok: false, error: `Another run for ${r.isoWeek} is in progress. Try again in a few minutes.` };
+  if (r.status === "continue") return { ok: false, error: "The rebuild needs more time; click again to continue from the cache." };
+  return { ok: false, error: "error" in r && r.error ? `Rebuild failed: ${r.error}` : "Rebuild failed." };
+}
+
 export async function resendWeekAction(isoWeek: string): Promise<ActionResult> {
   const denied = await guard();
   if (denied) return denied;

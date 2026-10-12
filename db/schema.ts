@@ -181,7 +181,7 @@ export const pipelineRuns = pgTable(
     id: text("id").primaryKey(),
     digestRunId: integer("digest_run_id").references(() => digestRuns.id, { onDelete: "set null" }),
     isoWeek: text("iso_week").notNull(),
-    trigger: text("trigger").$type<"cron" | "preview" | "send" | "resend" | "continue">().notNull(),
+    trigger: text("trigger").$type<"cron" | "preview" | "send" | "resend" | "continue" | "rebuild">().notNull(),
     status: text("status").$type<"running" | "ok" | "partial" | "failed" | "skipped">().notNull(),
     phase: text("phase").notNull().default("start"),
     startedAt: ts("started_at").notNull().defaultNow(),

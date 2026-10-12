@@ -54,6 +54,8 @@ export interface DigestItem {
   aiStatus: FinalClassification["aiStatus"];
   /** Older releases in the same week that carried the same advisory or change. */
   alsoIn: string[];
+  /** Other releases of the same repo in the same tier this week, shown compactly inside this card. */
+  related?: { tag: string; url: string; publishedAt: string; summary: string; whyFlagged: string | null; prerelease: boolean }[];
 }
 
 export interface AdvisoryNotice {

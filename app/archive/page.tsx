@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CountRow } from "@/components/digest/count-row";
+import { WeekBar } from "@/components/digest/week-bar";
+import { IconArrowRight } from "@/components/icons";
 import { fmtWeekOf, fmtWindow } from "@/lib/digest/format";
 import { listDigests } from "@/lib/digest/queries";
 import { timezoneLabel } from "@/lib/env";
@@ -25,9 +27,23 @@ export default async function ArchivePage() {
   }
   return (
     <main id="main" className="mx-auto max-w-[46rem] px-4 sm:px-6 pt-10">
-      <p className="eyebrow">Archive</p>
-      <h1 className="mt-2 text-[1.75rem] sm:text-[2.25rem] leading-tight font-semibold tracking-[-0.015em]">Past digests</h1>
-      <p className="mt-2 text-ink-2 measure">One digest per ISO week, newest first. The counts show at a glance which weeks needed attention.</p>
+      <p className="eyebrow text-brand">Archive</p>
+      <h1 className="mt-2 font-display text-[2.75rem] sm:text-[3.5rem] leading-[1.02]">Past digests</h1>
+      <p className="mt-3 text-ink-2 measure">One digest per ISO week, newest first. The bar on each week shows how much of it needed action (red) or review (amber).</p>
+      {entries.length > 0 && (
+        <dl className="mt-6 grid grid-cols-3 gap-3">
+          {[
+            ["Weeks", entries.length],
+            ["Releases", entries.reduce((n, e) => n + e.counts.releasesFound, 0)],
+            ["Acted on", entries.reduce((n, e) => n + e.counts.act, 0)],
+          ].map(([k, v]) => (
+            <div key={k} className="card p-4">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-ink-3">{k}</dt>
+              <dd className="mt-1 font-display text-4xl tabular">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
 
       {failed ? (
         <div className="card mt-8 p-5" role="alert">
@@ -53,17 +69,21 @@ export default async function ArchivePage() {
                 aria-hidden="true"
                 className={`absolute -left-[7px] top-2 h-3 w-3 rounded-full border-2 border-bg ${e.counts.act > 0 ? "bg-act" : e.counts.review > 0 ? "bg-review" : "bg-line-strong"}`}
               />
-              <Link href={`/digest/${e.isoWeek}`} className="card block p-4 no-underline text-ink hover:border-line-strong transition-colors">
+              <Link href={`/digest/${e.isoWeek}`} className="card lift block p-4 sm:p-5 no-underline text-ink">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                  <h2 className="font-semibold">Week of {fmtWeekOf(e.weekOf)}</h2>
+                  <h2 className="font-display text-2xl">Week of {fmtWeekOf(e.weekOf)}</h2>
                   <span className="text-sm text-ink-3 tabular">{e.isoWeek}</span>
                 </div>
                 <p className="mt-0.5 text-sm text-ink-3 tabular">
                   {fmtWindow(e.windowStart, e.windowEnd, tz)} · {e.counts.releasesFound} releases across {e.counts.reposChecked} repos
                   {e.delivered ? "" : " · not emailed"}
                 </p>
-                <div className="mt-2">
+                <WeekBar counts={e.counts} className="mt-3" />
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                   <CountRow counts={e.counts} />
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-accent">
+                    Open <IconArrowRight />
+                  </span>
                 </div>
               </Link>
             </li>

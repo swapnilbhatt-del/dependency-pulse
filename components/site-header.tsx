@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LogoMark } from "@/components/logo";
-import { HeaderThemeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
+  // Home and digest pages carry their own header inside the dark masthead.
+  const path = usePathname();
+  if (path === "/" || path.startsWith("/digest/")) return null;
   return (
     <header className="border-b border-line bg-bg">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 h-14">
@@ -20,7 +26,7 @@ export function SiteHeader() {
             </Link>
           </nav>
           <div className="site-actions">
-            <HeaderThemeToggle />
+            <ThemeToggle />
           </div>
         </div>
       </div>

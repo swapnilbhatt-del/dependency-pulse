@@ -52,7 +52,13 @@ function card(item: DigestItem, tz: string, color: string, bg: string, label: st
   const keyChanges = item.keyChanges.length
     ? `<ul style="margin:8px 0 0 18px;padding:0;color:${C.ink2};font-size:14px;line-height:1.5;">${item.keyChanges.map((k) => `<li>${e(k)}</li>`).join("")}</ul>`
     : "";
-  const also = item.alsoIn.length ? `<div style="margin-top:6px;font-size:12px;color:${C.ink3};">Also in ${e(item.alsoIn.join(", "))}</div>` : "";
+  const also =
+    (item.alsoIn.length ? `<div style="margin-top:6px;font-size:12px;color:${C.ink3};">Also in ${e(item.alsoIn.join(", "))}</div>` : "") +
+    (item.related?.length
+      ? `<div style="margin-top:10px;padding-top:8px;border-top:1px solid ${C.line};font-size:13px;color:${C.ink2};"><strong>Also flagged this week:</strong>${item.related
+          .map((r) => `<div style="margin-top:4px;"><span style="font-family:${MONO};">${e(r.tag)}</span>: ${e(r.summary)} ${link(safeGithubUrl(r.url), "Notes")}</div>`)
+          .join("")}</div>`
+      : "");
   return `
 <tr><td style="padding:0 0 12px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-left:4px solid ${color};border-radius:8px;background:${C.paper};">

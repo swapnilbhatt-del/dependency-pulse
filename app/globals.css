@@ -23,6 +23,18 @@
   --ok-bg: #e7f4ec;
   --focus: #1d5ba8;
   --skeleton: #ebe8e1;
+  --brand: #0f766e;
+  --brand-soft: #e3f3f1;
+  --shadow-sm: 0 1px 2px rgb(16 24 32 / 0.06), 0 1px 1px rgb(16 24 32 / 0.04);
+  --shadow-md: 0 8px 24px -12px rgb(16 24 32 / 0.18), 0 2px 6px -2px rgb(16 24 32 / 0.08);
+  /* The masthead is dark in both themes */
+  --mast-bg: #0d1117;
+  --mast-ink: #f3f5f7;
+  --mast-ink-2: #c3cad3;
+  --mast-line: rgb(255 255 255 / 0.12);
+  --mast-act: #ff8f84;
+  --mast-review: #f6c86e;
+  --mast-ok: #7fdcae;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,6 +60,11 @@
     --ok-bg: #13281b;
     --focus: #86b6f6;
     --skeleton: #23272d;
+    --brand: #5eead4;
+    --brand-soft: #0f2a27;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 10px 30px -12px rgb(0 0 0 / 0.7);
+    --mast-bg: #080b10;
   }
 }
 
@@ -73,6 +90,11 @@
   --ok-bg: #13281b;
   --focus: #86b6f6;
   --skeleton: #23272d;
+  --brand: #5eead4;
+  --brand-soft: #0f2a27;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 10px 30px -12px rgb(0 0 0 / 0.7);
+  --mast-bg: #080b10;
 }
 
 @theme inline {
@@ -94,11 +116,18 @@
   --color-review-line: var(--review-line);
   --color-ok: var(--ok);
   --color-ok-bg: var(--ok-bg);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-mast: var(--mast-bg);
+  --color-mast-ink: var(--mast-ink);
+  --color-mast-ink-2: var(--mast-ink-2);
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* ─── Base ───────────────────────────────────────────────────────────────── */
+/* ─── Base (layered so Tailwind utilities can override) ─────────────────── */
+@layer base {
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -127,6 +156,8 @@ a:hover {
   outline-offset: 2px;
   border-radius: 4px;
 }
+}
+
 .tabular {
   font-variant-numeric: tabular-nums;
 }
@@ -492,6 +523,243 @@ dialog::backdrop {
   transition: none !important;
 }
 
+/* ─── Signature pieces ─────────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.masthead {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(60rem 22rem at 85% -10%, var(--mast-glow, rgb(255 143 132 / 0.22)), transparent 60%),
+    radial-gradient(40rem 18rem at 0% 110%, rgb(94 234 212 / 0.10), transparent 60%),
+    var(--mast-bg);
+  color: var(--mast-ink);
+  border-bottom: 1px solid var(--mast-line);
+}
+.masthead::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+  pointer-events: none;
+}
+.masthead a {
+  color: var(--mast-ink);
+}
+.masthead :focus-visible {
+  outline-color: #9cc7ff;
+}
+.pulse-line {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 64px;
+  width: 100%;
+  opacity: 0.3;
+  pointer-events: none;
+}
+.pulse-line path {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: draw 2.4s ease-out 0.2s forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.stat-tile {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid var(--mast-line);
+  border-radius: 14px;
+  padding: 16px 16px 14px;
+  min-height: 116px;
+  display: block;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease-out,
+    border-color 160ms ease-out,
+    transform 160ms ease-out;
+}
+a.stat-tile:hover {
+  background: rgb(255 255 255 / 0.08);
+  border-color: rgb(255 255 255 / 0.25);
+  transform: translateY(-1px);
+}
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 3.25rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.meter {
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  overflow: hidden;
+}
+.meter > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+.section-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.count-badge {
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  display: inline-grid;
+  place-items: center;
+  background: var(--surface-2);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.lift {
+  box-shadow: var(--shadow-sm);
+  transition:
+    box-shadow 180ms ease-out,
+    transform 180ms ease-out;
+}
+.lift:hover {
+  box-shadow: var(--shadow-md);
+}
+.card-head-act {
+  background: linear-gradient(90deg, var(--act-bg), transparent 85%);
+  border-bottom: 1px solid var(--act-line);
+}
+.card-head-review {
+  background: linear-gradient(90deg, var(--review-bg), transparent 85%);
+  border-bottom: 1px solid var(--review-line);
+}
+.card-head-neutral {
+  background: linear-gradient(90deg, var(--surface-2), transparent 85%);
+  border-bottom: 1px solid var(--line);
+}
+.version-pill {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.pull-quote {
+  position: relative;
+  padding: 12px 14px 12px 40px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.pull-quote::before {
+  content: "\201C";
+  position: absolute;
+  left: 12px;
+  top: 2px;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--quote-mark, var(--ink-3));
+}
+.callout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--brand-soft);
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+.monogram {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+.bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+  display: flex;
+}
+.bar-track > span {
+  display: block;
+  height: 100%;
+}
+.glance {
+  position: relative;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.glance::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--brand), #6366f1);
+}
+.check-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.check-box {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--line-strong);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--ink-3);
+}
+.grid-bg {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 70%);
+}
+
 /* ─── Motion ─────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -542,6 +810,26 @@ dialog::backdrop {
   .sticky {
     position: static !important;
   }
+  .masthead {
+    background: #fff !important;
+    color: #000 !important;
+    border-bottom: 2px solid #000;
+  }
+  .masthead::before,
+  .pulse-line {
+    display: none;
+  }
+  .masthead *,
+  .masthead a {
+    color: #000 !important;
+  }
+  .stat-tile {
+    border-color: #999 !important;
+    background: #fff !important;
+  }
+  .section-nav {
+    display: none !important;
+  }
   .card,
   .print-avoid-break,
   li,
@@ -576,4 +864,17 @@ dialog::backdrop {
     content-visibility: visible;
     display: block;
   }
+}
+
+/* Controls placed on the dark masthead */
+.masthead .btn-ghost {
+  color: var(--mast-ink-2);
+}
+.masthead .btn-ghost:hover {
+  background: rgb(255 255 255 / 0.08);
+  color: var(--mast-ink);
+}
+
+.masthead {
+  --logo-line: var(--mast-bg);
 }

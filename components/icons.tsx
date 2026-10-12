@@ -83,3 +83,47 @@ export function IconPrint({ className, size = 16 }: P) {
     </svg>
   );
 }
+export function IconArrowRight({ className, size = 14 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+export function IconSparkle({ className, size = 14 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2l1.8 5.6L19.5 9.5l-5.7 1.9L12 17l-1.8-5.6L4.5 9.5l5.7-1.9z" />
+      <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" opacity=".7" />
+    </svg>
+  );
+}
+export function IconLayers({ className, size = 14 }: P) {
+  return (
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+      <path d="m12 3 9 5-9 5-9-5z" />
+      <path d="m3 13 9 5 9-5" />
+    </svg>
+  );
+}
+export function PulseLine({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true">
+      <path
+        d="M0 50 H360 L385 50 L400 18 L420 72 L440 8 L460 62 L475 50 H760 L780 50 L792 34 L806 60 L818 50 H1200"
+        fill="none"
+        stroke="url(#pulse-grad)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <defs>
+        <linearGradient id="pulse-grad" x1="0" x2="1">
+          <stop offset="0" stopColor="#5eead4" stopOpacity="0" />
+          <stop offset="0.35" stopColor="#5eead4" />
+          <stop offset="0.6" stopColor="#ff8f84" />
+          <stop offset="1" stopColor="#ff8f84" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

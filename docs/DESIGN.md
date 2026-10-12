@@ -77,3 +77,17 @@ Every tier also carries an **icon and a text label**, so color is never the only
 - The colors are mid-tone values that read on both white and dark-mode-inverted backgrounds. Tier labels are always text.
 
 Only three font files ship (Plex Sans 400/600, Plex Mono 400) to keep the mobile Speed Index low; `font-medium` resolves to 400.
+
+## Signature elements (v2)
+
+- **Masthead.** Every digest and the home page open on a dark "ink" band that stays dark in both themes (`--mast-*` tokens). It carries a dotted grid, an urgency glow (red when something needs action, amber for review-only, teal for quiet weeks), and an ECG "pulse" line that draws once on load and is skipped under reduced motion. Text on it meets AA contrast: `#f3f5f7` / `#c3cad3` on `#0d1117`.
+- **Display serif.** Instrument Serif (one 400 file) for headlines and the large stat numerals; IBM Plex Sans and Mono for everything else.
+- **Stat tiles.** Four tiles with serif numerals, an icon and label, and a meter showing each tier's share of the week.
+- **Sticky section nav.** Act now, Review, FYI and Coverage pills with live counts.
+- **"At a glance" card.** Gradient accent rule, a sparkle label marking AI-written text, and numbered action items. The label states how the text was checked.
+- **Release cards.** A tier-tinted header strip with chips, a coloured repo monogram (stable per owner, so no avatar downloads), a mono version pill, the evidence as a pull-quote with a captioned source, a one-line "Why flagged", and the next step as a teal callout. Several releases of the same repo in one tier fold into one card ("2 more flagged releases of prisma/orm this week").
+- **FYI.** Category cards with coverage in the header and monogram rows.
+- **Coverage chart.** CSS bars, plus a chip cloud of quiet repos.
+- **Archive and home.** Stacked act/review/FYI proportion bars per week.
+- **Admin.** KPI tiles and a split-screen login.
+- **Elevation.** `lift` = `--shadow-sm` at rest, `--shadow-md` on hover.

@@ -167,3 +167,21 @@ describe("digestSubject", () => {
   it("review only", () => expect(digestSubject(0, 1, monday)).toBe("[Dependency Pulse] 0 need action · 1 to review · week of 12 Oct 2026"));
   it("many flagged", () => expect(digestSubject(25, 130, monday)).toBe("[Dependency Pulse] 25 need action · 130 to review · week of 12 Oct 2026"));
 });
+
+describe("groupSameRepo", () => {
+  it("folds several flagged releases of one repo into one card without changing counts", () => {
+    const rp = repo({ fullName: "prisma/orm", category: "data" });
+    const rels = [15, 16, 17].map((n) =>
+      classified(
+        release({ tagName: `v8.0.0-rc.${n}`, githubReleaseId: n, prerelease: true, publishedAt: new Date(`2026-10-0${n - 9}T00:00:00Z`), body: `Removed option ${n}.` }),
+        analysis({ is_breaking_change: true, breaking_evidence: `Removed option ${n}`, one_line_summary: `RC ${n}.` }),
+        rp,
+      ),
+    );
+    const d = buildDigest(input({ releases: rels, repoOutcomes: [ok(rp, 3)] }));
+    expect(d.review).toHaveLength(1);
+    expect(d.review[0].tag).toBe("v8.0.0-rc.17");
+    expect(d.review[0].related?.map((r) => r.tag)).toEqual(["v8.0.0-rc.16", "v8.0.0-rc.15"]);
+    expect(d.counts.review).toBe(3);
+  });
+});

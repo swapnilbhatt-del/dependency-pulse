@@ -2,21 +2,26 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { resendWeekAction, runPreviewAction, sendNowAction } from "@/app/admin/actions";
+import { rebuildWeekAction, resendWeekAction, runPreviewAction, sendNowAction } from "@/app/admin/actions";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useToast } from "@/components/toast";
 
 export function RunControls({ currentWeek, currentWeekSent }: { currentWeek: string; currentWeekSent: boolean }) {
   const toast = useToast();
   const router = useRouter();
-  const [busy, setBusy] = useState<null | "preview" | "send" | "force">(null);
+  const [busy, setBusy] = useState<null | "preview" | "send" | "force" | "rebuild">(null);
   const [confirmForce, setConfirmForce] = useState(false);
   const [, start] = useTransition();
 
-  const run = (kind: "preview" | "send" | "force") => {
+  const run = (kind: "preview" | "send" | "force" | "rebuild") => {
     setBusy(kind);
     start(async () => {
-      if (kind === "preview") {
+      if (kind === "rebuild") {
+        const r = await rebuildWeekAction();
+        if (r.ok) toast.push("success", r.message);
+        else toast.push("error", r.error);
+        router.refresh();
+      } else if (kind === "preview") {
         const r = await runPreviewAction();
         if (r.ok && r.data) {
           toast.push("success", r.message);
@@ -45,6 +50,11 @@ export function RunControls({ currentWeek, currentWeekSent }: { currentWeek: str
         <button type="button" className="btn btn-primary" onClick={() => run("preview")} disabled={busy !== null}>
           {busy === "preview" ? "Building preview… (up to a few minutes)" : "Run preview"}
         </button>
+        {currentWeekSent && (
+          <button type="button" className="btn btn-secondary" onClick={() => run("rebuild")} disabled={busy !== null}>
+            {busy === "rebuild" ? "Rebuilding page…" : "Rebuild page (no email)"}
+          </button>
+        )}
         {currentWeekSent ? (
           <button type="button" className="btn btn-danger" onClick={() => setConfirmForce(true)} disabled={busy !== null}>
             {busy === "force" ? "Regenerating and sending…" : "Regenerate and resend"}

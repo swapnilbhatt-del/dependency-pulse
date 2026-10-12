@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DigestView } from "@/components/digest/digest-view";
+import { MastNav } from "@/components/mast-nav";
 import { PrintButton } from "@/components/print-button";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { fmtWeekOf } from "@/lib/digest/format";
 import { getDigestModel } from "@/lib/digest/queries";
 import { ISO_WEEK_PATTERN } from "@/lib/filter/window";
@@ -35,22 +34,14 @@ export default async function DigestPage({ params }: PageProps<"/digest/[isoWeek
   if (!ISO_WEEK_PATTERN.test(isoWeek)) notFound();
   const d = await getDigestModel(isoWeek);
   if (!d) notFound();
+  const toolbar = (
+    <MastNav>
+      <PrintButton />
+    </MastNav>
+  );
   return (
-    <>
-      <div className="sticky top-0 z-20 border-b border-line bg-bg/95 backdrop-blur no-print">
-        <div className="mx-auto flex h-12 max-w-[46rem] items-center justify-between px-4 sm:px-6">
-          <Link href="/archive" className="text-sm font-semibold tabular no-underline text-ink min-h-11 inline-flex items-center">
-            ← {d.isoWeek}
-          </Link>
-          <div className="flex items-center">
-            <ThemeToggle />
-            <PrintButton />
-          </div>
-        </div>
-      </div>
-      <main id="main">
-        <DigestView d={d} />
-      </main>
-    </>
+    <main id="main">
+      <DigestView d={d} toolbar={toolbar} />
+    </main>
   );
 }

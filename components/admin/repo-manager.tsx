@@ -109,7 +109,7 @@ export function RepoManager({ initial }: { initial: RepoView[] }) {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Tracked repositories</h1>
+          <h1 className="font-display text-[2.5rem] leading-tight">Tracked repositories</h1>
           <p className="mt-1 text-sm text-ink-2 tabular">
             {repos.length} tracked · {enabledCount} enabled{problemCount ? ` · ${problemCount} with problems in the last run` : ""}. Changes apply to the next run, no redeploy needed.
           </p>
@@ -118,6 +118,21 @@ export function RepoManager({ initial }: { initial: RepoView[] }) {
           Bulk import
         </button>
       </div>
+
+      <dl className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {[
+          { k: "Tracked", v: repos.length, note: "repositories" },
+          { k: "Enabled", v: enabledCount, note: "checked every Monday" },
+          { k: "Problems", v: problemCount, note: problemCount ? "in the last run" : "none in the last run", tone: problemCount ? "text-act" : "text-ok" },
+          { k: "Categories", v: categories.length, note: categories.slice(0, 3).join(", ") + (categories.length > 3 ? "…" : "") },
+        ].map((x) => (
+          <div key={x.k} className="card lift p-4">
+            <dt className="text-xs font-semibold uppercase tracking-wide text-ink-3">{x.k}</dt>
+            <dd className={`mt-1 font-display text-4xl tabular ${x.tone ?? ""}`}>{x.v}</dd>
+            <dd className="mt-1 truncate text-xs text-ink-3">{x.note}</dd>
+          </div>
+        ))}
+      </dl>
 
       <AddRepoForm categories={categories} />
 
@@ -385,7 +400,7 @@ function AddRepoForm({ categories }: { categories: string[] }) {
     <form
       ref={formRef}
       action={action}
-      className="card mt-6 p-4 sm:p-5"
+      className="card lift mt-6 p-4 sm:p-5"
       aria-labelledby="add-repo-title"
       onSubmit={(e) => {
         const v = String(new FormData(e.currentTarget).get("input") ?? "").trim();

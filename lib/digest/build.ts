@@ -111,6 +111,28 @@ export function collapseDuplicates(items: DigestItem[]): DigestItem[] {
   return out;
 }
 
+/**
+ * Several flagged releases of one repo in the same tier (e.g. a run of release
+ * candidates) become one card: the highest-impact release leads, the rest are
+ * listed compactly inside it. Counts still include every release.
+ */
+export function groupSameRepo(items: DigestItem[]): DigestItem[] {
+  const lead = new Map<string, DigestItem>();
+  const out: DigestItem[] = [];
+  for (const i of items) {
+    const host = lead.get(i.repo);
+    if (!host) {
+      const copy = { ...i, related: [] as NonNullable<DigestItem["related"]> };
+      lead.set(i.repo, copy);
+      out.push(copy);
+    } else {
+      host.related!.push({ tag: i.tag, url: i.url, publishedAt: i.publishedAt, summary: i.summary, whyFlagged: i.whyFlagged, prerelease: i.flags.prerelease });
+    }
+  }
+  for (const i of out) if (!i.related!.length) delete i.related;
+  return out;
+}
+
 function categoryRank(c: string): number {
   const i = CATEGORY_ORDER.indexOf(c);
   return i === -1 ? CATEGORY_ORDER.length : i;
@@ -147,9 +169,11 @@ export function buildDigest(input: BuildInput): DigestModel {
     .map((r) => ({ repo: r.repo.fullName, tag: r.release.tagName, url: r.release.htmlUrl }));
 
   const collapsed = collapseDuplicates(newOrUpdated);
-  const act = sortByImpact(collapsed.filter((i) => i.tier === 1));
+  const actAll = sortByImpact(collapsed.filter((i) => i.tier === 1));
   const updated = sortByImpact(collapsed.filter((i) => i.tier > 1 && i.flags.updated));
-  const review = sortByImpact(collapsed.filter((i) => i.tier === 2 && !i.flags.updated));
+  const reviewAll = sortByImpact(collapsed.filter((i) => i.tier === 2 && !i.flags.updated));
+  const act = groupSameRepo(actAll);
+  const review = groupSameRepo(reviewAll);
   const fyiItems = collapsed.filter((i) => i.tier === 3 && !i.flags.updated);
 
   // Coverage per category, over every enabled repo that was attempted.
@@ -201,8 +225,8 @@ export function buildDigest(input: BuildInput): DigestModel {
     .sort();
 
   const counts = {
-    act: act.length + advisories.length,
-    review: review.length,
+    act: actAll.length + advisories.length,
+    review: reviewAll.length,
     fyi: fyiItems.length,
     updated: updated.length,
     couldNotCheck: couldNotCheck.length,

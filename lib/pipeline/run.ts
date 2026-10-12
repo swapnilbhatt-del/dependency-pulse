@@ -17,7 +17,7 @@ import { errorMessage, log } from "@/lib/log";
 import { prescreen } from "@/lib/signals/keywords";
 import type { RepoRef, RepoStatus, TimeWindow } from "@/lib/types";
 
-export type Trigger = "cron" | "preview" | "send" | "continue";
+export type Trigger = "cron" | "preview" | "send" | "continue" | "rebuild";
 
 /** Everything the pipeline touches, injected so the orchestration is testable without a database. */
 export interface PipelineDeps {
@@ -67,7 +67,8 @@ export type RunResult =
   | { status: "sent" | "partial" | "failed"; runId: string; isoWeek: string; counts?: DigestModel["counts"]; error?: string }
   | { status: "preview"; runId: string; isoWeek: string; model: DigestModel }
   | { status: "skipped"; runId: string; isoWeek: string; reason: "already_sent" | "in_progress" | "nothing_to_continue" }
-  | { status: "continue"; runId: string; isoWeek: string; pending: number };
+  | { status: "continue"; runId: string; isoWeek: string; pending: number }
+  | { status: "rebuilt"; runId: string; isoWeek: string; counts: DigestModel["counts"] };
 
 const LEASE_MS = 6 * 60_000;
 /** Time reserved after classification for synthesis, rendering, saving and sending. */
@@ -101,7 +102,7 @@ export async function runWeeklyDigest(deps: PipelineDeps, opts: RunOptions): Pro
     runTime = row.windowEnd;
     weekLabel = opts.isoWeek!;
   } else {
-    runTime = opts.trigger === "cron" ? scheduledRunTime(now) : now;
+    runTime = opts.trigger === "cron" || opts.trigger === "rebuild" ? scheduledRunTime(now) : now;
     weekLabel = isoWeekOf(runTime);
   }
   const window = computeWindow(runTime);
@@ -111,7 +112,7 @@ export async function runWeeklyDigest(deps: PipelineDeps, opts: RunOptions): Pro
   // ── Idempotency (not for previews) ─────────────────────────────────────────
   let digestRunId: number | null = null;
   if (!preview) {
-    const claim = await deps.claimWeek(weekLabel, window, opts.trigger, { force: Boolean(opts.force), leaseMs: LEASE_MS });
+    const claim = await deps.claimWeek(weekLabel, window, opts.trigger, { force: Boolean(opts.force) || opts.trigger === "rebuild", leaseMs: LEASE_MS });
     if (!claim.ok) {
       await deps.startPipelineRun({ id: runId, isoWeek: weekLabel, trigger: opts.trigger, status: "skipped", note: claim.reason, finishedAt: new Date(), durationMs: 0, digestRunId: claim.row.id });
       log.info("pipeline.skipped", { run_id: runId, iso_week: weekLabel, reason: claim.reason });
@@ -251,6 +252,13 @@ export async function runWeeklyDigest(deps: PipelineDeps, opts: RunOptions): Pro
       .map((c) => ({ releaseId: ids.get(releaseKey(c.release))!, repoId: c.repo.id, tagName: c.release.tagName, bodyHash: c.release.bodyHash, tier: 0 }))
       .map((it) => ({ ...it, tier: [...model.act, ...model.review, ...model.updated, ...model.fyi.flatMap((g) => g.items)].find((i) => i.id === `${it.repoId}:${it.tagName}`)?.tier ?? 3 }));
     await deps.saveDigest(digestRunId!, { model, html, text, status: digestStatus, error: null }, items);
+
+    if (opts.trigger === "rebuild") {
+      // Regenerate the published page only; delivery state is left untouched.
+      await deps.releaseLease(digestRunId!);
+      await deps.updatePipelineRun(runId, { ...common, status: digestStatus, phase: "done", finishedAt: new Date(), durationMs: Date.now() - started, note: "Digest page rebuilt; no email sent." });
+      return { status: "rebuilt", runId, isoWeek: weekLabel, counts: model.counts };
+    }
 
     // ── Delivery ───────────────────────────────────────────────────────────
     await deps.updatePipelineRun(runId, { phase: "deliver" });
