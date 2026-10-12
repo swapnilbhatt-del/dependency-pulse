@@ -129,13 +129,22 @@ export async function runWeeklyDigest(deps: PipelineDeps, opts: RunOptions): Pro
     const repos = await deps.listEnabledRepos();
     const ingested = await deps.ingest(repos, window, runId);
     await deps.recordRepoStatuses(ingested.map((r) => ({ id: r.repo.id, status: r.status, error: r.error })), deps.now());
-    const all = ingested.flatMap((r) => r.releases);
-    const ids = await deps.upsertReleases(all.map((x) => x.release));
     const prev = await deps.previouslyReported(repos.map((r) => r.id), weekLabel);
+    // Change-aware: releases from before the window that an earlier digest reported
+    // and whose notes have changed since come back as "Updated since last digest".
+    const revisits = ingested.flatMap((r) =>
+      (r.revisitCandidates ?? []).filter((x) => {
+        const h = prev.get(releaseKey(x.release));
+        return h !== undefined && h !== x.release.bodyHash;
+      }),
+    );
+    const all = [...ingested.flatMap((r) => r.releases), ...revisits];
+    const ids = await deps.upsertReleases(all.map((x) => x.release));
 
     // ── Classification ─────────────────────────────────────────────────────
     await deps.updatePipelineRun(runId, { phase: "classify" });
     const aiSet = needsAiFlags(ingested);
+    revisits.forEach((x) => aiSet.add(x));
     const jobs: ClassifyJob[] = all
       .map((x) => ({ releaseId: ids.get(releaseKey(x.release)) ?? -1, release: x.release, needsAi: aiSet.has(x) }))
       .filter((j) => j.releaseId > 0);

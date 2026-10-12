@@ -1,5 +1,5 @@
 import pLimit from "p-limit";
-import { GITHUB_MIN_REMAINING, GITHUB_REPO_CONCURRENCY } from "@/lib/config";
+import { GITHUB_MIN_REMAINING, GITHUB_REPO_CONCURRENCY, REVISIT_DAYS } from "@/lib/config";
 import { byNewest, filterReleases } from "@/lib/filter/filter";
 import { GithubError, type GithubClient } from "@/lib/github/client";
 import { fetchAdvisories, fetchReleases, fetchTagsInWindow } from "@/lib/github/releases";
@@ -22,6 +22,11 @@ export interface RepoIngestResult {
   status: RepoStatus;
   error: string | null;
   releases: IngestedRelease[];
+  /**
+   * Releases published up to REVISIT_DAYS before the window. The pipeline keeps
+   * only those reported earlier whose notes have since changed.
+   */
+  revisitCandidates: IngestedRelease[];
   /** In-window advisories that did not match any in-window release. */
   unmatchedAdvisories: AdvisoryMatch[];
   usedTagFallback: boolean;
@@ -68,7 +73,7 @@ export async function ingestRepo(gh: GithubClient, repo: RepoRef, window: TimeWi
   const started = Date.now();
   const ctx = { repoId: repo.id, repoFullName: repo.fullName };
   const warnings: string[] = [];
-  const base = { repo, releases: [] as IngestedRelease[], unmatchedAdvisories: [] as AdvisoryMatch[], usedTagFallback: false, warnings };
+  const base = { repo, releases: [] as IngestedRelease[], revisitCandidates: [] as IngestedRelease[], unmatchedAdvisories: [] as AdvisoryMatch[], usedTagFallback: false, warnings };
   try {
     const page = await fetchReleases(gh, repo.fullName, window);
     const normalized = page.releases.map((r) => normalizeRelease(r, ctx)).filter((r): r is NormalizedRelease => r !== null);
@@ -105,11 +110,17 @@ export async function ingestRepo(gh: GithubClient, repo: RepoRef, window: TimeWi
       advisories,
     );
 
+    const revisitFrom = window.start.getTime() - REVISIT_DAYS * 86_400_000;
+    const revisitCandidates: IngestedRelease[] = published
+      .filter((r) => r.publishedAt.getTime() >= revisitFrom && r.publishedAt.getTime() < window.start.getTime())
+      .map((r) => ({ release: r, majorBump: majorBumpFor(r, normalized), advisories: [] }));
+
     const result: RepoIngestResult = {
       ...base,
       status: "ok",
       error: null,
       releases: inWindow.map((x) => ({ ...x, advisories: byRelease.get(x.release) ?? [] })),
+      revisitCandidates,
       unmatchedAdvisories: unmatched,
       usedTagFallback,
       durationMs: Date.now() - started,
@@ -141,6 +152,7 @@ export async function ingestAll(gh: GithubClient, repos: RepoRef[], window: Time
             status: "rate_limited" as const,
             error: `Skipped: only ${gh.rate.remaining} GitHub API requests remained.${reset}`,
             releases: [],
+            revisitCandidates: [],
             unmatchedAdvisories: [],
             usedTagFallback: false,
             warnings: [],

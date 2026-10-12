@@ -121,7 +121,7 @@ export async function classifyReleases(opts: {
     if (r.error) stats.errors.push(`${j.release.repoFullName}@${j.release.tagName}: ${r.error}`);
     const apiDown = r.error !== null && /Gemini request failed|GEMINI_/.test(r.error);
     if (apiDown) {
-      if (++consecutiveFailures >= BREAKER_THRESHOLD) {
+      if (++consecutiveFailures >= BREAKER_THRESHOLD && !stats.aiUnavailable) {
         stats.aiUnavailable = true;
         log.error("gemini.circuit_open", { failures: consecutiveFailures });
       }

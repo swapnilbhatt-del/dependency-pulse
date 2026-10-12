@@ -21,7 +21,12 @@ export function getDb(): Db {
 }
 
 export function hasDatabase(): boolean {
-  return Boolean(process.env.DATABASE_URL);
+  return Boolean(process.env.DATABASE_URL) || instance !== null;
+}
+
+/** Integration tests run the real store code against an in-process Postgres (PGlite). */
+export function setDbForTesting(db: unknown): void {
+  instance = db as Db;
 }
 
 export { schema };

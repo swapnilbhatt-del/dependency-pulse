@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Serif } from "next/font/google";
+import Script from "next/script";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { appBaseUrl } from "@/lib/env";
@@ -37,7 +38,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${plexSans.variable} ${plexMono.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* next/script attaches the request nonce on admin pages (strict CSP); public pages allow it via 'unsafe-inline'. */}
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
       </head>
       <body className="min-h-dvh flex flex-col">
         <a href="#main" className="skip-link">

@@ -59,6 +59,25 @@ test.describe("admin", () => {
     await page.getByRole("dialog").getByRole("button", { name: "Cancel" }).click();
   });
 
+  test("admin runs under a strict nonce CSP with no violations (login, repos, runs, recipients, theme)", async ({ page }) => {
+    const violations: string[] = [];
+    page.on("console", (m) => {
+      if (m.type() === "error" && /Content Security Policy|CSP/i.test(m.text())) violations.push(m.text());
+    });
+    const res = await page.goto("/admin/login");
+    const csp = res?.headers()["content-security-policy"] ?? "";
+    expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    expect(csp).not.toContain("'unsafe-inline' 'strict-dynamic'");
+    await login(page);
+    for (const path of ["/admin", "/admin/runs", "/admin/recipients"]) {
+      await page.goto(path);
+      await page.waitForLoadState("networkidle");
+    }
+    await page.getByTestId("theme-toggle").click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    expect(violations).toEqual([]);
+  });
+
   test("runs and recipients pages are accessible", async ({ page }) => {
     await login(page);
     await page.goto("/admin/runs");

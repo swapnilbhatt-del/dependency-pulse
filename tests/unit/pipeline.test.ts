@@ -44,7 +44,7 @@ function fakeDeps(opts: { ingest?: (repos: RepoRef[]) => RepoIngestResult[]; pro
         r.id === 1
           ? [{ release: release({ repoId: 1, repoFullName: r.fullName, tagName: "v19.1.0", body: "Fixes CVE-2026-4242 in webhook signature checks." }), majorBump: null, advisories: [] }]
           : [],
-      unmatchedAdvisories: [],
+      revisitCandidates: [], unmatchedAdvisories: [],
       usedTagFallback: false,
       warnings: [],
       durationMs: 5,
@@ -146,7 +146,7 @@ describe("graceful degradation", () => {
   it("a failing repo still ships the digest with a Could not check entry", async () => {
     const f = fakeDeps({
       ingest: (rs) =>
-        rs.map((r) => ({ repo: r, status: r.id === 2 ? ("not_found" as const) : ("ok" as const), error: r.id === 2 ? "Repository not found or not accessible (404)." : null, releases: [], unmatchedAdvisories: [], usedTagFallback: false, warnings: [], durationMs: 1 })),
+        rs.map((r) => ({ repo: r, status: r.id === 2 ? ("not_found" as const) : ("ok" as const), error: r.id === 2 ? "Repository not found or not accessible (404)." : null, releases: [], revisitCandidates: [], unmatchedAdvisories: [], usedTagFallback: false, warnings: [], durationMs: 1 })),
     });
     const r = await runWeeklyDigest(f.deps, { trigger: "cron" });
     expect(r.status).toBe("sent");

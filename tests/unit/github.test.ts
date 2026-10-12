@@ -202,3 +202,20 @@ describe("matchAdvisories", () => {
     expect(matchAdvisories([release({ tagName: "v9.9.9" })], [adv]).unmatched).toHaveLength(1);
   });
 });
+
+describe("ingestRepo revisit candidates", () => {
+  it("returns releases from the 28 days before the window, separately from in-window releases", async () => {
+    const { impl } = router({
+      "/repos/acme/widget/releases": () =>
+        json([
+          rel(3, "2026-10-10T00:00:00Z"),
+          rel(2, "2026-09-20T00:00:00Z"),
+          rel(1, "2026-08-01T00:00:00Z"),
+        ]),
+      "/repos/acme/widget/security-advisories": () => json([]),
+    });
+    const res = await ingestRepo(new GithubClient({ token: "t", fetchImpl: impl }), repo(), WINDOW);
+    expect(res.releases.map((r) => r.release.tagName)).toEqual(["v1.0.3"]);
+    expect(res.revisitCandidates.map((r) => r.release.tagName)).toEqual(["v1.0.2"]);
+  });
+});

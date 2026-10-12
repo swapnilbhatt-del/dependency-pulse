@@ -13,6 +13,14 @@ export const WINDOW_DAYS = 7;
 export const DIGEST_SCHEDULE = { weekday: 1, hour: 3, minute: 30 } as const;
 export const DIGEST_CRON_EXPRESSION = `${DIGEST_SCHEDULE.minute} ${DIGEST_SCHEDULE.hour} * * ${DIGEST_SCHEDULE.weekday}`;
 
+/**
+ * Releases published this many days before the window are re-checked: if one
+ * was reported in an earlier digest and its notes have changed since, it comes
+ * back under "Updated since last digest" (weekly windows never overlap, so
+ * edits would otherwise go unseen).
+ */
+export const REVISIT_DAYS = 28;
+
 /** FYI summaries shown per repo before collapsing into "+N earlier releases". */
 export const DISPLAY_CAP_PER_REPO = 3;
 

@@ -2,9 +2,10 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
 
-// Next.js injects inline bootstrap scripts; without a per-request nonce (which
-// would force every page to render dynamically) 'unsafe-inline' is required for
-// scripts. Everything else is locked to 'self'. See README → Design decisions.
+// Public pages are prerendered/ISR; Next.js injects inline bootstrap scripts and a
+// per-request nonce would force dynamic rendering, so 'unsafe-inline' is allowed
+// here only. These pages render no user-supplied HTML (everything is escaped) and
+// set no cookies. Admin routes use a strict nonce policy from proxy.ts instead.
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
@@ -20,7 +21,6 @@ const csp = [
 ].join("; ");
 
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: csp },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "DENY" },
@@ -39,7 +39,11 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Public pages: static/ISR, so no per-request nonce. Admin routes get a strict nonce CSP from proxy.ts.
+      { source: "/((?!admin|api/admin).*)", headers: [{ key: "Content-Security-Policy", value: csp }] },
+    ];
   },
 };
 

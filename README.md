@@ -60,7 +60,7 @@ pnpm dev                    # http://localhost:3000
 ### Commands
 
 ```bash
-pnpm test                 # 203 Vitest unit tests
+pnpm test                 # 209 Vitest unit + integration tests (integration uses in-process Postgres)
 pnpm typecheck            # strict TypeScript
 pnpm lint                 # ESLint, zero warnings allowed
 pnpm build                # production build
@@ -127,11 +127,15 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 - **Tag fallback:** used only when a repo has never published a GitHub Release, **or its latest release is over a year old**. That second case is an extension of the brief: `plaid/plaid-node`'s last Release is from 2021 but it tags every version, and without the extension it would look permanently quiet. The tags API has no dates and sorts by name, so the top 15 tags by semver get their commit dates looked up. Tags have no notes ("No release notes published.").
 - **Advisories:** published repository advisories are matched to a release by patched version, or by the GHSA or CVE ID appearing in the notes. Unmatched in-window advisories still appear in Act now.
 - **Per-release AI calls** (not batched): failures stay isolated and each result can be cached independently. The first run summarizes only releases that will be shown: the latest 3 per repo plus anything with a signal, a major bump or an advisory. Older FYI releases are listed by tag under "+N earlier releases".
+- **Change-aware digests:** weekly windows never overlap, so an edited release would otherwise never resurface. Each run also re-checks releases from the 4 weeks before the window (`REVISIT_DAYS`). One that an earlier digest reported, and whose notes have changed since (by body hash), comes back under **Updated since last digest**. Proven against a real Postgres engine in `tests/integration/pipeline.db.test.ts`.
 - **Never hide anything:** flagged items are never capped. Releases already reported in an earlier digest are listed in one line. Releases whose notes changed appear under "Updated since last digest".
 - **Storage: Supabase Postgres instead of Neon.** The Vercel account had no Neon integration and the user chose a new free Supabase project. The `postgres.js` driver with `prepare: false` works with both.
 - **Delivery: Resend**, one email per recipient (recipients never see each other), each with an idempotency key.
 - **No shadcn/ui:** the component set is small and hand-built on native elements (`<details>`, `<dialog>`, `role="switch"`), so disclosure works without JavaScript and the bundle stays small.
-- **CSP:** `script-src 'self' 'unsafe-inline'`. Nonce-based CSP would force every page to render dynamically and lose ISR; everything else is locked to `'self'`, with `frame-ancestors 'none'`.
+- **CSP, two tiers:**
+  - **Admin and admin API routes** (the authenticated surface) get a strict per-request policy from `proxy.ts`: `script-src 'self' 'nonce-…' 'strict-dynamic'`, with no inline scripts allowed. Every script carries the nonce, and a Playwright test fails on any CSP violation.
+  - **Public pages** are prerendered/ISR, where a nonce would force dynamic rendering. They keep `'unsafe-inline'` for Next's bootstrap scripts, but render no user-supplied HTML (all content is escaped and tested) and set no cookies.
+  - **Everywhere:** `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'self'`.
 - **Design direction:** a calm "engineering memo": paper tones, IBM Plex Sans and Mono (three font files), and color reserved for Act now and Review, always paired with an icon and a label. Details are in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Verification (production, 12 Oct 2026)
@@ -143,9 +147,11 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 | Cron with secret | `200`, `status: sent`, 27 s; second call `skipped: already_sent` |
 | Email | Accepted by Resend (message ID recorded, `digest_deliveries.status = sent`) |
 | `/api/health` | `ok: true`, DB reachable, all config present (no values exposed) |
-| Unit tests | 203 passed |
+| Unit + integration tests | 209 passed, including 5 against a real Postgres engine (PGlite): migrations, the unique ISO-week claim under concurrency, upserts, the AI cache, and "Updated since last digest" end to end |
+| Live AI-outage drill | Full preview on live GitHub data with Gemini unreachable: 18 fallbacks, circuit breaker opened, footer notice shown, deterministic summary used; Express (CVE) stayed in Act now and Hono (major bump) in Review; no outage results cached |
+| Admin CSP | Strict nonce policy on every admin route; 21 of 21 scripts carry the nonce; zero CSP violations in Playwright across login, repos, runs, recipients and the theme toggle |
 | Print (A4 and US Letter) | Real PDFs generated with print media: 6 pages each, headings kept with content, evidence and next-step blocks never split ([docs/print/](docs/print/)) |
-| Playwright + axe (desktop and mobile) | 26 passed; zero serious or critical violations on every public and admin page |
+| Playwright + axe (desktop and mobile) | 28 passed; zero serious or critical violations on every public and admin page |
 | Lighthouse mobile, `/digest/2026-W42` (UI v2) | Three runs straight after a deploy: Performance 99, 100, 95 (first visit is served from the build prerender, `x-vercel-cache: PRERENDER`); Accessibility, Best Practices, SEO 100 on every run. Home and archive 100/100/100/100 (reports in `docs/lighthouse/`) |
 
 ## Known limitations and next steps
