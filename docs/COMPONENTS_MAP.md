@@ -1,8 +1,8 @@
-# Dependency Pulse — Weekly Release Digest · Components Map
+# Upstream Weekly — Weekly Release Digest · Components Map
 
 27 tracked repos · releases only · rules decide the flags, Gemini only summarizes · Monday 09:00 IST email + public archive · Keerthi edits the list in /admin
 
-![Dependency Pulse components map: lanes for Keerthi, Vercel Cron, the Pulse backend, GitHub, Gemini, Supabase, Resend and the Pulse web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map.png)
+![Upstream Weekly components map: lanes for Keerthi, Vercel Cron, the backend, GitHub, Gemini, Supabase, Resend and the web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map.png)
 
 *Source: [`components-map.svg`](components-map.svg). The layout follows the reference map in [`reference/sample-components-map.png`](reference/sample-components-map.png): the same lanes × Trigger/Input/Context/Processing/AI/Output grid, a tinted AI column, a phase band across the top lane ("Any time — Keerthi curates the list") with a labelled phase boundary below it ("Every Monday 03:30 UTC — automated run"), dashed elbow arrows, plain "• Label: detail" footer notes, and the same three-item legend.*
 

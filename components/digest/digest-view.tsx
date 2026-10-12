@@ -86,7 +86,7 @@ export function Masthead({ d, toolbar }: { d: DigestModel; toolbar?: React.React
           Weekly release digest · {d.isoWeek} · {fmtWindow(d.window.start, d.window.end, d.timezoneLabel)}
         </p>
         <h1 className="mt-3 font-display text-[2.6rem] sm:text-[4rem] leading-[1.02] text-mast-ink">
-          <span className="block font-sans text-base sm:text-lg font-semibold tracking-normal text-mast-ink-2">Dependency Pulse,</span>
+          <span className="block font-sans text-base sm:text-lg font-semibold tracking-normal text-mast-ink-2">Upstream Weekly,</span>
           week of {fmtWeekOf(d.weekOf)}
         </h1>
         <StatusLine d={d} />

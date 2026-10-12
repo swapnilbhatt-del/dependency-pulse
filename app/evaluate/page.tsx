@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Adoption Check",
   description: "Health and risk of the open-source projects the team is considering, from live public data, with every verdict explained.",
   alternates: { canonical: "/evaluate" },
-  openGraph: { title: "Dependency Pulse · Adoption Check", description: "Health verdicts for open-source projects under evaluation." },
+  openGraph: { title: "Upstream Weekly · Adoption Check", description: "Health verdicts for open-source projects under evaluation." },
 };
 
 export default async function EvaluatePage() {

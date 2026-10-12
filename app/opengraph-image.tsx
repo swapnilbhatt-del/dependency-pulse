@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Dependency Pulse: weekly release digest";
+export const alt = "Upstream Weekly: weekly release digest";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -13,7 +13,7 @@ export default function OpengraphImage() {
             <rect width="32" height="32" rx="8" fill="#17191c" />
             <path d="M5 17h6l3-7 4 13 3-6h6" fill="none" stroke="#fbfaf7" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <div style={{ fontSize: 40, fontWeight: 700, color: "#17191c" }}>Dependency Pulse</div>
+          <div style={{ fontSize: 40, fontWeight: 700, color: "#17191c" }}>Upstream Weekly</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div style={{ fontSize: 68, fontWeight: 700, color: "#17191c", lineHeight: 1.1, maxWidth: 980 }}>The releases that matter, every Monday, in five minutes.</div>

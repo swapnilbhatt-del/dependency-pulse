@@ -1,4 +1,4 @@
-# Dependency Pulse
+# Upstream Weekly
 
 **A Monday-morning digest of new releases across the open-source dependencies a fintech product relies on. Security fixes and breaking changes come first, with their evidence quoted, and the whole thing reads in five minutes.**
 
@@ -10,7 +10,7 @@
 
 Keerthi, a senior engineer at a fintech startup, tracks 20+ repositories: payment SDKs, auth libraries, banking tooling, and tools her team is evaluating. GitHub Watch buries releases under comments, PRs and commits. A security patch once sat unread for 11 days, and she now archives notifications unread.
 
-Dependency Pulse reads **only releases** (and tags, for repos that never publish releases). It checks each one for security and breaking signals, summarizes it with Gemini Flash, and sends one ordered digest every Monday at 09:00 IST:
+Upstream Weekly reads **only releases** (and tags, for repos that never publish releases). It checks each one for security and breaking signals, summarizes it with Gemini Flash, and sends one ordered digest every Monday at 09:00 IST:
 
 1. **Act now:** security fixes and urgent upgrades, each with the quoted line or GitHub advisory that justifies it.
 2. **Review:** breaking changes, major version bumps, and anything the analysis could not verify.
@@ -51,7 +51,7 @@ pnpm dev                    # http://localhost:3000
 | `DATABASE_URL` | Postgres URL. Supabase: **Connect → Direct → Transaction pooler** (port 6543). Neon's pooled URL also works |
 | `GITHUB_TOKEN` | Fine-grained token: "Public repositories (read-only)", no write permissions |
 | `GEMINI_API_KEY`, `GEMINI_MODEL` | Google AI Studio key; model `gemini-3.8-flash` |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Resend key with sending access; a From address on a verified domain, or `Dependency Pulse <onboarding@resend.dev>` for testing |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Resend key with sending access; a From address on a verified domain, or `Upstream Weekly <onboarding@resend.dev>` for testing |
 | `ADMIN_PASSWORD` | 16+ characters, unique |
 | `SESSION_SECRET`, `CRON_SECRET` | 32+ random bytes each: `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"` |
 | `DIGEST_RECIPIENTS` | Optional default recipients (comma-separated), used when the recipients table is empty |

@@ -1,6 +1,6 @@
 # Architecture
 
-Dependency Pulse is a single Next.js 16 App Router application on Vercel. It has one Postgres database (Supabase) and three outbound integrations: GitHub, Gemini and Resend. See [COMPONENTS_MAP.md](COMPONENTS_MAP.md) for the diagram and the component-by-component table.
+Upstream Weekly is a single Next.js 16 App Router application on Vercel. It has one Postgres database (Supabase) and three outbound integrations: GitHub, Gemini and Resend. See [COMPONENTS_MAP.md](COMPONENTS_MAP.md) for the diagram and the component-by-component table.
 
 ## Runtime shape
 

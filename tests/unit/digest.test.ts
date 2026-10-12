@@ -145,7 +145,7 @@ describe("buildDigest", () => {
 
   it("all-quiet week still produces a full digest", () => {
     const d = buildDigest(input({ repoOutcomes: [ok(repo({ fullName: "a/a" })), ok(repo({ id: 2, fullName: "b/b" }))] }));
-    expect(d.subject).toBe("[Dependency Pulse] All quiet this week · 12 Oct 2026");
+    expect(d.subject).toBe("[Upstream Weekly] All quiet this week · 12 Oct 2026");
     expect(d.quiet).toEqual(["a/a", "b/b"]);
     expect(d.synthesis.paragraph).toMatch(/All quiet/);
   });
@@ -162,10 +162,10 @@ describe("buildDigest", () => {
 
 describe("digestSubject", () => {
   const monday = new Date("2026-10-12T00:00:00Z");
-  it("zero flagged", () => expect(digestSubject(0, 0, monday)).toBe("[Dependency Pulse] All quiet this week · 12 Oct 2026"));
-  it("some flagged", () => expect(digestSubject(2, 4, monday)).toBe("[Dependency Pulse] 2 need action · 4 to review · week of 12 Oct 2026"));
-  it("review only", () => expect(digestSubject(0, 1, monday)).toBe("[Dependency Pulse] 0 need action · 1 to review · week of 12 Oct 2026"));
-  it("many flagged", () => expect(digestSubject(25, 130, monday)).toBe("[Dependency Pulse] 25 need action · 130 to review · week of 12 Oct 2026"));
+  it("zero flagged", () => expect(digestSubject(0, 0, monday)).toBe("[Upstream Weekly] All quiet this week · 12 Oct 2026"));
+  it("some flagged", () => expect(digestSubject(2, 4, monday)).toBe("[Upstream Weekly] 2 need action · 4 to review · week of 12 Oct 2026"));
+  it("review only", () => expect(digestSubject(0, 1, monday)).toBe("[Upstream Weekly] 0 need action · 1 to review · week of 12 Oct 2026"));
+  it("many flagged", () => expect(digestSubject(25, 130, monday)).toBe("[Upstream Weekly] 25 need action · 130 to review · week of 12 Oct 2026"));
 });
 
 describe("groupSameRepo", () => {

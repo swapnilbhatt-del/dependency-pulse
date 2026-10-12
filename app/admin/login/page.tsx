@@ -34,7 +34,7 @@ export default async function LoginPage() {
         <span className="lg:hidden">
           <LogoMark size={36} />
         </span>
-        <h1 className="mt-4 lg:mt-0 font-display text-[2.4rem] leading-tight">Sign in to manage Dependency Pulse</h1>
+        <h1 className="mt-4 lg:mt-0 font-display text-[2.4rem] leading-tight">Sign in to manage Upstream Weekly</h1>
         <p className="mt-2 text-sm text-ink-2">The public digest and archive need no sign-in.</p>
         <LoginForm />
       </section>
