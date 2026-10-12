@@ -214,8 +214,8 @@
   ],
   "notices": [],
   "links": {
-    "digest": "https://dependency-pulse.vercel.app/digest/2026-W42",
-    "archive": "https://dependency-pulse.vercel.app/archive",
-    "admin": "https://dependency-pulse.vercel.app/admin"
+    "digest": "https://upstream-weekly.vercel.app/digest/2026-W42",
+    "archive": "https://upstream-weekly.vercel.app/archive",
+    "admin": "https://upstream-weekly.vercel.app/admin"
   }
 }

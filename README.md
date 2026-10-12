@@ -2,8 +2,8 @@
 
 **A Monday-morning digest of new releases across the open-source dependencies a fintech product relies on. Security fixes and breaking changes come first, with their evidence quoted, and the whole thing reads in five minutes.**
 
-- **Live:** https://dependency-pulse.vercel.app (latest digest: [/digest/2026-W42](https://dependency-pulse.vercel.app/digest/2026-W42), history: [/archive](https://dependency-pulse.vercel.app/archive))
-- **Adoption Check:** [/evaluate](https://dependency-pulse.vercel.app/evaluate) · method: [docs/HEALTH_METHOD.md](docs/HEALTH_METHOD.md)
+- **Live:** https://upstream-weekly.vercel.app (latest digest: [/digest/2026-W42](https://upstream-weekly.vercel.app/digest/2026-W42), history: [/archive](https://upstream-weekly.vercel.app/archive))
+- **Adoption Check:** [/evaluate](https://upstream-weekly.vercel.app/evaluate) · method: [docs/HEALTH_METHOD.md](docs/HEALTH_METHOD.md)
 - **Components Map:** [docs/COMPONENTS_MAP.md](docs/COMPONENTS_MAP.md) · Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · Design system: [docs/DESIGN.md](docs/DESIGN.md)
 
 ## The problem
@@ -19,7 +19,7 @@ Upstream Weekly reads **only releases** (and tags, for repos that never publish 
 
 ## Admin
 
-- **URL:** https://dependency-pulse.vercel.app/admin
+- **URL:** https://upstream-weekly.vercel.app/admin
 - **Password:** shared separately. It is never committed. It lives in Vercel env var `ADMIN_PASSWORD` and in your local `.env`.
 - **Add a repository:** go to *Repositories* and paste `owner/name` or any GitHub URL (`https://github.com/owner/name`, `.git` and trailing slashes are fine), then click **Add repository**. The input is checked first, then the repo is confirmed on GitHub before it is saved. Renamed repos are stored under their new name.
 - **Bulk import:** click **Bulk import**, paste one repo per line, check the per-line results, then import.
@@ -38,7 +38,7 @@ Nothing about the repository list lives in code. Changes apply to the next run w
 ## Local setup
 
 ```bash
-git clone https://github.com/swapnilbhatt-del/dependency-pulse.git && cd dependency-pulse
+git clone https://github.com/swapnilbhatt-del/upstream-weekly.git && cd upstream-weekly
 pnpm install
 cp .env.example .env        # then fill in the values (see below)
 pnpm db:migrate             # create tables
@@ -158,7 +158,7 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 
 ## Adoption Check
 
-**Should we adopt this library?** The digest watches dependencies already in use. Adoption Check looks at *candidates* before they become dependencies. For each one it gives a verdict, **Healthy**, **Watch**, **Risky** or **Insufficient data**, together with the reasons, the evidence and its sources, and a short list of things to check by hand. It lives at [`/evaluate`](https://dependency-pulse.vercel.app/evaluate) (watchlist), `/evaluate/<owner>--<name>` (report, trend and decision history) and `/evaluate/compare?ids=…` (up to four side by side, with a "Copy as Markdown" button).
+**Should we adopt this library?** The digest watches dependencies already in use. Adoption Check looks at *candidates* before they become dependencies. For each one it gives a verdict, **Healthy**, **Watch**, **Risky** or **Insufficient data**, together with the reasons, the evidence and its sources, and a short list of things to check by hand. It lives at [`/evaluate`](https://upstream-weekly.vercel.app/evaluate) (watchlist), `/evaluate/<owner>--<name>` (report, trend and decision history) and `/evaluate/compare?ids=…` (up to four side by side, with a "Copy as Markdown" button).
 
 ### Add a candidate
 

@@ -26,7 +26,7 @@ export default async function EvaluatePage() {
       <h1 className="mt-2 font-display text-[2.75rem] sm:text-[3.5rem] leading-[1.02]">Before you adopt it</h1>
       <p className="mt-3 max-w-2xl text-ink-2">
         Open-source projects the team is considering, checked weekly from GitHub, OpenSSF Scorecard, OSV and package registries. Scores are computed by fixed rules; each verdict lists the reasons behind it.{" "}
-        <Link href="https://github.com/swapnilbhatt-del/dependency-pulse/blob/main/docs/HEALTH_METHOD.md">How verdicts are calculated</Link>.
+        <Link href="https://github.com/swapnilbhatt-del/upstream-weekly/blob/main/docs/HEALTH_METHOD.md">How verdicts are calculated</Link>.
       </p>
       <div className="mt-8">
         {failed ? (
