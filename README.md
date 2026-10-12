@@ -3,6 +3,7 @@
 **A Monday-morning digest of new releases across the open-source dependencies a fintech product relies on. Security fixes and breaking changes come first, with their evidence quoted, and the whole thing reads in five minutes.**
 
 - **Live:** https://dependency-pulse.vercel.app (latest digest: [/digest/2026-W42](https://dependency-pulse.vercel.app/digest/2026-W42), history: [/archive](https://dependency-pulse.vercel.app/archive))
+- **Adoption Check:** [/evaluate](https://dependency-pulse.vercel.app/evaluate) · method: [docs/HEALTH_METHOD.md](docs/HEALTH_METHOD.md)
 - **Components Map:** [docs/COMPONENTS_MAP.md](docs/COMPONENTS_MAP.md) · Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · Design system: [docs/DESIGN.md](docs/DESIGN.md)
 
 ## The problem
@@ -154,6 +155,100 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 | Print (A4 and US Letter) | Real PDFs generated with print media: 6 pages each, headings kept with content, evidence and next-step blocks never split ([docs/print/](docs/print/)) |
 | Playwright + axe (desktop and mobile) | 28 passed; zero serious or critical violations on every public and admin page |
 | Lighthouse mobile, `/digest/2026-W42` (UI v2) | Three runs straight after a deploy: Performance 99, 100, 95 (first visit is served from the build prerender, `x-vercel-cache: PRERENDER`); Accessibility, Best Practices, SEO 100 on every run. Home and archive 100/100/100/100 (reports in `docs/lighthouse/`) |
+
+## Adoption Check
+
+**Should we adopt this library?** The digest watches dependencies already in use. Adoption Check looks at *candidates* before they become dependencies. For each one it gives a verdict, **Healthy**, **Watch**, **Risky** or **Insufficient data**, together with the reasons, the evidence and its sources, and a short list of things to check by hand. It lives at [`/evaluate`](https://dependency-pulse.vercel.app/evaluate) (watchlist), `/evaluate/<owner>--<name>` (report, trend and decision history) and `/evaluate/compare?ids=…` (up to four side by side, with a "Copy as Markdown" button).
+
+### Add a candidate
+
+1. Sign in at `/admin` and open **Adoption Check**.
+2. Enter `owner/name`. Add the npm or PyPI package name if there is one, so that vulnerabilities and downloads can be checked. Add the intended use, and the backing (company, foundation or individuals) if known. Several candidates can be pasted at once with **Bulk import**; every line is validated before anything is saved.
+3. Press **Refresh**. A report takes about 10–20 s. After that, the Monday cron at 04:30 UTC (half an hour after the digest) takes one snapshot per candidate per week.
+4. Record a decision (Evaluating, Adopted, Parked, Rejected) with a reason. Decisions are append-only.
+
+A tracked dependency can be moved to evaluation from **Repos → Evaluate**, and a candidate can be moved into the digest from its admin row.
+
+**Privacy.** Team notes, backing notes, decision reasons and who decided are **private by default**: public pages never show them. To publish them for one candidate, tick "Show team notes, backing and decision reasons on the public report" on its admin row.
+
+### How a verdict is produced
+
+All of this happens in code from [`lib/health/config.ts`](lib/health/config.ts), which is versioned (`HEALTH_CONFIG_VERSION`). The version is stored on every snapshot.
+
+1. **Collect** live data. Each value carries its source and the time it was fetched. If a source fails, or doesn't cover the project, the value is `null` *with a reason* ("Scorecard has not scanned this repository"). It is never stored as zero.
+2. **Score** nine dimensions from 0 to 100 using fixed bands. A dimension with no data is left out, not scored as 0.
+3. **Weight coverage** is the share of the total weight that has data. Below 60% the verdict is **Insufficient data**, shown as a dashed chip.
+4. **Overall score:** the weighted mean of the dimensions that have data. 75 or more is Healthy, 50–74 is Watch, below 50 is Risky.
+5. **Hard gates** can only *lower* a verdict:
+   - archived, or no release and no commit for 365 days → Risky;
+   - a known vulnerability affecting the latest version → Watch;
+   - no OSI-approved license → Watch;
+   - one author with more than 60% of commits in a year → Watch.
+6. **Reasons** come from templates, in this order: gates, then concerns by weight, then positives.
+7. **Gemini Flash writes only the narrative:** the summary, strengths, concerns and what to verify. It receives the verdict and the metrics as delimited data. Its output is rejected and retried once if:
+   - it contains a number that isn't in the data;
+   - it uses a verdict word that disagrees with the verdict;
+   - it lists a strength or concern without a matching reason.
+
+   After that, a template narrative is used instead. Gemini cannot change a score or a verdict.
+
+**Auditing.** [`docs/HEALTH_METHOD.md`](docs/HEALTH_METHOD.md) has every band and formula, plus a worked example (panva/jose, 2026-W42: 81 points, Healthy by score, capped to Watch by the bus-factor gate) that can be recomputed by hand. `tests/health/method-example.test.ts` pins that example, so the document cannot drift from the code.
+
+### Weights and why
+
+| Dimension | Weight | Why this much |
+| --- | ---: | --- |
+| Security (OpenSSF Scorecard, repo advisories) | 20 | The broadest independent measure of security practice; this is a fintech codebase |
+| Known vulnerabilities (OSV, for the package) | 15 | A vulnerability in the package affects us directly |
+| Maintenance (last commit, archived) | 15 | Fixes must keep coming after we adopt |
+| Release cadence | 10 | Releases are how fixes reach us; commits alone don't ship |
+| Responsiveness (sampled issues and PRs, 90 days) | 10 | How fast someone answers when we report a problem |
+| Maintainer depth (bus factor) | 10 | One person leaving should not end the project |
+| Governance (OSI license, SECURITY.md) | 10 | Legal clarity and a private disclosure channel |
+| CI on the default branch | 5 | A weak but useful hygiene signal |
+| Adoption (weekly downloads, stars) | 5 | Popularity is easy to inflate and says little about quality; stars are the smallest part |
+
+### Sources and rate limits
+
+| Source | Used for | Limits |
+| --- | --- | --- |
+| [GitHub REST API](https://docs.github.com/en/rest) | Releases and tags, commits and authors, sampled issues and PRs, community files, check runs, repository advisories | The existing **read-only** token. About 31 requests per candidate, against 5,000 per hour. Stops at the first rate-limit response |
+| [OpenSSF Scorecard API](https://api.securityscorecards.dev) | Score and per-check results | Public, no key. Not every repo is scanned (404 → not available) |
+| [OSV](https://google.github.io/osv.dev/api/) | Vulnerabilities for the package and whether they affect the latest version | Public, no key |
+| [npm downloads](https://github.com/npm/registry/blob/main/docs/download-counts.md), [npm registry](https://registry.npmjs.org) | Weekly downloads, latest version | Public, no key |
+| [pypistats](https://pypistats.org/api/), [PyPI JSON](https://warehouse.pypa.io/api-reference/json.html) | Weekly downloads, latest version | Public, no key. pypistats asks for light use, so it is called at most weekly per candidate |
+
+Every request has a 10 s timeout and 2 retries with backoff. Results are cached for the run, and 4 candidates are processed at once. A refresh of all candidates gets 230 s, records its progress in `health_runs`, and continues in a new invocation if it runs out of time. **No new environment variables** are needed: it reuses `GITHUB_TOKEN`, `GEMINI_API_KEY`, `DATABASE_URL` and `CRON_SECRET`.
+
+### Feature flag and email
+
+The digest email can include a short "Under evaluation" section with each candidate's verdict and a link. It is **off by default** and turned on from **Admin → Adoption Check → Evaluation watchlist in the Monday email**. While it is off, the digest HTML and text are byte-identical to the previous release; `tests/unit/digest-golden.test.ts` checks this.
+
+### Rollback plan
+
+1. **Email:** turn the email section off in admin. This takes effect on the next digest, with no deploy.
+2. **Refresh:** remove the `/api/cron/health-refresh` entry from `vercel.json` (or disable it under Vercel → Settings → Cron Jobs). The pages keep showing the last snapshots.
+3. **Code:** promote the previous production deployment in Vercel (Instant Rollback), or revert the merge commit.
+4. **Data:** migration `0001_adoption_check.sql` only *adds* six tables and does not touch digest tables. The old code ignores the new tables, so nothing has to be dropped. To remove them anyway, drop the six `evaluation_candidates` / `health_*` / `adoption_decisions` / `app_settings` tables.
+
+### Deviation: no dev database branch
+
+Supabase database branching needs a paid plan, and the free account is at its two-project limit. So the migration was rehearsed instead on PGlite, an in-process Postgres (`tests/health/migration.test.ts`):
+
+- migration `0000` was applied, then production-shaped digest rows were inserted, then `0001` was applied;
+- the test then asserted that every digest row was unchanged.
+
+The migration was then applied to production *before* the preview deploy. That is safe because it is additive. Afterwards, production still had all 27 repos, 37 releases, the digest run and delivery, and the 20 AI cache rows. The production digest still generated the same 1 / 4 / 18 tiers.
+
+### Limitations
+
+- **Responsiveness is a sample:** the most recent 50 issues and 50 PRs from the last 90 days. The report always states the sample size, and fewer than 5 items counts as no data.
+- **Stars** are a weak, easily gamed signal. They make up 2.5% of the total weight.
+- **Bus factor** counts commit authors on the default branch and excludes bots. A human-named service account (for example, a generated SDK's release bot) looks like one maintainer. The Square SDK example shows this.
+- **Scorecard** is missing for many smaller repos; when it is, the security score is based on advisories alone.
+- **OSV** matches by package name and ecosystem. A repo without a published package has no vulnerability or download data.
+- **Backing** (company, foundation or individuals) is entered by hand, because no reliable public source exists.
+- The verdict is a starting point for a review, not a replacement for one. Each report ends with "Verify before adopting".
 
 ## Known limitations and next steps
 

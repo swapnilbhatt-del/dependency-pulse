@@ -103,6 +103,10 @@ export function dimensionMetrics(d: Dimension, m: RawMetrics): MetricRow[] {
 /** The headline value for a dimension in the comparison table. */
 export function headline(d: Dimension, m: RawMetrics): string {
   const first = dimensionMetrics(d, m).find((r) => !r.missing);
+  if (d === "maintenance") {
+    if (m.repo.archived.value === true) return "Archived";
+    if (m.maintenance.daysSinceLastCommit.value !== null) return `Last commit ${days(m.maintenance.daysSinceLastCommit.value)} ago`;
+  }
   if (d === "security") return m.security.scorecardScore.value !== null ? `Scorecard ${m.security.scorecardScore.value}/10` : "Not available";
   if (d === "vulnerabilities" && m.vulnerabilities.total.value !== null) return `${m.vulnerabilities.affectingLatest.value ?? "?"} unfixed · ${m.vulnerabilities.total.value} total`;
   if (d === "maintainerDepth" && m.maintainerDepth.distinctContributors365.value !== null)

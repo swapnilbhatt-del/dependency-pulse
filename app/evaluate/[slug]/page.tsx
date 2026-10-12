@@ -126,7 +126,7 @@ export default async function ReportPage({ params }: PageProps<"/evaluate/[slug]
                     <h3 className="eyebrow">Verify before adopting</h3>
                     <ol className="mt-2 space-y-2">
                       {n.verify_before_adopting.map((v, i) => {
-                        const src = sourceReason(v, r.reasons);
+                        const src = sourceReason(v, r.reasons, "concern") ?? sourceReason(v, r.reasons);
                         return (
                           <li key={i} className="check-item text-sm">
                             <span className="check-box tabular" aria-hidden="true">
