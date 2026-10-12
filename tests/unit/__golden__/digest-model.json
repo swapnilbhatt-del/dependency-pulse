@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "isoWeek": "2026-W42",
+  "weekOf": "2026-10-12T00:00:00.000Z",
+  "window": {
+    "start": "2026-10-05T03:30:00.000Z",
+    "end": "2026-10-12T03:30:00.000Z"
+  },
+  "generatedAt": "2026-10-12T03:31:00.000Z",
+  "timezoneLabel": "Asia/Kolkata",
+  "counts": {
+    "act": 1,
+    "review": 3,
+    "fyi": 1,
+    "updated": 0,
+    "couldNotCheck": 1,
+    "reposChecked": 5,
+    "releasesFound": 5,
+    "aiFallbacks": 0
+  },
+  "statusLine": "1 need action, 3 need review, 1 FYI, 1 repo could not be checked",
+  "subject": "[Dependency Pulse] 1 need action · 3 to review · week of 12 Oct 2026",
+  "synthesis": {
+    "paragraph": "Most important: panva/jose v6.2.13 is a security fix. 5 releases across 5 repositories checked: 1 need action, 3 need review, 1 FYI.",
+    "actions": [
+      "Check whether your pinned version of panva/jose is below v6.2.13, and upgrade if it is.",
+      "Read the migration notes for v8.0.0-rc.17 before upgrading prisma/orm, and keep your current range pinned until call sites are checked."
+    ],
+    "source": "deterministic"
+  },
+  "act": [
+    {
+      "id": "2:v6.2.13",
+      "repo": "panva/jose",
+      "category": "auth",
+      "priority": "normal",
+      "tag": "v6.2.13",
+      "name": "v1.0.0",
+      "url": "https://github.com/acme/widget/releases/tag/v1.0.0",
+      "publishedAt": "2026-10-09T10:00:00.000Z",
+      "source": "github_release",
+      "tier": 1,
+      "flags": {
+        "security": true,
+        "breaking": false,
+        "majorBump": false,
+        "prerelease": false,
+        "lowConfidence": false,
+        "tagOnly": false,
+        "updated": false,
+        "noNotes": false,
+        "injection": false
+      },
+      "summary": "Fixes a JWE decryption vulnerability.",
+      "keyChanges": [],
+      "evidence": [
+        {
+          "kind": "quote",
+          "text": "Fixes CVE-2026-1234 in JWE decryption.",
+          "phrase": "CVE-2026-1234"
+        }
+      ],
+      "whyFlagged": "Flagged because the notes say “CVE-2026-1234” (affects authentication).",
+      "nextStep": "Check whether your pinned version of panva/jose is below v6.2.13, and upgrade if it is.",
+      "changeType": "security",
+      "affectedArea": "authentication",
+      "confidence": "high",
+      "aiStatus": "ok",
+      "alsoIn": []
+    }
+  ],
+  "advisories": [],
+  "review": [
+    {
+      "id": "3:v8.0.0-rc.17",
+      "repo": "prisma/orm",
+      "category": "data",
+      "priority": "normal",
+      "tag": "v8.0.0-rc.17",
+      "name": "v1.0.0",
+      "url": "https://github.com/acme/widget/releases/tag/v1.0.0",
+      "publishedAt": "2026-10-08T00:00:00.000Z",
+      "source": "github_release",
+      "tier": 2,
+      "flags": {
+        "security": false,
+        "breaking": true,
+        "majorBump": false,
+        "prerelease": true,
+        "lowConfidence": false,
+        "tagOnly": false,
+        "updated": false,
+        "noNotes": false,
+        "injection": false
+      },
+      "summary": "Release candidate 17.",
+      "keyChanges": [],
+      "evidence": [
+        {
+          "kind": "quote",
+          "text": "Removed legacy option 17.",
+          "phrase": "Removed legacy option 17"
+        }
+      ],
+      "whyFlagged": "Flagged because the notes say “Removed legacy option 17”.",
+      "nextStep": "Read the migration notes for v8.0.0-rc.17 before upgrading prisma/orm, and keep your current range pinned until call sites are checked.",
+      "changeType": "breaking",
+      "affectedArea": "not stated",
+      "confidence": "high",
+      "aiStatus": "ok",
+      "alsoIn": [],
+      "related": [
+        {
+          "tag": "v8.0.0-rc.16",
+          "url": "https://github.com/acme/widget/releases/tag/v1.0.0",
+          "publishedAt": "2026-10-07T00:00:00.000Z",
+          "summary": "Release candidate 16.",
+          "whyFlagged": "Flagged because the notes say “Removed legacy option 16”.",
+          "prerelease": true
+        },
+        {
+          "tag": "v8.0.0-rc.15",
+          "url": "https://github.com/acme/widget/releases/tag/v1.0.0",
+          "publishedAt": "2026-10-06T00:00:00.000Z",
+          "summary": "Release candidate 15.",
+          "whyFlagged": "Flagged because the notes say “Removed legacy option 15”.",
+          "prerelease": true
+        }
+      ]
+    }
+  ],
+  "updated": [],
+  "fyi": [
+    {
+      "category": "payments",
+      "coverage": {
+        "reposChecked": 1,
+        "releases": 1
+      },
+      "items": [
+        {
+          "id": "1:v19.2.0",
+          "repo": "stripe/stripe-node",
+          "category": "payments",
+          "priority": "critical",
+          "tag": "v19.2.0",
+          "name": "v1.0.0",
+          "url": "https://github.com/acme/widget/releases/tag/v1.0.0",
+          "publishedAt": "2026-10-07T00:00:00.000Z",
+          "source": "github_release",
+          "tier": 3,
+          "flags": {
+            "security": false,
+            "breaking": false,
+            "majorBump": false,
+            "prerelease": false,
+            "lowConfidence": false,
+            "tagOnly": false,
+            "updated": false,
+            "noNotes": false,
+            "injection": false
+          },
+          "summary": "Adds new webhook event types.",
+          "keyChanges": [],
+          "evidence": [],
+          "whyFlagged": null,
+          "nextStep": null,
+          "changeType": "fix",
+          "affectedArea": "not stated",
+          "confidence": "high",
+          "aiStatus": "ok",
+          "alsoIn": []
+        }
+      ],
+      "earlier": []
+    }
+  ],
+  "alreadyReported": [],
+  "couldNotCheck": [
+    {
+      "repo": "gone/repo",
+      "reason": "Repository not found or not accessible (404). It may have been renamed, deleted, or made private."
+    }
+  ],
+  "quiet": [
+    "expressjs/express"
+  ],
+  "coverage": [
+    {
+      "category": "payments",
+      "reposChecked": 1,
+      "releases": 1
+    },
+    {
+      "category": "auth",
+      "reposChecked": 1,
+      "releases": 1
+    },
+    {
+      "category": "platform",
+      "reposChecked": 1,
+      "releases": 0
+    },
+    {
+      "category": "data",
+      "reposChecked": 1,
+      "releases": 3
+    },
+    {
+      "category": "tooling",
+      "reposChecked": 0,
+      "releases": 0
+    }
+  ],
+  "notices": [],
+  "links": {
+    "digest": "https://dependency-pulse.vercel.app/digest/2026-W42",
+    "archive": "https://dependency-pulse.vercel.app/archive",
+    "admin": "https://dependency-pulse.vercel.app/admin"
+  }
+}

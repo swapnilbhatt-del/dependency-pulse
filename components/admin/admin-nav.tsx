@@ -6,6 +6,7 @@ import { logoutAction } from "@/app/admin/actions";
 
 const LINKS = [
   { href: "/admin", label: "Repositories" },
+  { href: "/admin/evaluate", label: "Adoption Check" },
   { href: "/admin/runs", label: "Runs" },
   { href: "/admin/recipients", label: "Recipients" },
 ];

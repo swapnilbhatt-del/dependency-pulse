@@ -5,7 +5,7 @@ import { applyGuardrails, isSynthesisGrounded } from "@/lib/ai/guardrails";
 import { DISPLAY_CAP_PER_REPO, INVOCATION_BUDGET_MS } from "@/lib/config";
 import { buildDigest } from "@/lib/digest/build";
 import type { ClassifiedRelease, DigestModel, RepoOutcome } from "@/lib/digest/model";
-import { renderEmailHtml } from "@/lib/digest/render-email";
+import { renderEmailHtml, type WatchlistEmailItem } from "@/lib/digest/render-email";
 import { renderEmailText } from "@/lib/digest/render-text";
 import { TIER_LABEL } from "@/lib/digest/tiers";
 import type { DeliveryAttempt, EmailProvider } from "@/lib/delivery/email";
@@ -52,6 +52,8 @@ export interface PipelineDeps {
   recipients(): Promise<string[]>;
   emailProvider(): EmailProvider;
   sleep?(ms: number): Promise<void>;
+  /** Adoption Check email block; returns null when the feature flag is off (the digest is then unchanged). */
+  watchlistForEmail?(): Promise<WatchlistEmailItem[] | null>;
 }
 
 export interface RunOptions {
@@ -235,8 +237,9 @@ export async function runWeeklyDigest(deps: PipelineDeps, opts: RunOptions): Pro
       }
     }
 
-    const html = renderEmailHtml(model);
-    const text = renderEmailText(model);
+    const watchlist = deps.watchlistForEmail ? await deps.watchlistForEmail().catch((err) => (log.warn("watchlist.email_failed", { run_id: runId, error: errorMessage(err) }), null)) : null;
+    const html = renderEmailHtml(model, watchlist);
+    const text = renderEmailText(model, watchlist);
     const digestStatus: "ok" | "partial" = model.counts.couldNotCheck > 0 || stats.aiUnavailable ? "partial" : "ok";
     const repoResults = ingested.map((r) => ({ repo: r.repo.fullName, status: r.status, error: r.error, releases: r.releases.length, tagFallback: r.usedTagFallback, warnings: r.warnings, durationMs: r.durationMs }));
     const common = {

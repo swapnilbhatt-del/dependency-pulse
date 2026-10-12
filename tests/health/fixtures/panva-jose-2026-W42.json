@@ -1,0 +1,327 @@
+{
+ "ci": {
+  "method": {
+   "value": "check-runs",
+   "source": "GitHub",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "status": {
+   "value": "failing",
+   "source": "GET /repos/{o}/{r}/commits/{sha}/check-runs",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "repo": {
+  "forks": {
+   "value": 378,
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "stars": {
+   "value": 7824,
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "archived": {
+   "value": false,
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "disabled": {
+   "value": false,
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "fullName": "panva/jose",
+  "description": {
+   "value": "JWA, JWS, JWE, JWT, JWK, JWKS for Node.js, Browser, Cloudflare Workers, Deno, Bun, and other Web-interoperable runtimes",
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "defaultBranch": {
+   "value": "main",
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "manual": {
+  "sponsorship": "unknown"
+ },
+ "cadence": {
+  "releasesLast365": {
+   "value": 16,
+   "source": "GET /repos/{o}/{r}/releases",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "latestReleaseTag": {
+   "value": "v6.2.12",
+   "source": "GET /repos/{o}/{r}/releases",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "usesGithubReleases": {
+   "value": true,
+   "source": "GET /repos/{o}/{r}/releases",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "daysSinceLastRelease": {
+   "value": 37,
+   "source": "GET /repos/{o}/{r}/releases",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "medianDaysBetweenReleases": {
+   "note": "over the last 2 years",
+   "value": 6,
+   "source": "GET /repos/{o}/{r}/releases",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "adoption": {
+  "dependents": {
+   "value": null,
+   "reason": "Not collected: no reliable public source without scraping",
+   "source": "—",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "downloadsSource": {
+   "value": "npm",
+   "source": "registry",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "weeklyDownloads": {
+   "value": 154475623,
+   "source": "npm (last 7 days)",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  }
+ },
+ "security": {
+  "scorecardDate": {
+   "value": "2026-10-05",
+   "source": "OpenSSF Scorecard API",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "scorecardScore": {
+   "value": 7.5,
+   "source": "OpenSSF Scorecard API",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "scorecardChecks": {
+   "value": [
+    {
+     "name": "Maintained",
+     "score": 10,
+     "reason": "30 commit(s) and 3 issue activity found in the last 90 days -- score normalized to 10"
+    },
+    {
+     "name": "Code-Review",
+     "score": 0,
+     "reason": "Found 0/27 approved changesets -- score normalized to 0"
+    },
+    {
+     "name": "Dangerous-Workflow",
+     "score": 10,
+     "reason": "no dangerous workflow patterns detected"
+    },
+    {
+     "name": "Packaging",
+     "score": null,
+     "reason": "packaging workflow not detected"
+    },
+    {
+     "name": "Security-Policy",
+     "score": 10,
+     "reason": "security policy file detected"
+    },
+    {
+     "name": "Binary-Artifacts",
+     "score": 10,
+     "reason": "no binaries found in the repo"
+    },
+    {
+     "name": "Token-Permissions",
+     "score": 10,
+     "reason": "GitHub workflow tokens follow principle of least privilege"
+    },
+    {
+     "name": "Pinned-Dependencies",
+     "score": 10,
+     "reason": "all dependencies are pinned"
+    },
+    {
+     "name": "CII-Best-Practices",
+     "score": 0,
+     "reason": "no effort to earn an OpenSSF best practices badge detected"
+    },
+    {
+     "name": "License",
+     "score": 10,
+     "reason": "license file detected"
+    },
+    {
+     "name": "Fuzzing",
+     "score": 10,
+     "reason": "project is fuzzed"
+    },
+    {
+     "name": "Branch-Protection",
+     "score": 3,
+     "reason": "branch protection is not maximal on development and all release branches"
+    },
+    {
+     "name": "Signed-Releases",
+     "score": 4,
+     "reason": "2 out of the last 4 releases have a total of 2 signed artifacts."
+    },
+    {
+     "name": "SAST",
+     "score": 10,
+     "reason": "SAST tool is run on all commits"
+    }
+   ],
+   "source": "OpenSSF Scorecard API",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "advisoriesLast365": {
+   "value": 0,
+   "source": "GET /repos/{o}/{r}/security-advisories",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  }
+ },
+ "governance": {
+  "licenseSpdx": {
+   "value": "MIT",
+   "source": "GET /repos/{owner}/{repo}",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "licenseStatus": {
+   "value": "osi",
+   "source": "GET /repos/{owner}/{repo} + OSI list",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "hasCodeOfConduct": {
+   "value": true,
+   "source": "GET /repos/{o}/{r}/community/profile",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "hasIssueTemplates": {
+   "value": false,
+   "source": "GET /repos/{o}/{r}/community/profile",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "hasSecurityPolicy": {
+   "value": true,
+   "source": "GET /repos/{o}/{r}/contents/SECURITY.md",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "hasContributingGuide": {
+   "value": true,
+   "source": "GET /repos/{o}/{r}/community/profile",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "communityHealthPercentage": {
+   "value": 85,
+   "source": "GET /repos/{o}/{r}/community/profile",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "maintenance": {
+  "commitsCapped": false,
+  "commitsLast365": {
+   "value": 271,
+   "source": "GET /repos/{o}/{r}/commits",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "daysSinceLastCommit": {
+   "value": 10,
+   "source": "GET /repos/{o}/{r}/commits",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "responsiveness": {
+  "prSampleSize": {
+   "note": "pull requests updated in the last 90 days, bots excluded",
+   "value": 8,
+   "source": "GET /repos/{o}/{r}/issues + /pulls (+ comments, reviews)",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "issueSampleSize": {
+   "note": "issues updated in the last 90 days, PRs excluded, bots excluded",
+   "value": 13,
+   "source": "GET /repos/{o}/{r}/issues + /pulls (+ comments, reviews)",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "maintainerResponseShare": {
+   "note": "sampled",
+   "value": 0.29,
+   "source": "GET /repos/{o}/{r}/issues + /pulls (+ comments, reviews)",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "medianHoursToFirstResponse": {
+   "note": "sampled",
+   "value": 3,
+   "source": "GET /repos/{o}/{r}/issues + /pulls (+ comments, reviews)",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "maintainerDepth": {
+  "lowBusFactor": {
+   "value": true,
+   "source": "GET /repos/{o}/{r}/commits",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "topContributor": {
+   "value": "panva",
+   "source": "GET /repos/{o}/{r}/commits",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "topContributorShare365": {
+   "value": 0.982,
+   "source": "GET /repos/{o}/{r}/commits",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  },
+  "distinctContributors365": {
+   "value": 5,
+   "source": "GET /repos/{o}/{r}/commits",
+   "fetchedAt": "2026-10-12T13:15:29.694Z"
+  }
+ },
+ "vulnerabilities": {
+  "total": {
+   "value": 3,
+   "source": "OSV.dev POST /v1/query",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "withFix": {
+   "value": 3,
+   "source": "OSV.dev POST /v1/query",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "ecosystem": "npm",
+  "foundInOsv": {
+   "value": true,
+   "source": "OSV.dev POST /v1/query",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "packageName": "jose",
+  "latestVersion": {
+   "value": "6.2.12",
+   "source": "registry.npmjs.org",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "affectingLatest": {
+   "note": "queried with 6.2.12",
+   "value": 0,
+   "source": "OSV.dev POST /v1/query",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "publishedLast365": {
+   "value": 0,
+   "source": "OSV.dev POST /v1/query",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  },
+  "mostRecentPublished": {
+   "value": "2024-03-07T17:40:57Z",
+   "source": "OSV.dev POST /v1/query",
+   "fetchedAt": "2026-10-12T13:15:29.695Z"
+  }
+ }
+}

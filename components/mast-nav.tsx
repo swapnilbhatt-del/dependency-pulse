@@ -15,6 +15,9 @@ export function MastNav({ children }: { children?: React.ReactNode }) {
           <Link href="/archive" className="btn btn-ghost btn-sm min-h-11">
             Archive
           </Link>
+          <Link href="/evaluate" className="btn btn-ghost btn-sm min-h-11 hidden sm:inline-flex">
+            Evaluate
+          </Link>
           <Link href="/admin" className="btn btn-ghost btn-sm min-h-11">
             Admin
           </Link>

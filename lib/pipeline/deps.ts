@@ -9,6 +9,7 @@ import { errorMessage, log } from "@/lib/log";
 import type { PipelineDeps } from "@/lib/pipeline/run";
 import * as store from "@/lib/pipeline/store";
 import { listEnabledRepos, recordRepoStatuses } from "@/lib/repos/service";
+import { watchlistForEmail } from "@/lib/health/email";
 
 function model(): JsonModel | null {
   const key = env("GEMINI_API_KEY");
@@ -48,5 +49,6 @@ export function productionDeps(): PipelineDeps {
     updatePipelineRun: (id, v) => store.updatePipelineRun(id, v as Parameters<typeof store.updatePipelineRun>[1]),
     recipients: async () => (await effectiveRecipients()).emails,
     emailProvider: () => createResendProvider(env("RESEND_API_KEY"), env("EMAIL_FROM")),
+    watchlistForEmail,
   };
 }

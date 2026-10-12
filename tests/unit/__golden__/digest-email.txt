@@ -1,0 +1,47 @@
+DEPENDENCY PULSE, WEEK OF 12 OCT 2026 (2026-W42)
+1 need action, 3 need review, 1 FYI, 1 repo could not be checked.
+Act now: 1 | Review: 3 | FYI: 1 | Could not check: 1
+Window: 5 Oct – 12 Oct 2026 (Asia/Kolkata)
+
+THIS WEEK AT A GLANCE
+Most important: panva/jose v6.2.13 is a security fix. 5 releases across 5 repositories checked: 1 need action, 3 need review, 1 FYI.
+1. Check whether your pinned version of panva/jose is below v6.2.13, and upgrade if it is.
+2. Read the migration notes for v8.0.0-rc.17 before upgrading prisma/orm, and keep your current range pinned until call sites are checked.
+
+== ACT NOW ==
+* panva/jose v6.2.13 (auth, 9 Oct)
+  [Security fix]
+  Evidence: "Fixes CVE-2026-1234 in JWE decryption."
+  Fixes a JWE decryption vulnerability.
+  Why: Flagged because the notes say “CVE-2026-1234” (affects authentication).
+  Next step: Check whether your pinned version of panva/jose is below v6.2.13, and upgrade if it is.
+  https://github.com/acme/widget/releases/tag/v1.0.0
+
+
+== REVIEW ==
+* prisma/orm v8.0.0-rc.17 (data, 8 Oct)
+  [Breaking change] [Pre-release]
+  Evidence: "Removed legacy option 17."
+  Release candidate 17.
+  Why: Flagged because the notes say “Removed legacy option 17”.
+  Next step: Read the migration notes for v8.0.0-rc.17 before upgrading prisma/orm, and keep your current range pinned until call sites are checked.
+  Also flagged: v8.0.0-rc.16: Release candidate 16. (https://github.com/acme/widget/releases/tag/v1.0.0)
+  Also flagged: v8.0.0-rc.15: Release candidate 15. (https://github.com/acme/widget/releases/tag/v1.0.0)
+  https://github.com/acme/widget/releases/tag/v1.0.0
+
+
+== FYI ==
+-- payments (1 repos checked) --
+* stripe/stripe-node v19.2.0, 7 Oct: Adds new webhook event types.
+  https://github.com/acme/widget/releases/tag/v1.0.0
+
+== COULD NOT CHECK ==
+* gone/repo: Repository not found or not accessible (404). It may have been renamed, deleted, or made private.
+
+Quiet this week (checked, no releases): expressjs/express
+
+--
+5 repos checked, 5 releases found, 0 AI fallbacks, run 12 Oct 2026, 09:01 (Asia/Kolkata).
+Web: https://dependency-pulse.vercel.app/digest/2026-W42
+Archive: https://dependency-pulse.vercel.app/archive
+Manage repositories: https://dependency-pulse.vercel.app/admin

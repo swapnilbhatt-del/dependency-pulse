@@ -18,6 +18,8 @@ describe("schedule", () => {
     expect(v.crons).toContainEqual({ path: "/api/cron/weekly-digest", schedule: DIGEST_CRON_EXPRESSION });
     // Daily keep-alive so the free Supabase project is never paused for inactivity.
     expect(v.crons).toContainEqual({ path: "/api/health", schedule: "0 6 * * *" });
+    // Adoption Check refresh: Monday 04:30 UTC, one hour after the digest (03:30), so they never overlap.
+    expect(v.crons).toContainEqual({ path: "/api/cron/health-refresh", schedule: "30 4 * * 1" });
     expect(DIGEST_CRON_EXPRESSION).toBe("30 3 * * 1");
   });
 });

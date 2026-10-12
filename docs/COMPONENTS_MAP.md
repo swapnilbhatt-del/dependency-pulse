@@ -16,18 +16,6 @@
 | 🟦 **AI step** | Gemini Flash: summarize and classify only, validated and grounded |
 | 🟧 **What people see / receive** | Keerthi's digest, the email, and the public pages |
 
---- | --- |
-| 🟨 **Human checkpoint (2)** | Keerthi edits the repo list, then reads the digest and checks the quoted evidence before upgrading |
-| 🟪 **Deterministic rules, no AI** | Window and filter, signal detection, tiering, ordering and collapse |
-| 🟦 **AI: summarize + classify only** | Gemini Flash writes summaries and proposes flags. It never sets a flag on its own |
-| ⬜ dashed **External service** | Vercel Cron and the GitHub REST API |
-| ⬜ grey **Database** | Supabase Postgres |
-| 🟥 **What Keerthi receives** | The email and the public digest pages |
-
-- **Evidence before urgency:** a flag needs a quoted line from the notes, a GitHub advisory, or a major version bump.
-- **Nothing is hidden:** every in-window release appears, as a card, a line, or "+N earlier releases".
-- **Free to run:** Vercel Hobby, Supabase free, Gemini Flash and Resend. Releases only, no scraping.
-
 ---
 
 ## 1. Data flow (Mermaid)
@@ -141,3 +129,101 @@ flowchart LR
 9. The **Digest Builder** assigns tiers, sorts by impact, collapses duplicates, groups FYI by category, writes one "why flagged" sentence and a next step per flagged item, and renders HTML and plain text. Gemini writes a 3-sentence summary, which is rejected if it mentions any version, ID or number not in its input.
 10. The digest is saved, so `/digest/2026-W42` and `/archive` update. **Delivery** sends one email per recipient with a per-week idempotency key and records each attempt.
 11. The **Run Log** stores phase, duration, per-repo status, errors and token usage, visible in `/admin/runs`. If classification ran out of time, the route re-invokes itself and resumes from the cache.
+
+---
+
+## 6. Adoption Check (added module)
+
+Candidates under evaluation · live public data · scores and verdicts by fixed rules · Gemini only writes the narrative · weekly snapshots, trend and decision log. The module is additive: it adds six new tables and one cron, and no digest component changed behavior. The Monday email is byte-identical while the `email_watchlist_enabled` setting is off (pinned by `tests/unit/digest-golden.test.ts`).
+
+![Adoption Check components map: lanes for Keerthi, Vercel Cron, the health backend, GitHub, public sources, Gemini, Supabase and the web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map-adoption.png)
+
+*Source: [`components-map-adoption.svg`](components-map-adoption.svg), in the same style as the digest map above. The method behind every number is in [`HEALTH_METHOD.md`](HEALTH_METHOD.md).*
+
+### 6.1 Data flow (Mermaid)
+
+```mermaid
+flowchart LR
+  subgraph TRIGGER
+    HCRON["Vercel Cron<br/>Mon 04:30 UTC"]
+    HROUTE["api/cron/health-refresh"]
+    ADM["Admin: refresh one / all"]
+  end
+  subgraph INPUT
+    CAND["Candidate Registry<br/>evaluation_candidates"]
+    COL["Health Collectors"]
+    GHAPI["GitHub REST API"]
+    PUB["Scorecard · OSV<br/>npm · pypistats · registries"]
+  end
+  subgraph CONTEXT
+    MET["RawMetrics<br/>value + source + time,<br/>null + reason"]
+  end
+  subgraph PROCESSING
+    SCORE["Scoring Engine<br/>9 dimensions, coverage, gates<br/>no AI"]
+    REAS["Reason templates"]
+    NAR["Gemini Flash Narrator<br/>grounded, cached"]
+  end
+  subgraph OUTPUT
+    SNAP["Snapshot Store<br/>one per ISO week"]
+    WL["/evaluate watchlist"]
+    REP["/evaluate/[slug] report"]
+    CMP["/evaluate/compare"]
+    DEC["Decision log"]
+  end
+  HDB[("Supabase Postgres")]
+
+  HCRON -->|Bearer CRON_SECRET| HROUTE
+  HROUTE --> CAND
+  ADM --> CAND
+  CAND -->|active candidates| COL
+  COL <-->|read-only token, backoff| GHAPI
+  COL <-->|no key| PUB
+  COL --> MET
+  MET --> SCORE
+  SCORE --> REAS
+  REAS -->|verdict, reasons, metrics as data| NAR
+  NAR -->|validated text or template| SNAP
+  SNAP --> HDB
+  HDB --> WL
+  HDB --> REP
+  HDB --> CMP
+  ADM -->|append-only| DEC
+  DEC --> HDB
+  HDB -->|narrative cache by input hash + model| NAR
+```
+
+### 6.2 Component table
+
+| Component | Responsibility | Key files | Inputs | Outputs | External dependency | Failure behavior |
+| --- | --- | --- | --- | --- | --- | --- |
+| 13. Candidate Registry | CRUD for candidates with audit, slugs, privacy (`notes_public`), archive, move to and from tracked dependencies, bulk import | `lib/health/store/index.ts`, `lib/health/bulk.ts`, `app/admin/evaluate-actions.ts` | Admin form, bulk paste, seed | Active candidates | GitHub (existence check) | Invalid lines are listed before import; nothing is written until confirmed |
+| 14. Health Collectors | Fetch every metric live with 10 s timeouts, 2 retries, per-run cache and concurrency 4 | `lib/health/collect.ts`, `lib/health/sources/*` | Candidate | `RawMetrics` with source and time | GitHub, Scorecard, OSV, npm, pypistats, registries | A failed source becomes `null` with a reason, never zero; after a rate limit the GitHub run fails fast |
+| 15. Scoring Engine | Nine dimension scores from versioned bands, weight coverage, verdict thresholds and cap-only gates | `lib/health/config.ts`, `lib/health/score.ts` | `RawMetrics` | `HealthReport` (scores, verdict, gates) | — | Pure functions; under 60% coverage the verdict is "Insufficient data" |
+| 16. Reason Builder | Ordered, tagged template reasons (gates, concerns by weight, neutral, positives) | `lib/health/reasons.ts` | Report | `Reason[]` | — | Pure |
+| 17. Narrative (Gemini Flash) | Summary, strengths, concerns, checks to make; grounding rejects any number not in the data or a verdict word that disagrees | `lib/health/ai/*` | Verdict, reasons, compact metrics (as delimited data) | Narrative JSON | Gemini API | One retry with the error, then a template narrative (`ai_status = fallback`); cached by candidate, input hash and model |
+| 18. Snapshot Store & Refresh Runner | One snapshot per candidate per ISO week; completeness rule; resumable runs with a 230 s budget | `lib/health/refresh.ts`, `lib/health/store/*`, `app/api/cron/health-refresh/route.ts` | Reports | `health_snapshots`, `health_runs` | Vercel Cron | A less complete refresh keeps the shown report and records why; out of time → continues itself |
+| 19. Adoption UI | Watchlist with filters, report with 7 sections and trend, compare up to 4 with Markdown copy, admin management | `app/evaluate/**`, `components/health/*`, `app/admin/(console)/evaluate/page.tsx`, `components/admin/candidate-manager.tsx` | Public-safe queries | HTML (ISR) | — | Private notes, backing and decision reasons never reach public pages unless marked public |
+| 20. Decision Log | Append-only decisions (Evaluating, Adopted, Parked, Rejected) with reason, author and time | `adoption_decisions`, `recordDecision` | Admin | History on the report | — | Never edited or deleted in place |
+
+### 6.3 Requirement → component(s)
+
+| Requirement | Satisfied by |
+| --- | --- |
+| Health and risk from live data | 14 Collectors (no fixtures outside `tests/`) |
+| Deterministic scoring; AI never scores | 15 Scoring and 16 Reasons; 17 only receives the verdict as data |
+| Missing data is honest | `Metric<T>` with `null` + reason; coverage threshold; dashed "Insufficient data" chip |
+| Weekly snapshots and trend | 18 (cron `30 4 * * 1`, after the digest at 03:30) |
+| Compare up to four | 19 `/evaluate/compare` |
+| Decision history | 20 Decision Log |
+| Digest unchanged | Additive migration `0001`; golden tests; email section behind a flag, default off |
+
+### 6.4 New external services (no keys)
+
+| Service | Role | Limits |
+| --- | --- | --- |
+| [OpenSSF Scorecard API](https://api.securityscorecards.dev) | Security posture score and per-check results | Public; 404 means the repo is not scanned → "not available" |
+| [OSV](https://osv.dev) | Known vulnerabilities for the package and whether they affect the latest version | Public; paginated via `next_page_token` |
+| [npm downloads API](https://github.com/npm/registry/blob/main/docs/download-counts.md) and [registry](https://registry.npmjs.org) | Weekly downloads; latest version | Public |
+| [pypistats](https://pypistats.org/api/) and [PyPI JSON API](https://pypi.org) | Weekly downloads; latest version | pypistats asks for light use: called at most once per candidate per week |
+| GitHub REST API (existing token) | Releases and tags, commits, sampled issues and PRs, community files, check runs, advisories | Same read-only token; a 3-candidate refresh made about 31 requests per candidate |
+

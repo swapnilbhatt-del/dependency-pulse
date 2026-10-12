@@ -91,3 +91,22 @@ Only three font files ship (Plex Sans 400/600, Plex Mono 400) to keep the mobile
 - **Archive and home.** Stacked act/review/FYI proportion bars per week.
 - **Admin.** KPI tiles and a split-screen login.
 - **Elevation.** `lift` = `--shadow-sm` at rest, `--shadow-md` on hover.
+
+## Adoption Check patterns
+
+The Adoption Check pages (`/evaluate`, `/evaluate/[slug]`, `/evaluate/compare`, `/admin/evaluate`) reuse the existing tokens, type scale, chips, cards and states. No new colors were added. The verdict colors map onto the existing tier tokens: `--ok` for Healthy, `--review` for Watch, and `--act` for Risky.
+
+- **Verdict chip** (`components/health/verdict.tsx`). Every verdict shows an icon and a text label, never color alone:
+  - ✓ Healthy, ◐ Watch and ⚠ Risky are filled chips.
+  - **Insufficient data** uses a *dashed* outline (`.chip-dashed`), a ? icon and neutral ink. Missing evidence should read as "unknown", not as a warning or a pass.
+  - "Not checked yet" uses the same dashed style.
+- **Score meter.** A serif numeral "/ 100" over a thin bar colored by band, with the weight coverage underneath ("85% of weight had data (partial)"). When there is no score, it shows "—" and an empty bar, never 0.
+- **Reason rows.** A fixed-width tag column with an arrow icon and a label (↑ Positive, • Neutral, ↓ Concern), then the sentence and a source link. The rows follow the scoring order: gates first, then concerns by weight, then positives. A balance line ("3 concerns · 4 neutral · 9 positive") gives the shape before the detail.
+- **AI text.** The narrative ends with a caption that says who wrote it and how it was checked: by Gemini Flash with every number verified, or by a template when validation failed. Every narrative line cites the reason it rests on.
+- **Compare table.**
+  - A scroll container with a sticky first column (the dimension names). On a phone, the candidate columns scroll horizontally under the labels, and the page itself never scrolls sideways.
+  - In each row, the strongest value is marked "★ Strongest" in text as well as color.
+  - Cells without data read "No data".
+  - "Copy as Markdown" puts the same table on the clipboard for a design doc or PR, and announces the copy in a polite live region.
+- **Trend.** The change is written out in words first ("Score moved from 78 to 81; the verdict stayed Watch", plus each dimension whose band changed). Below that is one row per weekly snapshot: ISO week, verdict chip, score with a thin bar, and coverage. The row currently shown is marked "Shown above".
+- **Loading.** Each route has its own skeleton that matches the final layout (watchlist grid, report sections, compare table), so streamed content never shifts the page.

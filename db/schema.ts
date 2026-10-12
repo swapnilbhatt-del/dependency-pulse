@@ -3,6 +3,7 @@ import {
   bigint,
   boolean,
   check,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -216,4 +217,132 @@ export const loginAttempts = pgTable("login_attempts", {
   key: text("key").primaryKey(),
   count: integer("count").notNull().default(0),
   windowStart: ts("window_start").notNull().defaultNow(),
+});
+
+// ══ Adoption Check (additive; the live digest tables above are untouched) ══════
+
+/** Open-source projects being evaluated before adoption. Separate from `repos` (live dependencies). */
+export const evaluationCandidates = pgTable(
+  "evaluation_candidates",
+  {
+    id: serial("id").primaryKey(),
+    owner: text("owner").notNull(),
+    name: text("name").notNull(),
+    fullName: text("full_name").notNull(),
+    slug: text("slug").notNull(),
+    packageEcosystem: text("package_ecosystem").$type<"npm" | "pypi">(),
+    packageName: text("package_name"),
+    intendedUse: text("intended_use").notNull().default(""),
+    sponsorshipOrBacking: text("sponsorship_or_backing").$type<"company-backed" | "foundation-backed" | "individual" | "unknown">().notNull().default("unknown"),
+    teamNotes: text("team_notes").notNull().default(""),
+    /** Private by default: team notes, sponsorship notes, decision reasons and decided_by are hidden on public pages. */
+    notesPublic: boolean("notes_public").notNull().default(false),
+    adoptionStatus: text("adoption_status").$type<"evaluating" | "adopted" | "rejected" | "parked">().notNull().default("evaluating"),
+    adoptionReason: text("adoption_reason").notNull().default(""),
+    decidedAt: ts("decided_at"),
+    decidedBy: text("decided_by"),
+    archivedFromWatchlist: boolean("archived_from_watchlist").notNull().default(false),
+    isExample: boolean("is_example").notNull().default(false),
+    lastRefreshNote: text("last_refresh_note"),
+    addedAt: ts("added_at").notNull().defaultNow(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("evaluation_candidates_full_name_lower_uq").on(sql`lower(${t.fullName})`),
+    uniqueIndex("evaluation_candidates_slug_uq").on(t.slug),
+    check("evaluation_candidates_eco_ck", sql`${t.packageEcosystem} is null or ${t.packageEcosystem} in ('npm','pypi')`),
+    check("evaluation_candidates_status_ck", sql`${t.adoptionStatus} in ('evaluating','adopted','rejected','parked')`),
+    check("evaluation_candidates_backing_ck", sql`${t.sponsorshipOrBacking} in ('company-backed','foundation-backed','individual','unknown')`),
+  ],
+);
+
+/** One health snapshot per candidate per ISO week (forced admin refreshes update that week's row). */
+export const healthSnapshots = pgTable(
+  "health_snapshots",
+  {
+    id: serial("id").primaryKey(),
+    candidateId: integer("candidate_id")
+      .notNull()
+      .references(() => evaluationCandidates.id, { onDelete: "cascade" }),
+    isoWeek: text("iso_week").notNull(),
+    capturedAt: ts("captured_at").notNull().defaultNow(),
+    configVersion: text("config_version").notNull(),
+    rawMetricsJson: jsonb("raw_metrics_json").notNull(),
+    dimensionScoresJson: jsonb("dimension_scores_json").notNull(),
+    overallScore: integer("overall_score"),
+    weightCoverage: doublePrecision("weight_coverage").notNull(),
+    verdict: text("verdict").$type<"healthy" | "watch" | "risky" | "insufficient">().notNull(),
+    reasonsJson: jsonb("reasons_json").notNull(),
+    gatesJson: jsonb("gates_json").notNull(),
+    narrativeJson: jsonb("narrative_json"),
+    aiStatus: text("ai_status").$type<"ok" | "fallback" | "skipped">().notNull(),
+    inputHash: text("input_hash").notNull(),
+    sourceStatusJson: jsonb("source_status_json").notNull(),
+    linksJson: jsonb("links_json"),
+    /** The snapshot shown on reports. A less complete refresh never displaces a more complete one. */
+    isCurrent: boolean("is_current").notNull().default(false),
+    forced: boolean("forced").notNull().default(false),
+  },
+  (t) => [
+    uniqueIndex("health_snapshots_candidate_week_uq").on(t.candidateId, t.isoWeek),
+    index("health_snapshots_candidate_idx").on(t.candidateId, t.capturedAt),
+    check("health_snapshots_verdict_ck", sql`${t.verdict} in ('healthy','watch','risky','insufficient')`),
+    check("health_snapshots_ai_ck", sql`${t.aiStatus} in ('ok','fallback','skipped')`),
+  ],
+);
+
+/** Gemini narrative cache, keyed by (candidate, input hash, model). Unchanged metrics never re-call Gemini. */
+export const healthNarratives = pgTable(
+  "health_narratives",
+  {
+    id: serial("id").primaryKey(),
+    candidateId: integer("candidate_id")
+      .notNull()
+      .references(() => evaluationCandidates.id, { onDelete: "cascade" }),
+    inputHash: text("input_hash").notNull(),
+    model: text("model").notNull(),
+    narrativeJson: jsonb("narrative_json").notNull(),
+    createdAt: ts("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("health_narratives_key_uq").on(t.candidateId, t.inputHash, t.model)],
+);
+
+/** Append-only decision history. */
+export const adoptionDecisions = pgTable(
+  "adoption_decisions",
+  {
+    id: serial("id").primaryKey(),
+    candidateId: integer("candidate_id")
+      .notNull()
+      .references(() => evaluationCandidates.id, { onDelete: "cascade" }),
+    status: text("status").$type<"evaluating" | "adopted" | "rejected" | "parked">().notNull(),
+    reason: text("reason").notNull(),
+    decidedBy: text("decided_by").notNull(),
+    decidedAt: ts("decided_at").notNull().defaultNow(),
+  },
+  (t) => [index("adoption_decisions_candidate_idx").on(t.candidateId, t.decidedAt)],
+);
+
+/** Health refresh runs (cron or admin), resumable across invocations. */
+export const healthRuns = pgTable(
+  "health_runs",
+  {
+    id: text("id").primaryKey(),
+    trigger: text("trigger").$type<"cron" | "admin_all" | "admin_one" | "continue">().notNull(),
+    isoWeek: text("iso_week").notNull(),
+    startedAt: ts("started_at").notNull().defaultNow(),
+    finishedAt: ts("finished_at"),
+    status: text("status").$type<"running" | "ok" | "partial" | "failed">().notNull(),
+    countsJson: jsonb("counts_json"),
+    progressJson: jsonb("progress_json"),
+    error: text("error"),
+  },
+  (t) => [index("health_runs_started_idx").on(t.startedAt)],
+);
+
+/** Small key/value settings, e.g. the email feature flag. */
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  valueJson: jsonb("value_json").notNull(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
 });
