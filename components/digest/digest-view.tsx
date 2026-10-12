@@ -80,7 +80,7 @@ export function Masthead({ d, toolbar }: { d: DigestModel; toolbar?: React.React
   return (
     <header className="masthead" style={{ ["--mast-glow" as string]: glowFor(d) }}>
       <PulseLine className="pulse-line" />
-      <div className="relative mx-auto max-w-[60rem] px-4 sm:px-6 pb-8 sm:pb-10">
+      <div className="relative mx-auto max-w-[60rem] px-4 sm:px-6 pb-16">
         {toolbar}
         <p className="pt-6 sm:pt-8 text-xs font-semibold uppercase tracking-[0.14em] text-mast-ink-2 tabular">
           Weekly release digest · {d.isoWeek} · {fmtWindow(d.window.start, d.window.end, d.timezoneLabel)}
@@ -134,7 +134,7 @@ function SectionNav({ d }: { d: DigestModel }) {
 
 function SectionHeading({ id, eyebrow, title, intro, icon, tone }: { id: string; eyebrow: string; title: string; intro: string; icon?: React.ReactNode; tone?: string }) {
   return (
-    <div className="mb-5">
+    <div className="mb-5 keep-next">
       <p className={`eyebrow flex items-center gap-1.5 ${tone ?? ""}`}>
         {icon}
         {eyebrow}
@@ -169,7 +169,7 @@ export function DigestView({ d, previewNote, toolbar }: { d: DigestModel; previe
       <div className="mx-auto max-w-[50rem] px-4 sm:px-6">
         {previewNote}
 
-        <section aria-labelledby="glance" className="glance mt-8 p-5 sm:p-6 print-avoid-break lift">
+        <section aria-labelledby="glance" className="glance mt-8 p-5 sm:p-6 lift">
           <h2 id="glance" className="eyebrow flex items-center gap-1.5 text-brand">
             <IconSparkle /> This week at a glance
           </h2>

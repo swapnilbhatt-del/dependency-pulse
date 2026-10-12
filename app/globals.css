@@ -556,8 +556,8 @@ dialog::backdrop {
 }
 .pulse-line {
   position: absolute;
-  inset: auto 0 0 0;
-  height: 64px;
+  inset: auto 0 4px 0;
+  height: 44px;
   width: 100%;
   opacity: 0.3;
   pointer-events: none;
@@ -787,9 +787,31 @@ a.stat-tile:hover {
     --review-bg: #ffffff;
     --review-line: #6a4000;
   }
+  html {
+    font-size: 9pt; /* every rem-based size scales down for paper */
+  }
   body {
-    font-size: 10.5pt;
     background: #fff !important;
+  }
+  .masthead > div {
+    padding-bottom: 0.75rem !important;
+  }
+  .masthead h1 {
+    font-size: 2.6rem !important;
+    margin-top: 0.4rem !important;
+  }
+  [data-testid="summary-bar"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .stat-tile {
+    min-height: 0 !important;
+    padding: 8px 10px !important;
+  }
+  .stat-num {
+    font-size: 2rem !important;
+  }
+  .masthead + * {
+    margin-top: 0;
   }
   .no-print,
   .skip-link,
@@ -821,12 +843,36 @@ a.stat-tile:hover {
   .section-nav {
     display: none !important;
   }
-  .card,
+  /* Small units stay whole; long cards may split so headings are never stranded. */
   .print-avoid-break,
+  .pull-quote,
+  .callout,
+  .stat-tile,
   li,
   tr {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+  .card,
+  .glance,
+  article.card {
+    break-inside: auto;
+    page-break-inside: auto;
+    box-shadow: none !important;
+  }
+  /* Browsers drop backgrounds when printing; keep the few that carry meaning. */
+  .monogram,
+  .meter > span,
+  .bar-track > span,
+  .callout,
+  .chip-act,
+  .chip-review {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .keep-next {
+    break-after: avoid;
+    page-break-after: avoid;
   }
   h2,
   h3 {

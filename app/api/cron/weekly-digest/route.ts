@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { after, NextResponse, type NextRequest } from "next/server";
 import { checkBearer } from "@/lib/auth/token";
 import { env } from "@/lib/env";
@@ -27,7 +28,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid continuation" }, { status: 400 });
   }
 
+  /** After a new digest is saved: refresh cached public pages, then warm them so readers never hit a cold render. */
+  const publish = (result: RunResult) => {
+    if (!["sent", "partial", "failed", "rebuilt"].includes(result.status) || !("isoWeek" in result)) return;
+    revalidatePath("/");
+    revalidatePath("/archive");
+    revalidatePath(`/digest/${result.isoWeek}`);
+    after(async () => {
+      for (const path of [`/digest/${result.isoWeek}`, "/", "/archive"]) {
+        await fetch(new URL(path, req.nextUrl.origin), { signal: AbortSignal.timeout(20_000) }).catch(() => undefined);
+      }
+      log.info("cron.pages_warmed", { iso_week: result.isoWeek });
+    });
+  };
+
   const scheduleNext = (result: RunResult) => {
+    publish(result);
     if (result.status !== "continue") return;
     if (hop + 1 > MAX_HOPS) {
       log.error("cron.max_hops", { iso_week: result.isoWeek });

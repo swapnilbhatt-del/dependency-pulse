@@ -75,8 +75,8 @@ export function ReleaseCard({ item, tone, tz }: { item: DigestItem; tone: Tone; 
   const id = `item-${item.id.replace(/[^a-z0-9]/gi, "-")}`;
   const evidence = item.evidence.filter((e) => e.kind !== "semver").slice(0, 2);
   return (
-    <article className="card lift overflow-hidden print-avoid-break" aria-labelledby={id} data-testid="release-card" data-tier={item.tier}>
-      <div className={`flex flex-wrap items-center gap-1.5 px-4 sm:px-5 py-2.5 ${HEAD[tone]}`}>
+    <article className="card lift overflow-hidden" aria-labelledby={id} data-testid="release-card" data-tier={item.tier}>
+      <div className={`keep-next flex flex-wrap items-center gap-1.5 px-4 sm:px-5 py-2.5 ${HEAD[tone]}`}>
         <TierChip tone={tone} item={item} />
         <FlagChips item={item} />
         <time dateTime={item.publishedAt} className="ml-auto tabular text-xs font-medium text-ink-3">

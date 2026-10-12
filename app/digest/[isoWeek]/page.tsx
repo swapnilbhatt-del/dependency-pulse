@@ -4,14 +4,22 @@ import { DigestView } from "@/components/digest/digest-view";
 import { MastNav } from "@/components/mast-nav";
 import { PrintButton } from "@/components/print-button";
 import { fmtWeekOf } from "@/lib/digest/format";
-import { getDigestModel } from "@/lib/digest/queries";
+import { getDigestModel, listDigests } from "@/lib/digest/queries";
 import { ISO_WEEK_PATTERN } from "@/lib/filter/window";
 
 export const revalidate = 300;
 
-/** No weeks are prerendered at build time; each is rendered on first request and cached (ISR). */
-export function generateStaticParams(): { isoWeek: string }[] {
-  return [];
+/**
+ * Every existing week is prerendered at build time, so no reader pays for a
+ * first render after a deploy. New weeks render on first request and are then
+ * cached (ISR); the cron route also warms them right after sending.
+ */
+export async function generateStaticParams(): Promise<{ isoWeek: string }[]> {
+  try {
+    return (await listDigests(52)).map((d) => ({ isoWeek: d.isoWeek }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps<"/digest/[isoWeek]">): Promise<Metadata> {
