@@ -1,4 +1,4 @@
-# Upstream Weekly — Weekly Release Digest · Components Map
+# Upstream Weekly — Release Digest · Components Map
 
 27 tracked repos · releases only · rules decide the flags, Gemini only summarizes · Monday 09:00 IST email + public archive · Keerthi edits the list in /admin
 
