@@ -80,7 +80,7 @@ Only three font files ship (Plex Sans 400/600, Plex Mono 400) to keep the mobile
 
 ## Signature elements (v2)
 
-- **Masthead.** Every digest and the home page open on a dark "ink" band that stays dark in both themes (`--mast-*` tokens). It carries a dotted grid, an urgency glow (red when something needs action, amber for review-only, teal for quiet weeks), and an ECG "pulse" line that draws once on load and is skipped under reduced motion. Text on it meets AA contrast: `#f3f5f7` / `#c3cad3` on `#0d1117`.
+- **Masthead.** Every digest and the home page open on a dark "ink" band that stays dark in both themes (`--mast-*` tokens). It carries a dotted grid, an urgency glow (red when something needs action, amber for review-only, teal for quiet weeks), and an static ECG "pulse" line (not animated, so it never delays visual completeness). Text on it meets AA contrast: `#f3f5f7` / `#c3cad3` on `#0d1117`.
 - **Display serif.** Instrument Serif (one 400 file) for headlines and the large stat numerals; IBM Plex Sans and Mono for everything else.
 - **Stat tiles.** Four tiles with serif numerals, an icon and label, and a meter showing each tier's share of the week.
 - **Sticky section nav.** Act now, Review, FYI and Coverage pills with live counts.

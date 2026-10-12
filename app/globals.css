@@ -562,16 +562,7 @@ dialog::backdrop {
   opacity: 0.3;
   pointer-events: none;
 }
-.pulse-line path {
-  stroke-dasharray: 1400;
-  stroke-dashoffset: 1400;
-  animation: draw 2.4s ease-out 0.2s forwards;
-}
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
+/* Static on purpose: a load-time draw animation delayed visual completeness (Speed Index). */
 .stat-tile {
   background: rgb(255 255 255 / 0.04);
   border: 1px solid var(--mast-line);
