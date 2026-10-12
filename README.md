@@ -28,7 +28,7 @@ Dependency Pulse reads **only releases** (and tags, for repos that never publish
   - remove repos (soft delete);
   - manage recipients;
   - **Run preview** (builds the digest from live data and sends nothing);
-  - **Send digest now** or **Regenerate and resend**;
+  - **Send digest now**, **Rebuild page (no email)**, or **Regenerate and resend**;
   - resend any past week;
   - read the run log with per-repo results and Gemini token usage.
 
@@ -60,7 +60,7 @@ pnpm dev                    # http://localhost:3000
 ### Commands
 
 ```bash
-pnpm test                 # 202 Vitest unit tests
+pnpm test                 # 203 Vitest unit tests
 pnpm typecheck            # strict TypeScript
 pnpm lint                 # ESLint, zero warnings allowed
 pnpm build                # production build
@@ -68,6 +68,7 @@ pnpm test:e2e             # Playwright + axe (desktop and mobile); set E2E_ADMIN
 pnpm verify:github        # live ingestion check for one repo (default stripe/stripe-node)
 pnpm verify:gemini        # live classification of a real release + the prompt-injection test
 pnpm preview:digest       # full live run in preview mode → out-preview/digest.html, .txt, model.json
+pnpm rebuild:digest       # regenerate this week's published page with current rules, no email
 pnpm secrets:scan         # scan working tree and full git history for credentials
 bash scripts/push-env-to-vercel.sh   # copy .env secrets to Vercel without echoing them
 ```
@@ -142,9 +143,9 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 | Cron with secret | `200`, `status: sent`, 27 s; second call `skipped: already_sent` |
 | Email | Accepted by Resend (message ID recorded, `digest_deliveries.status = sent`) |
 | `/api/health` | `ok: true`, DB reachable, all config present (no values exposed) |
-| Unit tests | 202 passed |
+| Unit tests | 203 passed |
 | Playwright + axe (desktop and mobile) | 26 passed; zero serious or critical violations on every public and admin page |
-| Lighthouse mobile, `/digest/2026-W42` | Performance 98 and 100 (two runs), Accessibility 100, Best Practices 100, SEO 100; home 100/100/100/100, archive 99/100/100/100 (reports in `docs/lighthouse/`) |
+| Lighthouse mobile, `/digest/2026-W42` (UI v2) | Performance 100 and 99 on cached loads (94 on the very first request after a deploy, which also renders the page), Accessibility 100, Best Practices 100, SEO 100; home 98/100/100/100, archive 100/100/100/100 (reports in `docs/lighthouse/`) |
 
 ## Known limitations and next steps
 
