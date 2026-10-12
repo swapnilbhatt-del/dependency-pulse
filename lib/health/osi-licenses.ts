@@ -150,3 +150,21 @@ export const OSI_APPROVED = new Set<string>([
   "Zlib",
   "curl"
 ]);
+
+/**
+ * GitHub's license API still reports the GNU family with SPDX identifiers that
+ * SPDX has since deprecated ("GPL-3.0", "LGPL-2.1", "AGPL-3.0", and "+" forms).
+ * The current list only carries "-only" / "-or-later", so map the old forms
+ * onto those before checking. Without this, every GPL-family project would be
+ * wrongly treated as not OSI-approved.
+ */
+export function normalizeSpdx(spdx: string): string {
+  if (OSI_APPROVED.has(spdx)) return spdx;
+  if (spdx.endsWith("+") && OSI_APPROVED.has(`${spdx.slice(0, -1)}-or-later`)) return `${spdx.slice(0, -1)}-or-later`;
+  if (OSI_APPROVED.has(`${spdx}-only`)) return `${spdx}-only`;
+  return spdx;
+}
+
+export function isOsiApproved(spdx: string): boolean {
+  return OSI_APPROVED.has(normalizeSpdx(spdx));
+}

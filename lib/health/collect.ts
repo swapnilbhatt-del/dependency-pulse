@@ -1,5 +1,5 @@
 import { BUS_FACTOR_LOW_SHARE } from "@/lib/health/config";
-import { OSI_APPROVED } from "@/lib/health/osi-licenses";
+import { isOsiApproved } from "@/lib/health/osi-licenses";
 import type { HttpDeps, RunCache } from "@/lib/health/sources/http";
 import * as gh from "@/lib/health/sources/github";
 import { fetchLatestVersion, fetchOsv, fetchScorecard, fetchWeeklyDownloads } from "@/lib/health/sources/public";
@@ -32,7 +32,7 @@ const DAY = 86_400_000;
 export function licenseStatus(spdx: string | null | undefined): "osi" | "non_osi" | "unknown" | "none" {
   if (!spdx) return "none";
   if (spdx === "NOASSERTION" || spdx === "OTHER") return "unknown";
-  return OSI_APPROVED.has(spdx) ? "osi" : "non_osi";
+  return isOsiApproved(spdx) ? "osi" : "non_osi";
 }
 
 /** Collect every metric for one candidate. Never throws for a source failure. */
