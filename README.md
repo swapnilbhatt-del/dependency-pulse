@@ -145,7 +145,8 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 | Live preview, 27 repos | 36 releases in window, 1 Act now (`expressjs/express v5.3.0`, CVE-2026-2391), 4 Review, 18 FYI, 0 could not check, 0 AI fallbacks |
 | Cron without secret, or wrong secret | `401` |
 | Cron with secret | `200`, `status: sent`, 27 s; second call `skipped: already_sent` |
-| Email | Accepted by Resend (message ID recorded, `digest_deliveries.status = sent`) |
+| Email | Accepted by Resend (message ID recorded, `digest_deliveries.status = sent`) and **confirmed received** by the recipient |
+| Deployed admin | Owner signed in on production and ran **Run preview**: OK in 21 s, 36 releases, 1 Act now / 4 Review, 18 AI cache hits, 0 Gemini calls, 0 fallbacks |
 | `/api/health` | `ok: true`, DB reachable, all config present (no values exposed) |
 | Unit + integration tests | 209 passed, including 5 against a real Postgres engine (PGlite): migrations, the unique ISO-week claim under concurrency, upserts, the AI cache, and "Updated since last digest" end to end |
 | Live AI-outage drill | Full preview on live GitHub data with Gemini unreachable: 18 fallbacks, circuit breaker opened, footer notice shown, deterministic summary used; Express (CVE) stayed in Act now and Hono (major bump) in Review; no outage results cached |
