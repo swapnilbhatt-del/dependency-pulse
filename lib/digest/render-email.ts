@@ -111,7 +111,7 @@ function watchlistSection(items: WatchlistEmailItem[]): string {
   <div style="margin-top:2px;font-size:12px;">${link(i.url, "Open the report")}</div></td></tr>`,
     )
     .join("");
-  return section("Evaluation watchlist", "Open-source projects the team is considering, with their current health verdict.", `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>`);
+  return section("Evaluation watchlist", "Candidates under evaluation that are marked Risky or Watch. Healthy candidates are on the web watchlist.", `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>`);
 }
 
 export function renderEmailHtml(d: DigestModel, watchlist?: WatchlistEmailItem[] | null): string {
