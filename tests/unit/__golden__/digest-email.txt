@@ -1,4 +1,4 @@
-DEPENDENCY PULSE, WEEK OF 12 OCT 2026 (2026-W42)
+UPSTREAM WEEKLY, WEEK OF 12 OCT 2026 (2026-W42)
 1 need action, 3 need review, 1 FYI, 1 repo could not be checked.
 Act now: 1 | Review: 3 | FYI: 1 | Could not check: 1
 Window: 5 Oct – 12 Oct 2026 (Asia/Kolkata)

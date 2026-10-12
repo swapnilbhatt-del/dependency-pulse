@@ -48,7 +48,7 @@ describe("escaping", () => {
 
   it("plain text part contains no markup interpretation issues", () => {
     const t = renderEmailText(model());
-    expect(t).toContain("DEPENDENCY PULSE, WEEK OF 12 OCT 2026");
+    expect(t).toContain("UPSTREAM WEEKLY, WEEK OF 12 OCT 2026");
     expect(t).toContain("== ACT NOW ==");
   });
 

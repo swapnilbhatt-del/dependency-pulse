@@ -1,4 +1,4 @@
-# Dependency Pulse: design direction
+# Upstream Weekly: design direction
 
 ## Intent
 

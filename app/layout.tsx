@@ -12,13 +12,13 @@ const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"
 
 export const metadata: Metadata = {
   metadataBase: new URL(appBaseUrl()),
-  title: { default: "Dependency Pulse", template: "%s · Dependency Pulse" },
+  title: { default: "Upstream Weekly", template: "%s · Upstream Weekly" },
   description: "A Monday digest of new releases across the open-source dependencies your product relies on, with security fixes and breaking changes first.",
-  applicationName: "Dependency Pulse",
+  applicationName: "Upstream Weekly",
   openGraph: {
     type: "website",
-    siteName: "Dependency Pulse",
-    title: "Dependency Pulse",
+    siteName: "Upstream Weekly",
+    title: "Upstream Weekly",
     description: "Weekly release digest: security fixes and breaking changes first, everything else in five minutes.",
   },
   twitter: { card: "summary_large_image" },

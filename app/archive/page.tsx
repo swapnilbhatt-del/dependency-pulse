@@ -11,9 +11,9 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Archive",
-  description: "Every weekly Dependency Pulse digest, with its action, review and FYI counts.",
+  description: "Every weekly Upstream Weekly digest, with its action, review and FYI counts.",
   alternates: { canonical: "/archive" },
-  openGraph: { title: "Dependency Pulse · Archive", description: "Every weekly digest with its counts." },
+  openGraph: { title: "Upstream Weekly · Archive", description: "Every weekly digest with its counts." },
 };
 
 export default async function ArchivePage() {

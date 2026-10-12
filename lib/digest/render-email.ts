@@ -181,7 +181,7 @@ export function renderEmailHtml(d: DigestModel, watchlist?: WatchlistEmailItem[]
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;">
 <tr><td style="font-family:${FONT};padding-bottom:12px;">
   <div style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:${C.ink3};">Weekly release digest · ${e(d.isoWeek)}</div>
-  <h1 style="margin:6px 0 4px;font-size:24px;line-height:1.25;color:${C.ink};">Dependency Pulse, week of ${e(fmtWeekOf(d.weekOf))}</h1>
+  <h1 style="margin:6px 0 4px;font-size:24px;line-height:1.25;color:${C.ink};">Upstream Weekly, week of ${e(fmtWeekOf(d.weekOf))}</h1>
   <p style="margin:0;font-size:14px;color:${C.ink2};">${e(d.statusLine)}.</p>
 </td></tr>
 <tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>

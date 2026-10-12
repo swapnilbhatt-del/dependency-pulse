@@ -6,9 +6,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export function MastNav({ children }: { children?: React.ReactNode }) {
   return (
     <div className="flex h-14 items-center justify-between gap-2 border-b border-[var(--mast-line)]">
-      <Link href="/" className="flex min-h-11 items-center gap-2 font-semibold no-underline" aria-label="Dependency Pulse home">
+      <Link href="/" className="flex min-h-11 items-center gap-2 font-semibold no-underline" aria-label="Upstream Weekly home">
         <LogoMark />
-        <span className="hidden sm:inline tracking-tight">Dependency Pulse</span>
+        <span className="hidden sm:inline tracking-tight">Upstream Weekly</span>
       </Link>
       <div className="flex items-center no-print">
         <nav aria-label="Primary" className="flex items-center">

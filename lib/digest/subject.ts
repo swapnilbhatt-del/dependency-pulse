@@ -5,8 +5,8 @@ export function formatDay(d: Date): string {
 
 export function digestSubject(actNow: number, review: number, weekOf: Date): string {
   const date = formatDay(weekOf);
-  if (actNow === 0 && review === 0) return `[Dependency Pulse] All quiet this week · ${date}`;
-  return `[Dependency Pulse] ${actNow} need action · ${review} to review · week of ${date}`;
+  if (actNow === 0 && review === 0) return `[Upstream Weekly] All quiet this week · ${date}`;
+  return `[Upstream Weekly] ${actNow} need action · ${review} to review · week of ${date}`;
 }
 
 export function statusLine(c: { act: number; review: number; fyi: number; couldNotCheck: number }): string {

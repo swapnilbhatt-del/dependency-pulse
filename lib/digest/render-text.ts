@@ -20,7 +20,7 @@ function item(i: DigestItem, tz: string): string {
 export function renderEmailText(d: DigestModel, watchlist?: WatchlistEmailItem[] | null): string {
   const tz = d.timezoneLabel;
   const out: string[] = [];
-  out.push(`DEPENDENCY PULSE, WEEK OF ${fmtWeekOf(d.weekOf).toUpperCase()} (${d.isoWeek})`);
+  out.push(`UPSTREAM WEEKLY, WEEK OF ${fmtWeekOf(d.weekOf).toUpperCase()} (${d.isoWeek})`);
   out.push(`${d.statusLine}.`);
   out.push(`Act now: ${d.counts.act} | Review: ${d.counts.review} | FYI: ${d.counts.fyi} | Could not check: ${d.counts.couldNotCheck}`);
   out.push(`Window: ${fmtWindow(d.window.start, d.window.end, tz)} (${tz})`);

@@ -104,7 +104,7 @@ describe("weekly job idempotency", () => {
     expect(first.status).toBe("sent");
     expect(second).toMatchObject({ status: "skipped", reason: "already_sent" });
     expect(f.sent).toHaveLength(1);
-    expect(f.sent[0].subject).toBe("[Dependency Pulse] 1 need action · 0 to review · week of 12 Oct 2026");
+    expect(f.sent[0].subject).toBe("[Upstream Weekly] 1 need action · 0 to review · week of 12 Oct 2026");
   });
 
   it("concurrent duplicate invocations: only one holds the lease", async () => {

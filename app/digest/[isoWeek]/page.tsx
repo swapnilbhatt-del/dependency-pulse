@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps<"/digest/[isoWeek]"
     title,
     description,
     alternates: { canonical: `/digest/${isoWeek}` },
-    openGraph: { title: `Dependency Pulse · ${title}`, description, type: "article", url: `/digest/${isoWeek}` },
+    openGraph: { title: `Upstream Weekly · ${title}`, description, type: "article", url: `/digest/${isoWeek}` },
   };
 }
 
