@@ -144,7 +144,7 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 | `/api/health` | `ok: true`, DB reachable, all config present (no values exposed) |
 | Unit tests | 202 passed |
 | Playwright + axe (desktop and mobile) | 26 passed; zero serious or critical violations on every public and admin page |
-| Lighthouse mobile, `/digest/2026-W42` | Performance 95+, Accessibility 100, Best Practices 100, SEO 100 (reports in `docs/lighthouse/`) |
+| Lighthouse mobile, `/digest/2026-W42` | Performance 98 and 100 (two runs), Accessibility 100, Best Practices 100, SEO 100; home 100/100/100/100, archive 99/100/100/100 (reports in `docs/lighthouse/`) |
 
 ## Known limitations and next steps
 
