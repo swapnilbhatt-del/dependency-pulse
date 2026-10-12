@@ -1,13 +1,22 @@
-# Dependency Pulse — Components Map
+# Dependency Pulse — Weekly Release Digest · Components Map
 
-Every Monday, every tracked repo's releases from the past 7 days. Flags need **quoted evidence**. **Keerthi decides what to upgrade.**
+27 tracked repos · releases only · rules decide the flags, Gemini only summarizes · Monday 09:00 IST email + public archive · Keerthi edits the list in /admin
 
-![Dependency Pulse components map: swimlanes for Keerthi, Vercel Cron, the pipeline, GitHub, Gemini Flash, Supabase Postgres, Resend and the web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map.png)
+![Dependency Pulse components map: lanes for Keerthi, Vercel Cron, the Pulse backend, GitHub, Gemini, Supabase, Resend and the Pulse web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map.png)
 
-*Source: [`components-map.svg`](components-map.svg). It follows the reference deck in [`reference/sample-components-map.png`](reference/sample-components-map.png), using the same swimlane grid, column order, box legend and footer bullets.*
+*Source: [`components-map.svg`](components-map.svg). The layout follows the reference map in [`reference/sample-components-map.png`](reference/sample-components-map.png): the same lanes × Trigger/Input/Context/Processing/AI/Output grid, a tinted AI column, a phase band across the top lane ("Any time — Keerthi curates the list") with a labelled phase boundary below it ("Every Monday 03:30 UTC — automated run"), dashed elbow arrows, plain "• Label: detail" footer notes, and the same three-item legend.*
+
+- **Evidence:** no flag without a quoted line from the release notes, a GitHub advisory, or a major version bump; the AI cannot raise one on its own.
+- **Scope:** releases only (tags when a repo never publishes releases); every in-window release appears somewhere: as a card, a line, or "+N earlier".
+- **Reliability:** one send per ISO week; a failing repo becomes "Could not check"; a Gemini outage falls back to the notes' first lines; a daily health ping keeps the database awake.
 
 | Legend | Meaning |
 | --- | --- |
+| ⬜ **Step** | App, service or rules-in-code step (deterministic, no AI) |
+| 🟦 **AI step** | Gemini Flash: summarize and classify only, validated and grounded |
+| 🟧 **What people see / receive** | Keerthi's digest, the email, and the public pages |
+
+--- | --- |
 | 🟨 **Human checkpoint (2)** | Keerthi edits the repo list, then reads the digest and checks the quoted evidence before upgrading |
 | 🟪 **Deterministic rules, no AI** | Window and filter, signal detection, tiering, ordering and collapse |
 | 🟦 **AI: summarize + classify only** | Gemini Flash writes summaries and proposes flags. It never sets a flag on its own |
