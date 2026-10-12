@@ -14,8 +14,8 @@ Tone of copy: plain, specific, calm. Say what happened and what to do. No exclam
 | Section title (h2) | IBM Plex Sans | 1.25rem / 1.3 | 600 | Preceded by a small uppercase eyebrow label |
 | Card title (h3) | IBM Plex Sans | 1.0625rem / 1.35 | 600 | Repo name, then the version in mono |
 | Body | IBM Plex Sans | 1rem / 1.6 | 400 | Measure capped at 68ch |
-| Meta | IBM Plex Sans | 0.8125rem / 1.45 | 500 | Dates and counts use `tabular-nums` |
-| Code / versions / evidence | IBM Plex Mono | 0.875em | 400–500 | Versions, GHSA IDs, quoted evidence |
+| Meta | IBM Plex Sans | 0.8125rem / 1.45 | 400 | Dates and counts use `tabular-nums` |
+| Code / versions / evidence | IBM Plex Mono | 0.875em | 400 | Versions, GHSA IDs, quoted evidence |
 | Numerals (summary bar) | IBM Plex Sans | 2.5rem / 1 | 600 | `tabular-nums`, with reserved width so the layout doesn't shift |
 
 Fonts are self-hosted via `next/font` with `display: swap`. Emails use a system font stack (`-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif`) because email clients can't rely on web fonts.
@@ -75,3 +75,5 @@ Every tier also carries an **icon and a text label**, so color is never the only
 
 - Table-based layout, all CSS inline, a 600px max width, and no images, web fonts, or scripts.
 - The colors are mid-tone values that read on both white and dark-mode-inverted backgrounds. Tier labels are always text.
+
+Only three font files ship (Plex Sans 400/600, Plex Mono 400) to keep the mobile Speed Index low; `font-medium` resolves to 400.
