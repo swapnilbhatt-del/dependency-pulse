@@ -1,4 +1,5 @@
 import type { DigestItem, DigestModel } from "@/lib/digest/model";
+import type { WatchlistEmailItem } from "@/lib/digest/render-email";
 import { flagLabels, fmtDateTime, fmtShortDate, fmtWeekOf, fmtWindow } from "@/lib/digest/format";
 
 function item(i: DigestItem, tz: string): string {
@@ -16,7 +17,7 @@ function item(i: DigestItem, tz: string): string {
   return lines.join("\n");
 }
 
-export function renderEmailText(d: DigestModel): string {
+export function renderEmailText(d: DigestModel, watchlist?: WatchlistEmailItem[] | null): string {
   const tz = d.timezoneLabel;
   const out: string[] = [];
   out.push(`DEPENDENCY PULSE, WEEK OF ${fmtWeekOf(d.weekOf).toUpperCase()} (${d.isoWeek})`);
@@ -53,6 +54,10 @@ export function renderEmailText(d: DigestModel): string {
   }
   if (d.quiet.length) out.push("", `Quiet this week (checked, no releases): ${d.quiet.join(", ")}`);
   if (d.alreadyReported.length) out.push(`Already covered in an earlier digest: ${d.alreadyReported.map((a) => `${a.repo} ${a.tag}`).join(", ")}`);
+  if (watchlist && watchlist.length) {
+    out.push("", "== EVALUATION WATCHLIST ==");
+    for (const w of watchlist) out.push(`* ${w.name}: ${w.verdict}${w.score !== null ? ` (${w.score})` : ""}`, ...(w.reason ? [`  ${w.reason}`] : []), `  ${w.url}`);
+  }
   out.push("", "--", `${d.counts.reposChecked} repos checked, ${d.counts.releasesFound} releases found, ${d.counts.aiFallbacks} AI fallbacks, run ${fmtDateTime(d.generatedAt, tz)} (${tz}).`);
   d.notices.forEach((n) => out.push(n));
   out.push(`Web: ${d.links.digest}`, `Archive: ${d.links.archive}`, `Manage repositories: ${d.links.admin}`);

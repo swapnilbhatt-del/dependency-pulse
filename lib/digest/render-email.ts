@@ -93,7 +93,28 @@ function countCell(n: number, label: string, color: string): string {
     <div style="font-size:12px;color:${C.ink2};">${e(label)}</div></td>`;
 }
 
-export function renderEmailHtml(d: DigestModel): string {
+/** Optional "Evaluation watchlist" block (Adoption Check), only when the admin feature flag is on. */
+export interface WatchlistEmailItem {
+  name: string;
+  verdict: string; // label, e.g. "Watch"
+  score: number | null;
+  reason: string | null;
+  url: string;
+}
+
+function watchlistSection(items: WatchlistEmailItem[]): string {
+  const rows = items
+    .map(
+      (i) => `<tr><td style="padding:8px 0;border-top:1px solid ${C.line};font-family:${FONT};font-size:14px;color:${C.ink};">
+  <strong>${e(i.name)}</strong> <span style="display:inline-block;margin-left:6px;padding:1px 8px;border:1px solid ${C.line};border-radius:10px;font-size:12px;color:${C.ink2};">${e(i.verdict)}${i.score !== null ? ` · ${i.score}` : ""}</span>
+  ${i.reason ? `<div style="color:${C.ink2};margin-top:2px;line-height:1.45;">${e(i.reason)}</div>` : ""}
+  <div style="margin-top:2px;font-size:12px;">${link(i.url, "Open the report")}</div></td></tr>`,
+    )
+    .join("");
+  return section("Evaluation watchlist", "Open-source projects the team is considering, with their current health verdict.", `<tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>`);
+}
+
+export function renderEmailHtml(d: DigestModel, watchlist?: WatchlistEmailItem[] | null): string {
   const tz = d.timezoneLabel;
   const act =
     d.act.map((i) => card(i, tz, C.act, C.actBg, i.flags.security ? "Act now · Security fix" : "Act now")).join("") +
@@ -177,7 +198,7 @@ ${d.updated.length ? section("Updated since last digest", "Releases already repo
 ${d.fyi.length ? section("FYI", "Everything else that shipped, grouped by the part of the product it touches.", fyi) : ""}
 ${could}
 ${quietLine}
-${d.alreadyReported.length ? `<tr><td style="padding:12px 0 0;font-family:${FONT};font-size:12px;color:${C.ink3};">Already covered in an earlier digest: ${e(d.alreadyReported.map((a) => `${a.repo} ${a.tag}`).join(", "))}</td></tr>` : ""}
+${d.alreadyReported.length ? `<tr><td style="padding:12px 0 0;font-family:${FONT};font-size:12px;color:${C.ink3};">Already covered in an earlier digest: ${e(d.alreadyReported.map((a) => `${a.repo} ${a.tag}`).join(", "))}</td></tr>` : ""}${watchlist && watchlist.length ? watchlistSection(watchlist) : ""}
 <tr><td style="padding:24px 0 0;border-top:1px solid ${C.line};font-family:${FONT};font-size:12px;line-height:1.6;color:${C.ink3};">
   ${d.counts.reposChecked} repos checked · ${d.counts.releasesFound} releases found · ${d.counts.aiFallbacks} AI fallbacks · run ${e(fmtDateTime(d.generatedAt, tz))} (${e(tz)})<br>
   ${d.notices.map((n) => `${e(n)}<br>`).join("")}

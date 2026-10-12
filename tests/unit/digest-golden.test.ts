@@ -61,3 +61,23 @@ describe("live digest golden output (non-regression)", () => {
     await expect(renderEmailText(model)).toMatchFileSnapshot("./__golden__/digest-email.txt");
   });
 });
+
+describe("Evaluation watchlist email section (feature flag)", () => {
+  const model = goldenModel();
+  const items = [{ name: "panva/jose", verdict: "Watch", score: 81, reason: "One contributor authored 98 percent of commits in the last 365 days (low bus factor).", url: "https://dependency-pulse.vercel.app/evaluate/panva--jose" }];
+  it("flag off (null or empty) → byte-identical to the golden digest", async () => {
+    await expect(renderEmailHtml(model, null)).toMatchFileSnapshot("./__golden__/digest-email.html");
+    await expect(renderEmailHtml(model, [])).toMatchFileSnapshot("./__golden__/digest-email.html");
+    await expect(renderEmailText(model, null)).toMatchFileSnapshot("./__golden__/digest-email.txt");
+  });
+  it("flag on → the block is appended after the existing sections, which are unchanged", () => {
+    const off = renderEmailHtml(model);
+    const on = renderEmailHtml(model, items);
+    const footerAt = off.indexOf('<tr><td style="padding:24px 0 0;border-top');
+    expect(on.slice(0, footerAt)).toBe(off.slice(0, footerAt));
+    expect(on).toContain("Evaluation watchlist");
+    expect(on.indexOf("Evaluation watchlist")).toBeGreaterThan(on.indexOf("Quiet this week"));
+    expect(renderEmailText(model, items)).toContain("== EVALUATION WATCHLIST ==");
+    expect(renderEmailText(model, items).startsWith(renderEmailText(model).split("\n--\n")[0])).toBe(true);
+  });
+});
