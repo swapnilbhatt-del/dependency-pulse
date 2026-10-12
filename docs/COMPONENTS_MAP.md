@@ -2,9 +2,9 @@
 
 27 tracked repos · releases only · rules decide the flags, Gemini only summarizes · Monday 09:00 IST email + public archive · Keerthi edits the list in /admin
 
-![Upstream Weekly components map: lanes for Keerthi, Vercel Cron, the backend, GitHub, Gemini, Supabase, Resend and the web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map.png)
+![Upstream Weekly release digest map: Keerthi edits the repo list; every Monday at 09:00 IST the app fetches new releases from GitHub, keeps the last 7 days, flags security fixes and breaking changes, has Gemini summarize each release, builds the digest, saves it and sends the email](components-map.png)
 
-*Source: [`components-map.svg`](components-map.svg). The layout follows the reference map in [`reference/sample-components-map.png`](reference/sample-components-map.png): the same lanes × Trigger/Input/Context/Processing/AI/Output grid, a tinted AI column, a phase band across the top lane ("Any time — Keerthi curates the list") with a labelled phase boundary below it ("Every Monday 03:30 UTC — automated run"), dashed elbow arrows, plain "• Label: detail" footer notes, and the same three-item legend.*
+*Source: [`components-map.svg`](components-map.svg). A simplified map in the layout of the reference map in [`reference/sample-components-map.png`](reference/sample-components-map.png): lanes × Trigger/Input/Context/Processing/AI/Output, a tinted AI column, a phase band across the top lane, dashed arrows along one main path, and the same three-item legend. The full detail is in the diagram, component table and step-by-step run below. Both maps are also in a two-page PDF: [`upstream-weekly-components-maps.pdf`](upstream-weekly-components-maps.pdf).*
 
 - **Evidence:** no flag without a quoted line from the release notes, a GitHub advisory, or a major version bump; the AI cannot raise one on its own.
 - **Scope:** releases only (tags when a repo never publishes releases); every in-window release appears somewhere: as a card, a line, or "+N earlier".
@@ -136,9 +136,9 @@ flowchart LR
 
 Candidates under evaluation · live public data · scores and verdicts by fixed rules · Gemini only writes the narrative · weekly snapshots, trend and decision log. The module is additive: it adds six new tables and one cron, and no digest component changed behavior. The Monday email is byte-identical while the `email_watchlist_enabled` setting is off (pinned by `tests/unit/digest-golden.test.ts`).
 
-![Adoption Check components map: lanes for Keerthi, Vercel Cron, the health backend, GitHub, public sources, Gemini, Supabase and the web app, across Trigger, Input, Context, Processing, AI and Output columns](components-map-adoption.png)
+![Upstream Weekly Adoption Check map: Keerthi adds a library to evaluate; every Monday at 10:00 IST the app collects health data from GitHub, Scorecard, OSV, npm and PyPI, keeps each number's source, scores 9 areas into Healthy, Watch or Risky, has Gemini write a short summary, builds the report, saves a weekly snapshot and publishes it on the website and in the email](components-map-adoption.png)
 
-*Source: [`components-map-adoption.svg`](components-map-adoption.svg), in the same style as the digest map above. The method behind every number is in [`HEALTH_METHOD.md`](HEALTH_METHOD.md).*
+*Source: [`components-map-adoption.svg`](components-map-adoption.svg), simplified in the same layout and with the same lanes as the digest map above. The method behind every number is in [`HEALTH_METHOD.md`](HEALTH_METHOD.md); the full detail is in the diagram and component table below.*
 
 ### 6.1 Data flow (Mermaid)
 
