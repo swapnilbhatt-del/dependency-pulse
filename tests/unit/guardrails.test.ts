@@ -16,7 +16,7 @@ describe("guardrails: security flag", () => {
     const r = release({ body: "Fixes an authentication bypass in token checks." });
     const c = classify(r, analysis({ is_security_fix: true, security_evidence: "authentication bypass", affected_area: "authentication" }));
     expect(c.isSecurityFix).toBe(true);
-    expect(c.securityEvidence[0]).toEqual({ kind: "quote", text: "authentication bypass" });
+    expect(c.securityEvidence[0]).toEqual({ kind: "quote", text: "Fixes an authentication bypass in token checks." });
     expect(c.changeType).toBe("security");
   });
 
@@ -33,7 +33,7 @@ describe("guardrails: security flag", () => {
     const r = release({ body: "Fixes CVE-2026-1111 in the URL parser." });
     const c = classify(r, analysis({ is_security_fix: false }));
     expect(c.isSecurityFix).toBe(true);
-    expect(c.securityEvidence[0].text).toBe("CVE-2026-1111");
+    expect(c.securityEvidence[0].text).toBe("Fixes CVE-2026-1111 in the URL parser.");
   });
 
   it("sets the flag from a matched GitHub advisory with the GHSA id as evidence", () => {
@@ -125,5 +125,34 @@ describe("fallbackAnalysis", () => {
     expect(fb.key_changes).toHaveLength(2);
     expect(fb.change_type).toBe("unknown");
     expect(fb.confidence).toBe("low");
+  });
+});
+
+describe("guardrails: live regression (expressjs/express v5.3.0)", () => {
+  const body = "* Upgrade `qs` to `^6.16.0`, which fixes [CVE-2026-2391](https://www.cve.org/CVERecord?id=CVE-2026-2391) ([GHSA-w7fw-mjwx-w883](https://github.com/ljharb/qs/security/advisories/GHSA-w7fw-mjwx-w883))";
+  it("matches evidence quoted from rendered markdown links", () => {
+    const c = classify(release({ body }), analysis({ is_security_fix: true, security_evidence: "Upgrade `qs` to `^6.16.0`, which fixes CVE-2026-2391", requires_action: "upgrade_now" }));
+    expect(c.isSecurityFix).toBe(true);
+    expect(c.confidence).toBe("high");
+    expect(c.requiresAction).toBe("upgrade_now");
+    expect(c.securityEvidence[0].text).toContain("CVE-2026-2391");
+  });
+  it("a strong signal undoes the low-confidence downgrade when the model's quote is wrong", () => {
+    const c = classify(release({ body }), analysis({ is_security_fix: true, security_evidence: "paraphrased claim not in the notes", requires_action: "upgrade_now" }));
+    expect(c.isSecurityFix).toBe(true);
+    expect(c.unverifiedClaim).toBeNull();
+    expect(c.confidence).toBe("high");
+  });
+});
+
+describe("guardrails: weak signals need the model's verified quote", () => {
+  it("does not force a flag from the word XSS when the model says no", () => {
+    const c = classify(release({ body: "- Escape output to prevent XSS in templates" }), analysis({ is_security_fix: false }));
+    expect(c.isSecurityFix).toBe(false);
+  });
+  it("shows the whole source line as evidence", () => {
+    const body = "## Fixes\n- Fixed an **authentication bypass** when `aud` is empty (#123)";
+    const c = classify(release({ body }), analysis({ is_security_fix: true, security_evidence: "authentication bypass" }));
+    expect(c.securityEvidence[0].text).toBe("Fixed an authentication bypass when aud is empty (#123)");
   });
 });

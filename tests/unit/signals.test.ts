@@ -7,12 +7,12 @@ describe("keyword pre-screen: security", () => {
   it.each([
     ["Fixes CVE-2026-12345 in token parsing", "cve", true],
     ["Patched GHSA-2xvq-pc8h-x2cm", "ghsa", true],
-    ["Fix a vulnerability in redirect handling", "vulnerability", true],
+    ["Fix a vulnerability in redirect handling", "vulnerability", false],
     ["This is a security release", "security-fix", true],
-    ["Prevent authentication bypass when audience is empty", "auth-bypass", true],
-    ["Possible RCE via template", "rce", true],
-    ["Mitigate SQL injection in raw queries", "sqli", true],
-    ["Escape output to prevent XSS", "xss", true],
+    ["Prevent authentication bypass when audience is empty", "auth-bypass", false],
+    ["Possible RCE via template", "rce", false],
+    ["Mitigate SQL injection in raw queries", "sqli", false],
+    ["Escape output to prevent XSS", "xss", false],
     ["Avoid denial of service on large headers", "dos", false],
     ["sanitize headers to stop malicious input", "patch-context", false],
   ])("%s", (body, rule, strong) => {
@@ -133,5 +133,25 @@ describe("semver", () => {
   it("compares only tags with the same package prefix", () => {
     expect(detectMajorBump("drizzle-kit@1.0.0", ["drizzle-orm@0.45.0", "drizzle-kit@0.31.0"])).toEqual({ from: 0, to: 1 });
     expect(detectMajorBump("drizzle-kit@1.0.0", ["drizzle-orm@2.0.0"])).toBeNull();
+  });
+});
+
+describe("pre-screen ignores test, fixture, docs and CI lines (live next.js regressions)", () => {
+  it.each([
+    ["- [test] Regression test for XSS-safe `GoogleTagManager#dataLayer`: #99464"],
+    ["- Bump next in upgrade eval fixtures for CVE-2026-94483: #99838"],
+    ["- docs: point next package security disclosure to HackerOne: #99459"],
+    ["* chore(deps): update CVE-2026-1 test snapshot"],
+    ["- ci: run security workflow on forks"],
+  ])("%s", (line) => {
+    expect(prescreen("v16.5.0-canary.4", line).security).toHaveLength(0);
+  });
+  it("still sees a real fix next to a test line", () => {
+    const p = prescreen("", "- [test] add XSS regression test\n- Fix XSS in `Link` href handling (CVE-2026-5555)");
+    expect(p.security.map((m) => m.rule)).toContain("cve");
+  });
+  it("feature work mentioning vulnerabilities is not a strong signal", () => {
+    const p = prescreen("v16.4.0", "- Add `next upgrade --ai` and security vulnerability coverage: #98562");
+    expect(p.security.some((m) => m.strong)).toBe(false);
   });
 });

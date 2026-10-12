@@ -6,6 +6,10 @@
 
 export type SignalKind = "security" | "breaking";
 
+/**
+ * Strong rules may set a flag even when the model disagrees; weak rules only
+ * permit the model to raise a flag backed by a verified quote.
+ */
 export interface SignalMatch {
   kind: SignalKind;
   /** Pattern id, for explainability and tests. */
@@ -26,14 +30,14 @@ interface Rule {
 const SECURITY_RULES: Rule[] = [
   { id: "cve", re: /\bCVE-\d{4}-\d{4,}\b/i, strong: true },
   { id: "ghsa", re: /\bGHSA(?:-[23456789cfghjmpqrvwx]{4}){3}\b/i, strong: true },
-  { id: "vulnerability", re: /\bvulnerabilit(?:y|ies)\b/i, strong: true },
+  { id: "vulnerability", re: /\bvulnerabilit(?:y|ies)\b/i, strong: false },
   { id: "security-fix", re: /\bsecurity (?:fix(?:es)?|patch(?:es)?|release|update|advisory|issue)\b/i, strong: true },
-  { id: "auth-bypass", re: /\bauth(?:entication|orization)? bypass\b/i, strong: true },
-  { id: "rce", re: /\b(?:RCE|remote code execution)\b/i, strong: true },
-  { id: "sqli", re: /\bSQL injection\b/i, strong: true },
-  { id: "xss", re: /\b(?:XSS|cross[- ]site scripting)\b/i, strong: true },
-  { id: "ssrf", re: /\b(?:SSRF|server[- ]side request forgery)\b/i, strong: true },
-  { id: "prototype-pollution", re: /\bprototype pollution\b/i, strong: true },
+  { id: "auth-bypass", re: /\bauth(?:entication|orization)? bypass\b/i, strong: false },
+  { id: "rce", re: /\b(?:RCE|remote code execution)\b/i, strong: false },
+  { id: "sqli", re: /\bSQL injection\b/i, strong: false },
+  { id: "xss", re: /\b(?:XSS|cross[- ]site scripting)\b/i, strong: false },
+  { id: "ssrf", re: /\b(?:SSRF|server[- ]side request forgery)\b/i, strong: false },
+  { id: "prototype-pollution", re: /\bprototype pollution\b/i, strong: false },
   { id: "exploit", re: /\bexploit(?:s|able|ed)?\b/i, strong: false },
   { id: "dos", re: /\b(?:denial[- ]of[- ]service|ReDoS)\b/i, strong: false },
   { id: "security", re: /\bsecurity\b/i, strong: false },
@@ -63,6 +67,21 @@ const BREAKING_RULES: Rule[] = [
  */
 const INJECTION_RE =
   /(ignore|disregard|forget|override)\b[^\n]{0,40}\b(instruction|prompt|rule|guardrail)s?|\b(system prompt|you are (?:now|an?)\b|as an ai\b|assistant:|mark (?:everything|all|this|every)\b[^\n]{0,40}\bas\b|respond with|output the following|set is_[a-z_]+)/i;
+
+/**
+ * Lines about tests, fixtures, docs, CI or chores describe work on the project,
+ * not changes shipped to users. "Regression test for XSS-safe …" or "Bump next
+ * in upgrade eval fixtures for CVE-…" must never raise a security flag.
+ */
+const NON_PRODUCT_LINE =
+  /^\s*(?:[-*+]|\d+[.)])?\s*(?:\[(?:tests?|e2e|docs?|ci|chore|examples?|benchmarks?)\]|(?:tests?|e2e|docs?|ci|chore|build|examples?|style|refactor)(?:\([^)]*\))?!?:)|\b(?:regression tests?|test fixtures?|eval fixtures?|unit tests?|e2e tests?|test suite|benchmark)\b/i;
+
+export function productLines(text: string): string {
+  return text
+    .split("\n")
+    .filter((l) => !NON_PRODUCT_LINE.test(l))
+    .join("\n");
+}
 
 export function containsInjection(text: string): boolean {
   return INJECTION_RE.test(text);
@@ -102,7 +121,7 @@ export interface Prescreen {
 export function prescreen(title: string, body: string): Prescreen {
   const injectionDetected = containsInjection(title) || containsInjection(body);
   const t = stripInjection(title);
-  const b = stripInjection(body);
+  const b = productLines(stripInjection(body));
   return {
     security: [...scan("security", SECURITY_RULES, t, "title"), ...scan("security", SECURITY_RULES, b, "body")],
     breaking: [...scan("breaking", BREAKING_RULES, t, "title"), ...scan("breaking", BREAKING_RULES, b, "body")],
