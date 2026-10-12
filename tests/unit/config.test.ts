@@ -15,7 +15,9 @@ function contrast(a: string, b: string): number {
 describe("schedule", () => {
   it("vercel.json cron matches DIGEST_SCHEDULE", () => {
     const v = JSON.parse(readFileSync("vercel.json", "utf8")) as { crons: { path: string; schedule: string }[] };
-    expect(v.crons).toEqual([{ path: "/api/cron/weekly-digest", schedule: DIGEST_CRON_EXPRESSION }]);
+    expect(v.crons).toContainEqual({ path: "/api/cron/weekly-digest", schedule: DIGEST_CRON_EXPRESSION });
+    // Daily keep-alive so the free Supabase project is never paused for inactivity.
+    expect(v.crons).toContainEqual({ path: "/api/health", schedule: "0 6 * * *" });
     expect(DIGEST_CRON_EXPRESSION).toBe("30 3 * * 1");
   });
 });

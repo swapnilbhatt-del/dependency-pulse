@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1330" width="1800" height="1330">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3b4a43"/></marker></defs>
+<rect width="1800" height="1330" fill="#E4EFE6"/>
+<text x="60" y="78" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="800" fill="#17402F" text-anchor="start" letter-spacing="-0.5">Dependency Pulse — Components Map</text>
+<text x="60" y="116" font-family="Inter, Helvetica, Arial, sans-serif" font-size="19" fill="#2c4a3c">Every Monday, every tracked repo’s releases from the past 7 days. Flags need <tspan font-weight="700">quoted evidence</tspan>. <tspan font-weight="700">Keerthi decides what to upgrade.</tspan></text>
+<rect x="30" y="140" width="1740" height="1000" rx="16" fill="#FFFFFF"/>
+<rect x="1252" y="200" width="253" height="920" fill="#F3F7FD"/>
+<rect x="40" y="200" width="1718" height="920" fill="none" stroke="#c9cfca" stroke-width="1"/>
+<line x1="40" x2="1758" y1="315" y2="315" stroke="#d9ddd9"/>
+<line x1="40" x2="1758" y1="430" y2="430" stroke="#d9ddd9"/>
+<line x1="40" x2="1758" y1="545" y2="545" stroke="#d9ddd9"/>
+<line x1="40" x2="1758" y1="660" y2="660" stroke="#d9ddd9"/>
+<line x1="40" x2="1758" y1="775" y2="775" stroke="#d9ddd9"/>
+<line x1="40" x2="1758" y1="890" y2="890" stroke="#d9ddd9"/>
+<line x1="40" x2="1758" y1="1005" y2="1005" stroke="#d9ddd9"/>
+<line x1="240" x2="240" y1="160" y2="1120" stroke="#c9cfca"/>
+<line x1="493" x2="493" y1="160" y2="1120" stroke="#c9cfca" stroke-dasharray="2 5"/>
+<line x1="746" x2="746" y1="160" y2="1120" stroke="#c9cfca" stroke-dasharray="2 5"/>
+<line x1="999" x2="999" y1="160" y2="1120" stroke="#c9cfca" stroke-dasharray="2 5"/>
+<line x1="1252" x2="1252" y1="160" y2="1120" stroke="#c9cfca" stroke-dasharray="2 5"/>
+<line x1="1505" x2="1505" y1="160" y2="1120" stroke="#c9cfca" stroke-dasharray="2 5"/>
+<text x="366.5" y="184" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#2a3a33" text-anchor="middle" letter-spacing="2.5">TRIGGER</text>
+<text x="619.5" y="184" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#2a3a33" text-anchor="middle" letter-spacing="2.5">INPUT</text>
+<text x="872.5" y="184" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#2a3a33" text-anchor="middle" letter-spacing="2.5">CONTEXT</text>
+<text x="1125.5" y="184" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#2a3a33" text-anchor="middle" letter-spacing="2.5">PROCESSING</text>
+<text x="1378.5" y="184" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#3F7FE0" text-anchor="middle" letter-spacing="2.5">AI</text>
+<text x="1631.5" y="184" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#2a3a33" text-anchor="middle" letter-spacing="2.5">OUTPUT</text>
+<text x="140" y="254" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">KEERTHI</text>
+<text x="140" y="273" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">Senior engineer · reader</text>
+<text x="140" y="369" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">VERCEL CRON</text>
+<text x="140" y="388" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">Hobby · once a day max</text>
+<text x="140" y="484" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">PULSE PIPELINE</text>
+<text x="140" y="503" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">Next.js on Vercel · bom1</text>
+<text x="140" y="599" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">GITHUB REST API</text>
+<text x="140" y="618" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">read-only token · 2022-11-28</text>
+<text x="140" y="714" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">GEMINI FLASH</text>
+<text x="140" y="733" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">gemini-3.8-flash · JSON only</text>
+<text x="140" y="829" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">SUPABASE POSTGRES</text>
+<text x="140" y="848" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">Database · free plan</text>
+<text x="140" y="944" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">RESEND</text>
+<text x="140" y="963" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">Email · onboarding sender</text>
+<text x="140" y="1059" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="800" fill="#1d2125" text-anchor="middle" letter-spacing="0">PULSE WEB</text>
+<text x="140" y="1078" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">Public archive + admin</text>
+<rect x="507" y="218" width="225" height="78" rx="7" fill="#FCE7A6" stroke="#D9921E" stroke-width="2"/>
+<rect x="517" y="209" width="49" height="17" rx="3" fill="#D9921E"/>
+<text x="541.5" y="221" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.8">HUMAN</text>
+<text x="619.5" y="245.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#3d2a00" text-anchor="middle" letter-spacing="0">Adds, disables, annotates</text>
+<text x="619.5" y="261.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#3d2a00" text-anchor="middle" letter-spacing="0">repos in /admin</text>
+<text x="619.5" y="277.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#3d2a00" text-anchor="middle" letter-spacing="0">no code, no redeploy</text>
+<rect x="1519" y="218" width="225" height="78" rx="7" fill="#FCE7A6" stroke="#D9921E" stroke-width="2"/>
+<rect x="1529" y="209" width="49" height="17" rx="3" fill="#D9921E"/>
+<text x="1553.5" y="221" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.8">HUMAN</text>
+<text x="1631.5" y="245.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#3d2a00" text-anchor="middle" letter-spacing="0">Reads Act now → Review → FYI</text>
+<text x="1631.5" y="261.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#3d2a00" text-anchor="middle" letter-spacing="0">in five minutes; checks the</text>
+<text x="1631.5" y="277.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#3d2a00" text-anchor="middle" letter-spacing="0">quoted line before upgrading</text>
+<rect x="254" y="333" width="225" height="78" rx="7" fill="#FFFFFF" stroke="#8a8a80" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="366.5" y="360.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">Mon 03:30 UTC = 09:00 IST</text>
+<text x="366.5" y="376.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">GET /api/cron/weekly-digest</text>
+<text x="366.5" y="392.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">Bearer CRON_SECRET</text>
+<rect x="254" y="448" width="225" height="78" rx="7" fill="#FFFFFF" stroke="#2a2f33" stroke-width="1.3"/>
+<text x="366.5" y="475.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">Scheduler endpoint</text>
+<text x="366.5" y="491.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">401 without secret;</text>
+<text x="366.5" y="507.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">one send per ISO week</text>
+<rect x="507" y="448" width="225" height="78" rx="7" fill="#FFFFFF" stroke="#2a2f33" stroke-width="1.3"/>
+<text x="619.5" y="475.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">Repo Registry</text>
+<text x="619.5" y="491.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">enabled repos, priority,</text>
+<text x="619.5" y="507.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">category (from Postgres)</text>
+<rect x="760" y="448" width="225" height="78" rx="7" fill="#EEE6FF" stroke="#7A4FE0" stroke-width="2"/>
+<text x="872.5" y="475.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#2b175e" text-anchor="middle" letter-spacing="0">Window &amp; Filter (no AI)</text>
+<text x="872.5" y="491.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2b175e" text-anchor="middle" letter-spacing="0">last 7 days UTC; drafts,</text>
+<text x="872.5" y="507.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2b175e" text-anchor="middle" letter-spacing="0">issues, PRs, commits out</text>
+<rect x="1013" y="448" width="225" height="78" rx="7" fill="#EEE6FF" stroke="#7A4FE0" stroke-width="2"/>
+<text x="1125.5" y="475.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#2b175e" text-anchor="middle" letter-spacing="0">Signals (no AI)</text>
+<text x="1125.5" y="491.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2b175e" text-anchor="middle" letter-spacing="0">keywords · semver bump ·</text>
+<text x="1125.5" y="507.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2b175e" text-anchor="middle" letter-spacing="0">advisory match · quote check</text>
+<rect x="1519" y="448" width="225" height="78" rx="7" fill="#EEE6FF" stroke="#7A4FE0" stroke-width="2"/>
+<text x="1631.5" y="475.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#2b175e" text-anchor="middle" letter-spacing="0">Digest Builder</text>
+<text x="1631.5" y="491.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2b175e" text-anchor="middle" letter-spacing="0">tiers · impact order · dedupe</text>
+<text x="1631.5" y="507.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2b175e" text-anchor="middle" letter-spacing="0">→ HTML, text, web model</text>
+<rect x="507" y="563" width="225" height="78" rx="7" fill="#FFFFFF" stroke="#8a8a80" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="619.5" y="590.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">Releases (paged, ETag)</text>
+<text x="619.5" y="606.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">tags only if no releases</text>
+<text x="619.5" y="622.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">+ security advisories</text>
+<rect x="1266" y="678" width="225" height="78" rx="7" fill="#E2EDFC" stroke="#3F7FE0" stroke-width="2"/>
+<rect x="1276" y="669" width="28" height="17" rx="3" fill="#3F7FE0"/>
+<text x="1290.0" y="681" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.8">AI</text>
+<text x="1378.5" y="705.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0f2f5e" text-anchor="middle" letter-spacing="0">Summary + classification</text>
+<text x="1378.5" y="721.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#0f2f5e" text-anchor="middle" letter-spacing="0">JSON schema, zod-checked;</text>
+<text x="1378.5" y="737.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#0f2f5e" text-anchor="middle" letter-spacing="0">1 retry → first-lines fallback</text>
+<rect x="507" y="805" width="1237" height="54" rx="7" fill="#F2F2EE" stroke="#8a8a80" stroke-width="1.3"/>
+<text x="1125.5" y="836.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#2a2a26" text-anchor="middle" letter-spacing="0">repos · releases · classifications (AI cache: release + body hash + model) · digest_runs (unique ISO week) · digest_items · deliveries · recipients · run log · audit log</text>
+<rect x="1519" y="908" width="225" height="78" rx="7" fill="#FDEDEA" stroke="#B0412F" stroke-width="2"/>
+<text x="1631.5" y="935.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#4a120a" text-anchor="middle" letter-spacing="0">One email per recipient</text>
+<text x="1631.5" y="951.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#4a120a" text-anchor="middle" letter-spacing="0">idempotency key per week;</text>
+<text x="1631.5" y="967.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#4a120a" text-anchor="middle" letter-spacing="0">retry once, then mark failed</text>
+<rect x="507" y="1023" width="225" height="78" rx="7" fill="#FFFFFF" stroke="#2a2f33" stroke-width="1.3"/>
+<text x="619.5" y="1050.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">/admin (signed cookie)</text>
+<text x="619.5" y="1066.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">repos, recipients,</text>
+<text x="619.5" y="1082.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#1d2125" text-anchor="middle" letter-spacing="0">preview · send · resend</text>
+<rect x="1519" y="1023" width="225" height="78" rx="7" fill="#FDEDEA" stroke="#B0412F" stroke-width="2"/>
+<text x="1631.5" y="1050.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="600" fill="#4a120a" text-anchor="middle" letter-spacing="0">/digest/[week] · /archive</text>
+<text x="1631.5" y="1066.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#4a120a" text-anchor="middle" letter-spacing="0">public, no emails;</text>
+<text x="1631.5" y="1082.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12.5" font-weight="400" fill="#4a120a" text-anchor="middle" letter-spacing="0">light/dark, print</text>
+<path d="M366.5,411 L366.5,448" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="406.5" y="425" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">Bearer ok</text>
+<path d="M479,487.0 L507,487.0" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<path d="M589.5,526 L589.5,563" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="613.5" y="556" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">fetch</text>
+<path d="M732,602.0 L786,602.0 L786,526" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="838" y="606.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">raw payloads</text>
+<path d="M985,487.0 L1013,487.0" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<path d="M1238,475.0 L1378.5,475.0 L1378.5,668" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="1380.5" y="527.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">release notes as data</text>
+<path d="M1491,717.0 L1545,717.0 L1545,526" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="1613" y="721.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">guardrails applied</text>
+<path d="M1691.5,526 L1691.5,805" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="1711.5" y="786" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">save</text>
+<path d="M1721.5,859 L1721.5,908" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<path d="M1748,947.0 L1766,947.0 L1766,257.0 L1746,257.0" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<path d="M1519,1062.0 L1511,1062.0 L1511,859" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="1489" y="947.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">reads</text>
+<path d="M507,257.0 L499,257.0 L499,1062.0 L505,1062.0" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="479" y="947.0" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">uses</text>
+<path d="M619.5,1023 L619.5,859" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="643.5" y="1015" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">saves</text>
+<path d="M740,805 L740,540 L679.5,540 L679.5,526" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="696" y="787" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">enabled repos</text>
+<path d="M1125.5,805 L1125.5,526" fill="none" stroke="#3b4a43" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+<text x="1193.5" y="753" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#3b4a43" text-anchor="middle" letter-spacing="0">cache hit = no AI call</text>
+<text x="1378.5" y="776" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">429/outage → fallback, run still ships</text>
+<text x="619.5" y="659" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="400" fill="#5f6b65" text-anchor="middle" letter-spacing="0">404 → “Could not check”</text>
+<rect x="60" y="1151" width="34" height="20" rx="4" fill="#FCE7A6" stroke="#D9921E" stroke-width="1.6"/>
+<text x="106" y="1166" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1d2125" text-anchor="start" letter-spacing="0">Human checkpoint (2)</text>
+<rect x="360" y="1151" width="34" height="20" rx="4" fill="#EEE6FF" stroke="#7A4FE0" stroke-width="1.6"/>
+<text x="406" y="1166" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1d2125" text-anchor="start" letter-spacing="0">Deterministic rules, no AI</text>
+<rect x="660" y="1151" width="34" height="20" rx="4" fill="#E2EDFC" stroke="#3F7FE0" stroke-width="1.6"/>
+<text x="706" y="1166" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1d2125" text-anchor="start" letter-spacing="0">AI: summarize + classify only</text>
+<rect x="60" y="1185" width="34" height="20" rx="4" fill="#FFFFFF" stroke="#8a8a80" stroke-width="1.6" stroke-dasharray="4 3"/>
+<text x="106" y="1200" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1d2125" text-anchor="start" letter-spacing="0">External service</text>
+<rect x="360" y="1185" width="34" height="20" rx="4" fill="#F2F2EE" stroke="#8a8a80" stroke-width="1.6"/>
+<text x="406" y="1200" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1d2125" text-anchor="start" letter-spacing="0">Database</text>
+<rect x="660" y="1185" width="34" height="20" rx="4" fill="#FDEDEA" stroke="#B0412F" stroke-width="1.6"/>
+<text x="706" y="1200" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1d2125" text-anchor="start" letter-spacing="0">What Keerthi receives</text>
+<text x="990" y="1161" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1d2125">• <tspan font-weight="700">Evidence before urgency:</tspan> a flag needs a quoted line from the notes, a GitHub advisory, or a major bump.</text>
+<text x="990" y="1189" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1d2125">• <tspan font-weight="700">Nothing is hidden:</tspan> every in-window release appears, as a card, a line, or “+N earlier releases”.</text>
+<text x="990" y="1217" font-family="Inter, Helvetica, Arial, sans-serif" font-size="14" fill="#1d2125">• <tspan font-weight="700">Free to run:</tspan> Vercel Hobby · Supabase free · Gemini Flash · Resend. Releases only, no scraping.</text>
+</svg>
