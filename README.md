@@ -144,8 +144,9 @@ All requests send `X-GitHub-Api-Version: 2022-11-28`.
 | Email | Accepted by Resend (message ID recorded, `digest_deliveries.status = sent`) |
 | `/api/health` | `ok: true`, DB reachable, all config present (no values exposed) |
 | Unit tests | 203 passed |
+| Print (A4 and US Letter) | Real PDFs generated with print media: 6 pages each, headings kept with content, evidence and next-step blocks never split ([docs/print/](docs/print/)) |
 | Playwright + axe (desktop and mobile) | 26 passed; zero serious or critical violations on every public and admin page |
-| Lighthouse mobile, `/digest/2026-W42` (UI v2) | Performance 100 and 99 on cached loads (94 on the very first request after a deploy, which also renders the page), Accessibility 100, Best Practices 100, SEO 100; home 98/100/100/100, archive 100/100/100/100 (reports in `docs/lighthouse/`) |
+| Lighthouse mobile, `/digest/2026-W42` (UI v2) | Three runs straight after a deploy: Performance 99, 100, 95 (first visit is served from the build prerender, `x-vercel-cache: PRERENDER`); Accessibility, Best Practices, SEO 100 on every run. Home and archive 100/100/100/100 (reports in `docs/lighthouse/`) |
 
 ## Known limitations and next steps
 
