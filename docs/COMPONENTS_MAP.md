@@ -135,7 +135,7 @@ flowchart LR
    - published security advisories.
    ETags avoid re-downloading unchanged pages.
 5. The **Normalizer** strips noise and hashes each body. The **Window & Filter** step keeps releases where `published_at` falls inside the window, drops drafts, and dedupes by release id and by repo and tag.
-6. Releases are upserted. Earlier digests are consulted so a re-edited release shows under "Updated since last digest" instead of as new.
+6. Releases are upserted. Earlier digests are consulted. Releases from the 4 weeks *before* the window are re-checked too: one already reported whose notes have changed since (by body hash) returns under "Updated since last digest", because weekly windows never overlap and an edit would otherwise go unseen.
 7. **Classification:** cached results (by release, body hash and model) are reused. Otherwise Gemini Flash gets the notes inside explicit data delimiters, with 3 calls running at once. Every response is zod-validated, retried once, and falls back to the first lines of the notes if it still fails.
 8. **Guardrails:** a flag survives only with pre-screen signals, a matched advisory or a major bump, *and* a quote that exists verbatim in the notes. Strong signals (CVE or GHSA IDs, "BREAKING CHANGE") can set a flag on their own. Lines from tests, docs and CI are ignored.
 9. The **Digest Builder** assigns tiers, sorts by impact, collapses duplicates, groups FYI by category, writes one "why flagged" sentence and a next step per flagged item, and renders HTML and plain text. Gemini writes a 3-sentence summary, which is rejected if it mentions any version, ID or number not in its input.
