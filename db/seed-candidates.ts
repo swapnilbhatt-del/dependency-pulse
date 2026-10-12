@@ -35,7 +35,7 @@ async function main() {
   const client = postgres(url, { prepare: false, max: 1 });
   const db = drizzle(client, { schema });
   for (const e of EXAMPLES) {
-    const res = await fetch(`https://api.github.com/repos/${e.fullName}`, { headers: { Authorization: `Bearer ${token}`, "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "dependency-pulse-seed" } });
+    const res = await fetch(`https://api.github.com/repos/${e.fullName}`, { headers: { Authorization: `Bearer ${token}`, "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "upstream-weekly-seed" } });
     if (!res.ok) {
       console.log(`  skip ${e.fullName} (HTTP ${res.status})`);
       continue;

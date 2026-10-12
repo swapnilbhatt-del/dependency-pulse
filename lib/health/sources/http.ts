@@ -56,7 +56,7 @@ export async function fetchJson<T>(
       try {
         res = await f(url, {
           method: init.method ?? "GET",
-          headers: { Accept: "application/json", "User-Agent": "dependency-pulse-adoption-check", ...(init.body ? { "Content-Type": "application/json" } : {}), ...init.headers },
+          headers: { Accept: "application/json", "User-Agent": "upstream-weekly-adoption-check", ...(init.body ? { "Content-Type": "application/json" } : {}), ...init.headers },
           body: init.body ? JSON.stringify(init.body) : undefined,
           signal: AbortSignal.timeout(timeout),
         });

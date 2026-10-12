@@ -42,6 +42,6 @@ Quiet this week (checked, no releases): expressjs/express
 
 --
 5 repos checked, 5 releases found, 0 AI fallbacks, run 12 Oct 2026, 09:01 (Asia/Kolkata).
-Web: https://dependency-pulse.vercel.app/digest/2026-W42
-Archive: https://dependency-pulse.vercel.app/archive
-Manage repositories: https://dependency-pulse.vercel.app/admin
+Web: https://upstream-weekly.vercel.app/digest/2026-W42
+Archive: https://upstream-weekly.vercel.app/archive
+Manage repositories: https://upstream-weekly.vercel.app/admin

@@ -22,7 +22,7 @@ async function main() {
   const failed: string[] = [];
   for (const r of SEED_REPOS) {
     const res = await fetch(`https://api.github.com/repos/${r.fullName}`, {
-      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "dependency-pulse-seed" },
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "upstream-weekly-seed" },
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {

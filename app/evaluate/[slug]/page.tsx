@@ -322,7 +322,7 @@ export default async function ReportPage({ params }: PageProps<"/evaluate/[slug]
               </a>
             ) : null;
           })}
-          <Link href="https://github.com/swapnilbhatt-del/dependency-pulse/blob/main/docs/HEALTH_METHOD.md">How to recompute this verdict</Link>
+          <Link href="https://github.com/swapnilbhatt-del/upstream-weekly/blob/main/docs/HEALTH_METHOD.md">How to recompute this verdict</Link>
         </p>
         <p className="text-xs text-ink-3">
           Weights: {DIMENSIONS.map((d) => `${DIMENSION_LABEL[d]} ${WEIGHTS[d]}`).join(" · ")}.

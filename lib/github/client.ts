@@ -99,7 +99,7 @@ export class GithubClient {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${this.opts.token}`,
         "X-GitHub-Api-Version": GITHUB_API_VERSION,
-        "User-Agent": "dependency-pulse",
+        "User-Agent": "upstream-weekly",
       };
       if (cached) headers["If-None-Match"] = cached.etag;
 

@@ -41,7 +41,7 @@ function goldenModel() {
     window: { start: new Date("2026-10-05T03:30:00Z"), end: new Date("2026-10-12T03:30:00Z") },
     generatedAt: new Date("2026-10-12T03:31:00Z"),
     timezoneLabel: "Asia/Kolkata",
-    baseUrl: "https://dependency-pulse.vercel.app",
+    baseUrl: "https://upstream-weekly.vercel.app",
     releases,
     repoOutcomes: outcomes,
     advisoryOnly: [],
@@ -64,7 +64,7 @@ describe("live digest golden output (non-regression)", () => {
 
 describe("Evaluation watchlist email section (feature flag)", () => {
   const model = goldenModel();
-  const items = [{ name: "panva/jose", verdict: "Watch", score: 81, reason: "One contributor authored 98 percent of commits in the last 365 days (low bus factor).", url: "https://dependency-pulse.vercel.app/evaluate/panva--jose" }];
+  const items = [{ name: "panva/jose", verdict: "Watch", score: 81, reason: "One contributor authored 98 percent of commits in the last 365 days (low bus factor).", url: "https://upstream-weekly.vercel.app/evaluate/panva--jose" }];
   it("flag off (null or empty) → byte-identical to the golden digest", async () => {
     await expect(renderEmailHtml(model, null)).toMatchFileSnapshot("./__golden__/digest-email.html");
     await expect(renderEmailHtml(model, [])).toMatchFileSnapshot("./__golden__/digest-email.html");
