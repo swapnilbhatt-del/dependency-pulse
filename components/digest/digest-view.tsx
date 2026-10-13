@@ -82,18 +82,20 @@ export function Masthead({ d, toolbar }: { d: DigestModel; toolbar?: React.React
       <PulseLine className="pulse-line" />
       <div className="relative mx-auto max-w-[60rem] px-4 sm:px-6 pb-16">
         {toolbar}
-        <p className="pt-6 sm:pt-8 text-xs font-semibold uppercase tracking-[0.14em] text-mast-ink-2 tabular">
+        <p className="pt-6 sm:pt-8 text-xs font-semibold uppercase tracking-[0.14em] text-mast-ink-2 tabular enter" style={{ ["--i" as string]: 0 }}>
           Weekly release digest · {d.isoWeek} · {fmtWindow(d.window.start, d.window.end, d.timezoneLabel)}
         </p>
-        <h1 className="mt-3 font-display text-[2.6rem] sm:text-[4rem] leading-[1.02] text-mast-ink">
+        <h1 className="mt-3 font-display text-[2.6rem] sm:text-[4rem] leading-[1.02] text-mast-ink enter-soft" style={{ ["--i" as string]: 1 }}>
           <span className="block font-sans text-base sm:text-lg font-semibold tracking-normal text-mast-ink-2">Upstream Weekly,</span>
           week of {fmtWeekOf(d.weekOf)}
         </h1>
-        <StatusLine d={d} />
-        <div className="mt-7">
+        <div className="enter-soft" style={{ ["--i" as string]: 2 }}>
+          <StatusLine d={d} />
+        </div>
+        <div className="mt-7 enter" style={{ ["--i" as string]: 3 }}>
           <SummaryBar d={d} />
         </div>
-        <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-mast-ink-2 tabular">
+        <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-mast-ink-2 tabular enter" style={{ ["--i" as string]: 4 }}>
           <span>{d.counts.reposChecked} repos checked</span>
           <span aria-hidden="true">·</span>
           <span>{d.counts.releasesFound} releases</span>

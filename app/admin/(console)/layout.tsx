@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   await requireAdmin();
   return (
     <ToastProvider>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-6" data-area="admin">
         <AdminNav />
         <main id="main" className="pt-6">
           {children}

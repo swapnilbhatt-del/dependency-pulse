@@ -767,6 +767,135 @@ a.stat-tile:hover {
   }
 }
 
+/* ─── Visible refresh (v3): header, entrances, spotlight, verdict edges, rings ─ */
+/* Pages with a dark masthead carry their own nav; never show the light header too. */
+body:has(.masthead) .site-header {
+  display: none;
+}
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in oklab, var(--bg) 84%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+}
+.nav-link {
+  position: relative;
+}
+.nav-link[aria-current="page"] {
+  font-weight: 600;
+}
+.nav-link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* Hero entrance: plays from first paint, so nothing waits for JavaScript.
+   .enter fades and rises; .enter-soft only rises, so the largest text is
+   painted (and counted for LCP) immediately. --i sets the stagger. */
+@media (prefers-reduced-motion: no-preference) {
+  .enter {
+    animation: enter-rise 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  .enter-soft {
+    animation: enter-soft 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  .ring-arc {
+    animation: ring-draw 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 150ms both;
+  }
+}
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes enter-soft {
+  from {
+    transform: translateY(8px);
+  }
+}
+@keyframes ring-draw {
+  from {
+    stroke-dashoffset: var(--circ);
+  }
+}
+
+/* Cursor spotlight on cards (pointer position set by components/motion.tsx). */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .spot:hover,
+  .card.lift:not([data-area="admin"] *):hover {
+    background-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, 20%), color-mix(in oklab, var(--brand) 9%, transparent), transparent 70%);
+  }
+  .lift:not([data-area="admin"] *):hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Verdict edge on candidate cards. */
+.verdict-edge {
+  border-left: 3px solid var(--edge, var(--line-strong));
+}
+.verdict-edge[data-edge="healthy"] {
+  --edge: var(--ok);
+}
+.verdict-edge[data-edge="watch"] {
+  --edge: var(--review);
+}
+.verdict-edge[data-edge="risky"] {
+  --edge: var(--act);
+}
+
+/* Score ring. */
+.score-ring {
+  --ring-track: var(--surface-2);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.masthead .score-ring {
+  --ring-track: rgb(255 255 255 / 0.12);
+}
+.score-ring svg {
+  position: absolute;
+  inset: 0;
+}
+.score-ring-num {
+  position: relative;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Chips on dark mastheads. */
+.masthead .chip:not(.chip-ok):not(.chip-review):not(.chip-act) {
+  background: transparent;
+  border-color: var(--mast-line);
+  color: var(--mast-ink-2);
+}
+
+/* Stacked verdict distribution bar. */
+.dist-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 0.1);
+}
+.dist-bar > span {
+  display: block;
+  height: 100%;
+}
+
 /* GSAP sets inline opacity/transform on cards, bars and meters as they scroll
    in (components/motion.tsx). Printing must never catch them mid-animation. */
 @media print {
@@ -775,9 +904,14 @@ a.stat-tile:hover {
   .stat-tile,
   [data-reveal],
   .bar-track > span,
-  .meter > span {
+  .meter > span,
+  .enter,
+  .enter-soft {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .ring-arc {
+    animation: none !important;
   }
 }
 

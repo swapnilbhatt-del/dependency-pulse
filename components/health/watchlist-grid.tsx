@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ReasonTagBadge, ScoreMeter, VerdictChip } from "@/components/health/verdict";
+import { ReasonTagBadge, ScoreRing, VerdictChip } from "@/components/health/verdict";
 import { IconArrowRight } from "@/components/icons";
 import { ADOPTION_STATUS_LABEL } from "@/lib/health/labels";
 import type { CandidateCard } from "@/lib/health/queries";
@@ -50,7 +50,7 @@ export function WatchlistGrid({ cards }: { cards: CandidateCard[] }) {
       ) : (
         <ul className="mt-6 grid gap-4 md:grid-cols-2" data-testid="watchlist">
           {shown.map((c) => (
-            <li key={c.slug} className="card lift flex flex-col p-5" data-testid="candidate-card">
+            <li key={c.slug} className="card lift spot verdict-edge flex flex-col p-5" data-edge={c.verdict ?? "none"} data-testid="candidate-card">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h2 className="font-semibold text-lg break-all">
@@ -60,7 +60,7 @@ export function WatchlistGrid({ cards }: { cards: CandidateCard[] }) {
                   </h2>
                   <p className="mt-0.5 text-sm text-ink-2">{c.intendedUse || <span className="text-ink-3">No intended use recorded</span>}</p>
                 </div>
-                <ScoreMeter score={c.score} coverage={null} compact />
+                <ScoreRing score={c.score} verdict={c.verdict} size={60} stroke={6} />
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 <VerdictChip verdict={c.verdict} />

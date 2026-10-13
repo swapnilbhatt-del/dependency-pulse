@@ -108,7 +108,7 @@ The Adoption Check pages (`/evaluate`, `/evaluate/[slug]`, `/evaluate/compare`, 
   - ✓ Healthy, ◐ Watch and ⚠ Risky are filled chips.
   - **Insufficient data** uses a *dashed* outline (`.chip-dashed`), a ? icon and neutral ink. Missing evidence should read as "unknown", not as a warning or a pass.
   - "Not checked yet" uses the same dashed style.
-- **Score meter.** A serif numeral "/ 100" over a thin bar colored by band, with the weight coverage underneath ("85% of weight had data (partial)"). When there is no score, it shows "—" and an empty bar, never 0.
+- **Score ring** (`ScoreRing`). A circle whose arc length is the score, coloured by the *verdict* (a gate can cap an 81 to Watch, so the ring never looks Healthy when the verdict is not). The number sits in the middle in the display serif. It shows "—" with an empty track when there is no score, never 0. Cards use a 60px ring; the report hero uses a 132px ring with "/ 100" and the weight coverage underneath.
 - **Reason rows.** A fixed-width tag column with an arrow icon and a label (↑ Positive, • Neutral, ↓ Concern), then the sentence and a source link. The rows follow the scoring order: gates first, then concerns by weight, then positives. A balance line ("3 concerns · 4 neutral · 9 positive") gives the shape before the detail.
 - **AI text.** The narrative ends with a caption that says who wrote it and how it was checked: by Gemini Flash with every number verified, or by a template when validation failed. Every narrative line cites the reason it rests on.
 - **Compare table.**
@@ -118,3 +118,17 @@ The Adoption Check pages (`/evaluate`, `/evaluate/[slug]`, `/evaluate/compare`, 
   - "Copy as Markdown" puts the same table on the clipboard for a design doc or PR, and announces the copy in a polite live region.
 - **Trend.** The change is written out in words first ("Score moved from 78 to 81; the verdict stayed Watch", plus each dimension whose band changed). Below that is one row per weekly snapshot: ISO week, verdict chip, score with a thin bar, and coverage. The row currently shown is marked "Shown above".
 - **Loading.** Each route has its own skeleton that matches the final layout (watchlist grid, report sections, compare table), so streamed content never shifts the page.
+
+## Visible refresh (v3)
+
+Same tokens, fonts and content as before; the first screen of each public page changed.
+
+- **Dark masthead on Adoption Check and reports.** The watchlist opens with the title and three verdict tiles (Healthy, Watch, Risky; Insufficient data appears only when non-zero) above a stacked distribution bar. Reports open with the name, chips and a large score ring. The glow follows the verdict.
+- **One header per page.** Pages with a masthead carry their own nav row. The light site header hides on them, both by path and by a CSS backstop (`body:has(.masthead) .site-header`), because Vercel's background re-render of `/` reports its path as `/index`. Elsewhere the light header is sticky and frosted.
+- **Current section.** The nav marks the section you are in with `aria-current="page"` and an underline.
+- **Hero entrance.** It plays from first paint, in CSS, so it never waits for JavaScript. `.enter` fades and rises 14px; `.enter-soft` only rises 8px and is used on the headline and lede, so the largest text is painted (and counted for LCP) at once. Steps are staggered 70ms. Score rings draw in over 900ms.
+- **Cards.** A soft brand-tinted spotlight follows the cursor, and the card lifts 2px on hover; both are desktop-only and off for reduced motion. Candidate cards have a 3px verdict-coloured left edge, matching the tier rule on release cards.
+- **Home** gains an Adoption Check panel with the live verdict counts.
+- **Where it doesn't apply:** admin is untouched (`data-area="admin"`).
+- **Lighthouse mobile (local production build):** home 98, Adoption Check 98, report 95–97, digest 97. Accessibility 100, CLS 0.
+

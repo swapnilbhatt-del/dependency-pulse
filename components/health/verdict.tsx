@@ -66,3 +66,50 @@ export function ReasonBalance({ reasons }: { reasons: { tag: ReasonTag }[] }) {
     </p>
   );
 }
+
+const RING_COLOR = { light: { ok: "var(--ok)", review: "var(--review)", act: "var(--act)" }, dark: { ok: "var(--mast-ok)", review: "var(--mast-review)", act: "var(--mast-act)" } } as const;
+
+const VERDICT_BAND: Record<Verdict, "ok" | "review" | "act" | null> = { healthy: "ok", watch: "review", risky: "act", insufficient: null };
+
+/**
+ * Circular score: the arc length is the score. It is coloured by the verdict when one is given
+ * (a gate can cap an 81 to Watch, so the ring must not look Healthy), otherwise by score band.
+ */
+export function ScoreRing({ score, verdict, size = 64, stroke = 6, tone = "light", showMax = false }: { score: number | null; verdict?: Verdict | null; size?: number; stroke?: number; tone?: "light" | "dark"; showMax?: boolean }) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const pct = score === null ? 0 : Math.max(0, Math.min(100, score)) / 100;
+  const band = score === null ? null : verdict ? VERDICT_BAND[verdict] : score >= 75 ? "ok" : score >= 50 ? "review" : "act";
+  const offset = (circ * (1 - pct)).toFixed(2);
+  const mid = size / 2;
+  return (
+    <div className="score-ring" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+        <circle cx={mid} cy={mid} r={r} fill="none" stroke="var(--ring-track)" strokeWidth={stroke} />
+        {band && (
+          <circle
+            className="ring-arc"
+            cx={mid}
+            cy={mid}
+            r={r}
+            fill="none"
+            stroke={RING_COLOR[tone][band]}
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={circ.toFixed(2)}
+            strokeDashoffset={offset}
+            transform={`rotate(-90 ${mid} ${mid})`}
+            style={{ ["--circ" as string]: circ.toFixed(2) }}
+            data-ring={offset}
+          />
+        )}
+      </svg>
+      <span className="score-ring-num">
+        <span className="font-display tabular" style={{ fontSize: Math.round(size * 0.36) }} data-count>
+          {score ?? "—"}
+        </span>
+        {showMax ? <span className={`block text-xs ${tone === "dark" ? "text-mast-ink-2" : "text-ink-3"}`}>/ 100</span> : <span className="sr-only"> out of 100</span>}
+      </span>
+    </div>
+  );
+}

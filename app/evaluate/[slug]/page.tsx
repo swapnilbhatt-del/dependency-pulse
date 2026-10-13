@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ReasonBalance, ReasonTagBadge, ScoreMeter, VerdictChip } from "@/components/health/verdict";
+import { ReasonBalance, ReasonTagBadge, ScoreRing, VerdictChip } from "@/components/health/verdict";
+import { MastNav } from "@/components/mast-nav";
 import { IconExternal } from "@/components/icons";
 import { DIMENSIONS, HEALTH_CONFIG_VERSION, WEIGHTS } from "@/lib/health/config";
 import { ADOPTION_STATUS_LABEL, BACKING_LABEL, DIMENSION_LABEL } from "@/lib/health/labels";
@@ -30,6 +31,8 @@ export async function generateMetadata({ params }: PageProps<"/evaluate/[slug]">
   const v = r.verdict ? VERDICT_LABEL[r.verdict] : "Not checked yet";
   return { title: `${r.fullName}: ${v}`, description: `Adoption Check for ${r.fullName}: ${v}${r.score !== null ? `, score ${r.score}` : ""}.`, alternates: { canonical: `/evaluate/${slug}` } };
 }
+
+const GLOW = { healthy: "rgb(94 234 212 / 0.18)", watch: "rgb(246 200 110 / 0.18)", risky: "rgb(255 143 132 / 0.22)", insufficient: "rgb(195 202 211 / 0.12)" } as const;
 
 const fmt = (iso: string | null) => (iso ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC" }).format(new Date(iso)) + " UTC" : "—");
 const SOURCE_LABEL: Record<string, string> = { github: "GitHub REST API", scorecard: "OpenSSF Scorecard", osv: "OSV.dev", npm: "npm registry", pypi: "PyPI / pypistats" };
@@ -76,34 +79,58 @@ export default async function ReportPage({ params }: PageProps<"/evaluate/[slug]
   const n = r.narrative;
   const trend = trendSummary(r.trend);
   return (
-    <main id="main" className="mx-auto max-w-4xl px-4 sm:px-6 pt-8">
-      <nav aria-label="Breadcrumb" className="text-sm">
-        <Link href="/evaluate">Adoption Check</Link> <span className="text-ink-3">/</span> <span className="text-ink-2">{r.fullName}</span>
-      </nav>
-
+    <main id="main">
       {/* 1. Header */}
-      <header className="card lift mt-4 p-5 sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-5">
-          <div className="min-w-0">
-            <p className="eyebrow">Adoption Check</p>
-            <h1 className="mt-1 font-display text-[2.2rem] sm:text-[2.8rem] leading-tight break-all">{r.fullName}</h1>
-            {r.intendedUse && <p className="mt-1 text-ink-2">Intended use: {r.intendedUse}</p>}
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              <VerdictChip verdict={r.verdict} large />
-              <span className="chip !min-h-9 !px-3.5 !text-sm">{ADOPTION_STATUS_LABEL[r.adoptionStatus]}</span>
-              {r.isExample && <span className="chip chip-dashed !min-h-9">Example candidate, replace me</span>}
-              {r.backing && <span className="chip !min-h-9">{BACKING_LABEL[r.backing as keyof typeof BACKING_LABEL]}</span>}
+      <header className="masthead" style={{ ["--mast-glow" as string]: GLOW[r.verdict ?? "insufficient"] }}>
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 pb-10 sm:pb-12">
+          <MastNav />
+          <nav aria-label="Breadcrumb" className="mt-6 text-sm text-mast-ink-2 enter" style={{ ["--i" as string]: 0 }}>
+            <Link href="/evaluate" className="underline underline-offset-2">
+              Adoption Check
+            </Link>{" "}
+            <span aria-hidden="true">/</span> <span>{r.fullName}</span>
+          </nav>
+          <div className="mt-5 flex flex-wrap items-start justify-between gap-6">
+            <div className="min-w-0 flex-1">
+              <p className="eyebrow !text-[var(--mast-ok)] enter" style={{ ["--i" as string]: 1 }}>
+                Adoption Check
+              </p>
+              <h1 className="mt-2 font-display text-[2.4rem] sm:text-[3.4rem] leading-[1.02] text-mast-ink break-all enter-soft" style={{ ["--i" as string]: 1 }}>
+                {r.fullName}
+              </h1>
+              {r.intendedUse && (
+                <p className="mt-2 text-mast-ink-2 enter-soft" style={{ ["--i" as string]: 2 }}>
+                  Intended use: {r.intendedUse}
+                </p>
+              )}
+              <div className="mt-4 flex flex-wrap gap-1.5 enter" style={{ ["--i" as string]: 3 }}>
+                <VerdictChip verdict={r.verdict} large />
+                <span className="chip !min-h-9 !px-3.5 !text-sm">{ADOPTION_STATUS_LABEL[r.adoptionStatus]}</span>
+                {r.isExample && <span className="chip chip-dashed !min-h-9">Example candidate, replace me</span>}
+                {r.backing && <span className="chip !min-h-9">{BACKING_LABEL[r.backing as keyof typeof BACKING_LABEL]}</span>}
+              </div>
+              <p className="mt-4 text-sm text-mast-ink-2 tabular enter" style={{ ["--i" as string]: 4 }}>
+                Last checked {fmt(r.lastChecked)} · method {r.configVersion ?? HEALTH_CONFIG_VERSION}
+              </p>
             </div>
-            <p className="mt-3 text-sm text-ink-3 tabular">Last checked {fmt(r.lastChecked)} · method {r.configVersion ?? HEALTH_CONFIG_VERSION}</p>
+            <div className="flex flex-col items-center gap-2 enter" style={{ ["--i" as string]: 2 }}>
+              <ScoreRing score={r.score} verdict={r.verdict} size={132} stroke={10} tone="dark" showMax />
+              {r.coverage !== null && (
+                <p className="text-xs text-mast-ink-2 tabular">
+                  {Math.round(r.coverage * 100)}% of weight had data{r.coverage < 1 ? " (partial)" : ""}
+                </p>
+              )}
+            </div>
           </div>
-          <ScoreMeter score={r.score} coverage={r.coverage} />
+          {r.refreshNote && (
+            <p className="mt-5 rounded-xl border border-[var(--mast-line)] bg-[rgb(255_255_255/0.06)] p-3 text-sm text-mast-ink" role="note">
+              {r.refreshNote}
+            </p>
+          )}
         </div>
-        {r.refreshNote && (
-          <p className="mt-4 rounded-xl border border-review-line bg-review-bg p-3 text-sm" role="note">
-            {r.refreshNote}
-          </p>
-        )}
       </header>
+
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
 
       {!r.verdict ? (
         <p className="card mt-6 p-5 text-ink-2">This candidate has not been checked yet. An admin can run “Refresh health” from the admin page.</p>
@@ -328,6 +355,7 @@ export default async function ReportPage({ params }: PageProps<"/evaluate/[slug]
           Weights: {DIMENSIONS.map((d) => `${DIMENSION_LABEL[d]} ${WEIGHTS[d]}`).join(" · ")}.
         </p>
       </footer>
+      </div>
     </main>
   );
 }
