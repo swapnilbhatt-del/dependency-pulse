@@ -25,7 +25,7 @@ export function ScoreMeter({ score, coverage, compact = false }: { score: number
   return (
     <div className={compact ? "" : "min-w-[8rem]"}>
       <p className="tabular">
-        <span className={`font-display ${compact ? "text-2xl" : "text-4xl"}`}>{score ?? "—"}</span>
+        <span className={`font-display ${compact ? "text-2xl" : "text-4xl"}`} data-count>{score ?? "—"}</span>
         <span className="text-sm text-ink-3"> / 100</span>
       </p>
       <span className="bar-track mt-1.5 block" aria-hidden="true">

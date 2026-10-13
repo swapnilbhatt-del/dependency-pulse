@@ -767,6 +767,20 @@ a.stat-tile:hover {
   }
 }
 
+/* GSAP sets inline opacity/transform on cards, bars and meters as they scroll
+   in (components/motion.tsx). Printing must never catch them mid-animation. */
+@media print {
+  .card,
+  .glance,
+  .stat-tile,
+  [data-reveal],
+  .bar-track > span,
+  .meter > span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ─── Print (A4 and US Letter) ───────────────────────────────────────────── */
 @page {
   margin: 14mm;

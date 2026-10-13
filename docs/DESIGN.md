@@ -62,8 +62,16 @@ Every tier also carries an **icon and a text label**, so color is never the only
 
 ## Motion
 
-- 120–180ms ease-out transitions only, for `<details>` expansion, toggle switches, and button press feedback.
-- Everything is turned off under `prefers-reduced-motion: reduce`.
+- 120–180ms ease-out transitions for `<details>` expansion, toggle switches, and button press feedback.
+- **GSAP on the public pages** ([`components/motion.tsx`](../components/motion.tsx), GSAP 3.15 + ScrollTrigger). It adds three effects, each under a second:
+  - cards, sections and stat tiles fade and rise 14px as they scroll into view, staggered by 50ms;
+  - score, coverage and stat bars fill from the left;
+  - whole numbers (stat counts, scores) count up to their value.
+- **First paint is never touched.** GSAP loads in the background once the browser is idle, and on a first load only content that starts below the fold animates. Nothing on screen is hidden, so there is no flash and no effect on LCP or Speed Index (Lighthouse mobile is unchanged at 97–99).
+- **Page entrance.** A client-side navigation plays the same entrance for the new page; it runs before paint, so it doesn't flash either.
+- **Where it doesn't run:** the admin area is never animated. Under `prefers-reduced-motion: reduce` GSAP does nothing, and every CSS transition is cut to 0.01ms.
+- **Safe states:** printing forces every card and bar fully visible. Animated elements use opacity, not `visibility`, so screen readers and find-in-page always reach them.
+- **Tests:** `tests/e2e/motion.spec.ts` checks that first paint stays visible, that cards and bars reveal on scroll, that the page entrance settles fully visible, and that reduced motion and admin are left alone.
 
 ## Print
 
