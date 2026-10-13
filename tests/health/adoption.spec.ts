@@ -53,6 +53,9 @@ test.describe("Adoption Check: public pages", () => {
     const dims = await box.evaluate((el) => ({ sw: el.scrollWidth, cw: el.clientWidth, vw: window.innerWidth }));
     expect(dims.sw, JSON.stringify(dims)).toBeGreaterThan(dims.cw);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+    // The table sits below the masthead; bring it on screen, then scroll it sideways:
+    // the sticky first column must stay in view.
+    await box.scrollIntoViewIfNeeded();
     await box.evaluate((el) => el.scrollTo({ left: 400 }));
     await expect(table.locator("tbody th").first()).toBeInViewport();
     await expect(page.getByTestId("copy-markdown")).toBeVisible();

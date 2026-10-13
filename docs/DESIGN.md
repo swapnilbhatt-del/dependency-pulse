@@ -132,3 +132,13 @@ Same tokens, fonts and content as before; the first screen of each public page c
 - **Where it doesn't apply:** admin is untouched (`data-area="admin"`).
 - **Lighthouse mobile (local production build):** home 98, Adoption Check 98, report 95–97, digest 97. Accessibility 100, CLS 0.
 
+## Polish pass (v3.1)
+
+- **Every public page now opens on the dark masthead**: home, digest, archive, Adoption Check, reports, compare and the 404 page. The secondary pages share `PageMasthead` (nav row, eyebrow, headline, lede, an optional right-hand panel, and the same entrance).
+  - **Archive** shows tiles for weeks, releases and items acted on.
+  - **Compare** shows a score-ring tile for each library.
+- **Loading states match the page they lead to.** The Adoption Check, report, compare and archive skeletons keep the real nav row and the masthead's shape (`MastheadSkeleton`), so nothing jumps from light to dark and the header never disappears while a page loads.
+- **Compare streams its masthead first.** The headline and lede do not depend on the data, so they paint at once. The ring tiles and table stream in behind `<Suspense>` (reports are read once per request via React `cache`). Lighthouse mobile went from 91 to 97 locally and LCP from 3.4 s to 2.6 s, with CLS 0.
+- **Footer**: logo, a one-line description, and two link groups (Product: latest digest, archive, Adoption Check; More: how verdicts are calculated, source on GitHub, admin).
+- **Filters**: the selected verdict or status filter is filled with ink, so the active state is unmistakable.
+
