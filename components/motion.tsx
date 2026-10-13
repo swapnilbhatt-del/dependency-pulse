@@ -23,6 +23,7 @@ type Mods = { gsap: Gsap; ScrollTrigger: ScrollTriggerT };
 const REVEAL = ".card, .glance, .stat-tile, [data-reveal]";
 const BARS = ".bar-track > span, .meter > span";
 const COUNT = ".stat-num, [data-count]";
+const RINGS = "circle[data-ring]";
 
 let mods: Mods | null = null;
 let loading: Promise<Mods> | null = null;
@@ -57,36 +58,64 @@ function animate({ gsap, ScrollTrigger }: Mods, entrance: boolean) {
   const root = document.getElementById("main");
   if (!root) return null;
   const vh = window.innerHeight;
-  // On a first load, leave anything at or above the fold alone.
-  const eligible = (el: Element) => entrance || el.getBoundingClientRect().top > vh * 0.95;
-  const inView = (el: Element) => el.getBoundingClientRect().top < vh * 0.95;
+  const top = (el: Element) => el.getBoundingClientRect().top;
+  const START = "top 92%";
   const restore: (() => void)[] = [];
 
+  // The outermost card around an element (null if none, or if it sits in a CSS-animated masthead).
+  const cardOf = (el: Element): HTMLElement | null => {
+    let found: HTMLElement | null = null;
+    for (let c = el.closest<HTMLElement>(REVEAL); c && root.contains(c); c = c.parentElement?.closest<HTMLElement>(REVEAL) ?? null) found = c;
+    return found && !found.closest(".masthead") ? found : null;
+  };
+
   const ctx = gsap.context(() => {
-    // Cards and sections: fade and rise.
-    const cards = outermost(root, REVEAL).filter(eligible);
+    // Cards: on a first load only those wholly below the fold; after a navigation, all of them.
+    const cards = outermost(root, REVEAL).filter((el) => !el.closest(".masthead") && (entrance || top(el) > vh));
+    const hidden = new Set(cards);
+    // A number, ring or bar animates with its card. Outside cards, the same fold rule applies.
+    const waits = (el: Element) => {
+      const card = cardOf(el);
+      return card ? hidden.has(card) : entrance || top(el) > vh;
+    };
+    const when = (el: Element, run: () => void) => {
+      const trigger = cardOf(el) ?? el;
+      if (top(trigger) < vh * 0.92) run();
+      else ScrollTrigger.create({ trigger, start: START, once: true, onEnter: run });
+    };
+
+    // Cards and sections: fade and rise, staggered.
     gsap.set(cards, { opacity: 0, y: 14 });
     const show = (els: Element[]) => gsap.to(els, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", stagger: 0.05, overwrite: true });
-    const now = cards.filter(inView);
+    const now = cards.filter((el) => top(el) < vh * 0.92);
     if (now.length) show(now);
     ScrollTrigger.batch(
       cards.filter((el) => !now.includes(el)),
-      { start: "top 95%", once: true, onEnter: show },
+      { start: START, once: true, onEnter: show },
     );
 
     // Bars and meters: fill from the left.
-    const bars = Array.from(root.querySelectorAll<HTMLElement>(BARS)).filter(eligible);
-    gsap.set(bars, { scaleX: 0, transformOrigin: "left center" });
-    const fill = (els: Element[]) => gsap.to(els, { scaleX: 1, duration: 0.7, ease: "power3.out", stagger: 0.03, overwrite: true });
-    const barsNow = bars.filter(inView);
-    if (barsNow.length) fill(barsNow);
-    ScrollTrigger.batch(
-      bars.filter((el) => !barsNow.includes(el)),
-      { start: "top 95%", once: true, onEnter: fill },
-    );
+    for (const bar of Array.from(root.querySelectorAll<HTMLElement>(BARS)).filter(waits)) {
+      gsap.set(bar, { scaleX: 0, transformOrigin: "left center" });
+      when(bar, () => gsap.to(bar, { scaleX: 1, duration: 0.7, ease: "power3.out", overwrite: true }));
+    }
 
-    // Whole numbers: count up from zero.
-    for (const el of Array.from(root.querySelectorAll<HTMLElement>(COUNT)).filter(eligible)) {
+    // Score rings: rings in view draw with CSS (globals.css); waiting rings draw with their card.
+    for (const ring of Array.from(root.querySelectorAll<SVGCircleElement>(RINGS)).filter(waits)) {
+      if (entrance && top(ring) < vh) continue; // a freshly inserted ring already plays its CSS draw
+      const circ = Number(ring.getAttribute("stroke-dasharray"));
+      const target = Number(ring.dataset.ring);
+      if (!Number.isFinite(circ) || !Number.isFinite(target)) continue;
+      ring.style.animation = "none";
+      restore.push(() => {
+        ring.style.animation = "";
+      });
+      gsap.set(ring, { strokeDashoffset: circ });
+      when(ring, () => gsap.to(ring, { strokeDashoffset: target, duration: 0.9, ease: "power3.out" }));
+    }
+
+    // Whole numbers: count up from zero, with their card.
+    for (const el of Array.from(root.querySelectorAll<HTMLElement>(COUNT)).filter(waits)) {
       const original = el.textContent ?? "";
       const raw = original.trim();
       if (!/^\d{1,3}(,\d{3})*$|^\d+$/.test(raw)) continue;
@@ -98,7 +127,7 @@ function animate({ gsap, ScrollTrigger }: Mods, entrance: boolean) {
       restore.push(() => {
         el.textContent = original;
       });
-      const run = () =>
+      when(el, () =>
         gsap.to(state, {
           v: end,
           duration: 0.8,
@@ -109,9 +138,8 @@ function animate({ gsap, ScrollTrigger }: Mods, entrance: boolean) {
           onComplete: () => {
             el.textContent = original;
           },
-        });
-      if (inView(el)) run();
-      else ScrollTrigger.create({ trigger: el, start: "top 95%", once: true, onEnter: run });
+        }),
+      );
     }
   });
 
@@ -126,9 +154,33 @@ function animate({ gsap, ScrollTrigger }: Mods, entrance: boolean) {
   };
 }
 
+/** Cursor spotlight on cards: sets --mx/--my on the card under the pointer (CSS draws it). */
+function useSpotlight() {
+  useLayoutEffect(() => {
+    if (!window.matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches) return;
+    let frame = 0;
+    const onMove = (e: PointerEvent) => {
+      const card = (e.target as Element | null)?.closest?.<HTMLElement>(".spot, .card.lift");
+      if (!card || card.closest("[data-area='admin']")) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+        card.style.setProperty("--my", `${e.clientY - r.top}px`);
+      });
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      document.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+}
+
 export function Motion() {
   const pathname = usePathname();
   const firstLoad = useRef(true);
+  useSpotlight();
 
   useLayoutEffect(() => {
     const entrance = !firstLoad.current;

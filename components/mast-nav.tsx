@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/logo";
+import { NavLinks } from "@/components/nav-links";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-/** Header row used inside dark mastheads (home, digest). */
+/** Header row used inside dark mastheads (home, digest, Adoption Check). */
 export function MastNav({ children }: { children?: React.ReactNode }) {
   return (
     <div className="flex h-14 items-center justify-between gap-2 border-b border-[var(--mast-line)]">
@@ -11,17 +12,7 @@ export function MastNav({ children }: { children?: React.ReactNode }) {
         <span className="hidden sm:inline tracking-tight">Upstream Weekly</span>
       </Link>
       <div className="flex items-center no-print">
-        <nav aria-label="Primary" className="flex items-center">
-          <Link href="/archive" className="btn btn-ghost btn-sm min-h-11">
-            Archive
-          </Link>
-          <Link href="/evaluate" className="btn btn-ghost btn-sm min-h-11 hidden sm:inline-flex">
-            Evaluate
-          </Link>
-          <Link href="/admin" className="btn btn-ghost btn-sm min-h-11">
-            Admin
-          </Link>
-        </nav>
+        <NavLinks compactEvaluate />
         <ThemeToggle />
         {children}
       </div>

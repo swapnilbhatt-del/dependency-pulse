@@ -2,17 +2,20 @@ import Link from "next/link";
 import { CountRow } from "@/components/digest/count-row";
 import { WeekBar } from "@/components/digest/week-bar";
 import { IconAlert, IconArrowRight, IconCheck, IconReview, IconShield, IconSparkle, PulseLine } from "@/components/icons";
+
+const I = (i: number) => ({ ["--i" as string]: i });
 import { MastNav } from "@/components/mast-nav";
 import type { DigestModel } from "@/lib/digest/model";
 import { fmtWeekOf, fmtWindow } from "@/lib/digest/format";
 import { getLatestDigest, listDigests } from "@/lib/digest/queries";
+import { watchlist } from "@/lib/health/queries";
 
 export const revalidate = 300;
 
 function LatestCard({ d }: { d: DigestModel }) {
   const top = d.act[0] ?? d.review[0];
   return (
-    <div className="rounded-2xl border border-[var(--mast-line)] bg-[rgb(255_255_255/0.05)] p-5 backdrop-blur">
+    <div className="rounded-2xl border border-[var(--mast-line)] bg-[rgb(255_255_255/0.05)] p-5 backdrop-blur enter" style={I(4)}>
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-mast-ink-2">Latest digest · {d.isoWeek}</p>
       <p className="mt-2 font-display text-3xl text-mast-ink">Week of {fmtWeekOf(d.weekOf)}</p>
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
@@ -48,7 +51,8 @@ function LatestCard({ d }: { d: DigestModel }) {
 }
 
 export default async function Home() {
-  const [latest, weeks] = await Promise.all([getLatestDigest().catch(() => null), listDigests(6).catch(() => [])]);
+  const [latest, weeks, candidates] = await Promise.all([getLatestDigest().catch(() => null), listDigests(6).catch(() => []), watchlist().catch(() => [])]);
+  const verdictCount = (v: string) => candidates.filter((c) => c.verdict === v).length;
   return (
     <main id="main">
       <header className="masthead" style={{ ["--mast-glow" as string]: latest?.counts.act ? "rgb(255 143 132 / 0.22)" : "rgb(94 234 212 / 0.18)" }}>
@@ -57,17 +61,17 @@ export default async function Home() {
           <MastNav />
           <div className="mt-10 sm:mt-16 grid items-center gap-10 lg:grid-cols-[1.15fr_1fr]">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--mast-line)] px-3 py-1 text-xs font-semibold text-mast-ink-2">
+              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--mast-line)] px-3 py-1 text-xs font-semibold text-mast-ink-2 enter" style={I(0)}>
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--mast-ok)]" aria-hidden="true" />
                 Every Monday · 09:00 IST
               </p>
-              <h1 className="mt-5 font-display text-[3rem] sm:text-[4.5rem] leading-[0.98] text-mast-ink">
+              <h1 className="mt-5 font-display text-[3rem] sm:text-[4.5rem] leading-[0.98] text-mast-ink enter-soft" style={I(1)}>
                 The releases that matter, <em className="not-italic text-[var(--mast-act)]">first</em>.
               </h1>
-              <p className="mt-5 max-w-xl text-lg text-mast-ink-2">
+              <p className="mt-5 max-w-xl text-lg text-mast-ink-2 enter-soft" style={I(2)}>
                 One calm digest of every release across the open-source libraries your product runs on. Security fixes and breaking changes lead, with the evidence quoted. Everything else fits in a line.
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap gap-3 enter" style={I(3)}>
                 {latest ? (
                   <Link href={`/digest/${latest.isoWeek}`} className="btn btn-primary !bg-[#f3f5f7] !text-[#0d1117] hover:!bg-white">
                     Read the latest digest <IconArrowRight />
@@ -85,7 +89,7 @@ export default async function Home() {
             {latest ? (
               <LatestCard d={latest} />
             ) : (
-              <div className="rounded-2xl border border-[var(--mast-line)] p-6 text-mast-ink-2">
+              <div className="rounded-2xl border border-[var(--mast-line)] p-6 text-mast-ink-2 enter" style={I(4)}>
                 <p className="font-display text-3xl text-mast-ink">No digest yet</p>
                 <p className="mt-2">The first one arrives on Monday at 09:00 India time, or as soon as an admin sends one.</p>
               </div>
@@ -105,7 +109,7 @@ export default async function Home() {
             { icon: <IconShield size={18} />, t: "Evidence before urgency", b: "A security or breaking flag needs a quoted line from the notes, a GitHub advisory, or a major version bump. The AI cannot raise one alone." },
             { icon: <IconSparkle size={18} />, t: "Summarized, then ordered", b: "Gemini Flash writes one line per release; rules sort Act now, Review and FYI by impact and group the rest by product area." },
           ].map((s, i) => (
-            <li key={s.t} className="card lift p-5">
+            <li key={s.t} className="card lift spot p-5">
               <span className="flex items-center gap-3">
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-soft text-brand">{s.icon}</span>
                 <span className="font-display text-2xl text-ink-3 tabular">0{i + 1}</span>
@@ -116,6 +120,42 @@ export default async function Home() {
           ))}
         </ol>
       </section>
+
+      {candidates.length > 0 && (
+        <section aria-labelledby="adopt" className="mx-auto max-w-6xl px-4 sm:px-6 pb-14">
+          <div className="card lift spot grid items-center gap-6 p-5 sm:p-7 lg:grid-cols-[1.2fr_1fr]">
+            <div>
+              <p className="eyebrow text-brand">Adoption Check</p>
+              <h2 id="adopt" className="mt-2 font-display text-[2.2rem] leading-tight">
+                Before you adopt it
+              </h2>
+              <p className="mt-2 max-w-xl text-ink-2">
+                {candidates.length} open-source candidates, re-checked every Monday from GitHub, OpenSSF Scorecard, OSV and package registries. Fixed rules set every score and verdict, and each one lists its reasons.
+              </p>
+              <Link href="/evaluate" className="btn btn-primary mt-5">
+                Open the watchlist <IconArrowRight />
+              </Link>
+            </div>
+            <ul className="grid grid-cols-3 gap-2.5" aria-label="Verdicts">
+              {[
+                { v: "healthy", l: "Healthy", c: "var(--ok)", icon: <IconCheck size={14} /> },
+                { v: "watch", l: "Watch", c: "var(--review)", icon: <IconReview size={14} /> },
+                { v: "risky", l: "Risky", c: "var(--act)", icon: <IconAlert size={14} /> },
+              ].map((t) => (
+                <li key={t.v} className="rounded-xl border border-line bg-surface-2 px-2 py-4 text-center">
+                  <p className="font-display text-[2.6rem] leading-none tabular" style={{ color: verdictCount(t.v) ? t.c : "var(--ink-3)" }} data-count>
+                    {verdictCount(t.v)}
+                  </p>
+                  <p className="mt-2 flex items-center justify-center gap-1 text-xs font-semibold text-ink-2">
+                    <span style={{ color: t.c }}>{t.icon}</span>
+                    {t.l}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {weeks.length > 0 && (
         <section aria-labelledby="recent" className="mx-auto max-w-6xl px-4 sm:px-6 pb-8">
@@ -133,7 +173,7 @@ export default async function Home() {
           <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {weeks.map((w) => (
               <li key={w.isoWeek}>
-                <Link href={`/digest/${w.isoWeek}`} className="card lift block p-4 no-underline text-ink">
+                <Link href={`/digest/${w.isoWeek}`} className="card lift spot block p-4 no-underline text-ink">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold">Week of {fmtWeekOf(w.weekOf)}</span>
                     <span className="text-xs text-ink-3 tabular">{w.isoWeek}</span>
