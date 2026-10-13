@@ -43,7 +43,7 @@ test.describe("public pages", () => {
 
     // Print: light colours, no nav or buttons.
     await page.emulateMedia({ media: "print" });
-    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(255, 255, 255)");
+    await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(255, 255, 255)");
     await expect(page.getByTestId("print-button")).toBeHidden();
     await expect(page.getByRole("navigation", { name: "Primary" })).toBeHidden();
     await page.emulateMedia({ media: "screen" });

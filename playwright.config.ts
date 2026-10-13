@@ -10,7 +10,8 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   reporter: [["list"]],
-  use: { baseURL, trace: "retain-on-failure" },
+  // Specs run with reduced motion so axe and layout checks see final states; tests/e2e/motion.spec.ts opts back in.
+  use: { baseURL, trace: "retain-on-failure", contextOptions: { reducedMotion: "reduce" } },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },

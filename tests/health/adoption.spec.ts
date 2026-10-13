@@ -108,10 +108,16 @@ test.describe("Adoption Check: admin workflow", () => {
     await expect(log).not.toContainText("E2E: parked until"); // reasons stay private by default
   });
 
-  test("the email flag defaults to off and can be toggled", async ({ page }) => {
+  test("the email flag switch shows the stored setting (off unless an admin turned it on)", async ({ page }) => {
+    let stored = false;
+    if (process.env.DATABASE_URL) {
+      const sql = postgres(process.env.DATABASE_URL, { prepare: false, max: 1 });
+      const [row] = await sql`select value_json from app_settings where key = 'email_watchlist_enabled'`;
+      stored = row?.value_json === true;
+      await sql.end();
+    }
     await login(page);
     await page.goto("/admin/evaluate");
-    const sw = page.getByTestId("email-flag");
-    await expect(sw).toHaveAttribute("aria-checked", "false");
+    await expect(page.getByTestId("email-flag")).toHaveAttribute("aria-checked", String(stored));
   });
 });
