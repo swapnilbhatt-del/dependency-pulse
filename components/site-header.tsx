@@ -10,8 +10,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 function hasMasthead(path: string): boolean {
   // Vercel's background (ISR) re-render of "/" reports the path as "/index".
   if (path === "/" || path === "/index") return true;
-  if (path.startsWith("/digest/")) return true;
-  return path === "/evaluate" || (path.startsWith("/evaluate/") && path !== "/evaluate/compare");
+  if (path.startsWith("/digest/") || path === "/archive") return true;
+  return path === "/evaluate" || path.startsWith("/evaluate/");
 }
 
 export function SiteHeader() {

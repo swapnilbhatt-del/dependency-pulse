@@ -28,15 +28,15 @@ export function WatchlistGrid({ cards }: { cards: CandidateCard[] }) {
       <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter by verdict">
         <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-ink-3">Verdict</span>
         {VERDICTS.map((v) => (
-          <button key={v} type="button" aria-pressed={verdict === v} onClick={() => setVerdict(verdict === v ? null : v)} className={`chip !min-h-9 !px-3 cursor-pointer ${verdict === v ? "!border-accent !bg-surface-2 !text-ink font-semibold" : ""}`}>
-            {VERDICT_LABEL[v]} <span className="tabular text-ink-3">{cards.filter((c) => c.verdict === v).length}</span>
+          <button key={v} type="button" aria-pressed={verdict === v} onClick={() => setVerdict(verdict === v ? null : v)} className={`chip !min-h-9 !px-3 cursor-pointer ${verdict === v ? "!border-ink !bg-ink !text-bg font-semibold" : ""}`}>
+            {VERDICT_LABEL[v]} <span className={`tabular ${verdict === v ? "opacity-80" : "text-ink-3"}`}>{cards.filter((c) => c.verdict === v).length}</span>
           </button>
         ))}
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter by adoption status">
         <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-ink-3">Status</span>
         {STATUSES.map((s) => (
-          <button key={s} type="button" aria-pressed={status === s} onClick={() => setStatus(status === s ? null : s)} className={`chip !min-h-9 !px-3 cursor-pointer ${status === s ? "!border-accent !bg-surface-2 !text-ink font-semibold" : ""}`}>
+          <button key={s} type="button" aria-pressed={status === s} onClick={() => setStatus(status === s ? null : s)} className={`chip !min-h-9 !px-3 cursor-pointer ${status === s ? "!border-ink !bg-ink !text-bg font-semibold" : ""}`}>
             {ADOPTION_STATUS_LABEL[s]}
           </button>
         ))}

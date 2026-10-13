@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CountRow } from "@/components/digest/count-row";
 import { WeekBar } from "@/components/digest/week-bar";
 import { IconArrowRight } from "@/components/icons";
+import { PageMasthead } from "@/components/page-masthead";
 import { fmtWeekOf, fmtWindow } from "@/lib/digest/format";
 import { listDigests } from "@/lib/digest/queries";
 import { timezoneLabel } from "@/lib/env";
@@ -26,25 +27,34 @@ export default async function ArchivePage() {
     failed = true;
   }
   return (
-    <main id="main" className="mx-auto max-w-[46rem] px-4 sm:px-6 pt-10">
-      <p className="eyebrow text-brand">Archive</p>
-      <h1 className="mt-2 font-display text-[2.75rem] sm:text-[3.5rem] leading-[1.02]">Past digests</h1>
-      <p className="mt-3 text-ink-2 measure">One digest per ISO week, newest first. The bar on each week shows how much of it needed action (red) or review (amber).</p>
-      {entries.length > 0 && (
-        <dl className="mt-6 grid grid-cols-3 gap-3">
-          {[
-            ["Weeks", entries.length],
-            ["Releases", entries.reduce((n, e) => n + e.counts.releasesFound, 0)],
-            ["Acted on", entries.reduce((n, e) => n + e.counts.act, 0)],
-          ].map(([k, v]) => (
-            <div key={k} className="card p-4">
-              <dt className="text-xs font-semibold uppercase tracking-wide text-ink-3">{k}</dt>
-              <dd className="mt-1 font-display text-4xl tabular">{v}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
+    <main id="main">
+      <PageMasthead
+        maxW="max-w-4xl"
+        eyebrow="Archive"
+        title="Past digests"
+        lede="One digest per ISO week, newest first. The bar on each week shows how much of it needed action (red) or review (amber)."
+        aside={
+          entries.length > 0 ? (
+            <dl className="grid grid-cols-3 gap-2.5">
+              {[
+                { k: "Weeks", v: entries.length, c: "var(--mast-ink)" },
+                { k: "Releases", v: entries.reduce((n, e) => n + e.counts.releasesFound, 0), c: "var(--mast-ink)" },
+                { k: "Acted on", v: entries.reduce((n, e) => n + e.counts.act, 0), c: "var(--mast-act)" },
+              ].map((x) => (
+                <div key={x.k} className="stat-tile !min-h-0 !flex flex-col-reverse justify-end">
+                  {/* dt must come first in a definition list; flex-col-reverse puts the number on top. */}
+                  <dt className="mt-1.5 text-sm font-semibold text-mast-ink">{x.k}</dt>
+                  <dd className="stat-num !text-[2.6rem]" style={{ color: x.v ? x.c : "var(--mast-ink-2)" }}>
+                    {x.v}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          ) : undefined
+        }
+      />
 
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 pt-8">
       {failed ? (
         <div className="card mt-8 p-5" role="alert">
           <h2 className="font-semibold">The archive could not be loaded</h2>
@@ -90,6 +100,7 @@ export default async function ArchivePage() {
           ))}
         </ol>
       )}
+      </div>
     </main>
   );
 }
